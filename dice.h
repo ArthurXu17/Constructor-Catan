@@ -21,8 +21,8 @@ int main() {
     Dice *load = new LoadedDice(); 
     Dice *dice_choice = nullptr;
     // Dice *loaded = new LoadedDice();
-    string cmd;
-    string dice;
+    std::string cmd;
+    std::string dice;
     std::cin >> cmd;
     if (cmd == "fair") {
         dice_choice = fair;
@@ -31,5 +31,9 @@ int main() {
     } else if (cmd == "play") {
         dice_choice->generateNumber();
     }
+
+    dice_choice = nullptr;
+    delete fair;
+    delete load;
 
 }

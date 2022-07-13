@@ -1,6 +1,7 @@
 #include <vector>
 #include <utility>
 #include <unordered_map>
+#include <iostream>
 #include "building.h"
 #include "tile.h"
 
@@ -26,9 +27,15 @@ class Grid {
 
     public: 
     
-    std::vector<size_t>& get_edges(size_t idx) {
+    /*std::vector<size_t>& get_edges(size_t idx) {
         return adjacent_edges[idx];
-    }    
+    }*/    
+        // constructor for random board generation
+        Grid();
+        // constructor for file input board generation
+        Grid(std::ifstream f);
         bool valid_road(Colour player, size_t edge_id);
         bool valid_building(Colour player, size_t node_id);
+        void print_grid();
+        ~Grid();
 };
