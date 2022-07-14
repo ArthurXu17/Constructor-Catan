@@ -10,5 +10,5 @@ class Tile : public Subject {
         Tile(Resource r, int val, bool goose);
         Resource get_resource() const;
         Resource set_resource();
-        bool getGooseStatus();
+        bool getGooseStatus() const;
 };

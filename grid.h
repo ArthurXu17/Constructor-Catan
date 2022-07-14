@@ -25,6 +25,8 @@ class Grid {
 
     std::vector<Tile *> tiles;
 
+    Tile *goose_tile;
+
     public: 
     
     /*std::vector<size_t>& get_edges(size_t idx) {
@@ -34,8 +36,15 @@ class Grid {
         Grid();
         // constructor for file input board generation
         Grid(std::ifstream f);
-        bool valid_road(Colour player, size_t edge_id);
-        bool valid_building(Colour player, size_t node_id);
-        void print_grid();
+        
+        void save_game(std::ifstream f);
+
+        // can player PLACE a road here
+        bool valid_road(Colour player, size_t edge_id) const;
+        // can player PLACE a building here
+        bool valid_building(Colour player, size_t node_id) const;
+        // function for printing grid into terminal during gameplay
+        void print_grid() const;
+        void move_goose();
         ~Grid();
 };
