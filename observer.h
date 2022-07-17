@@ -1,3 +1,5 @@
+#ifndef _OBSERVER_H_
+#define _OBSERVER_H_
 #include <unordered_set>
 class Subject;
 enum class Resource {Park, Brick, Energy, Glass, Heat, Wifi};
@@ -5,6 +7,7 @@ enum class Resource {Park, Brick, Energy, Glass, Heat, Wifi};
 class Observer {
     public: 
         virtual void notify(Subject &s) = 0;
+        virtual ~Observer();
 };
 
 class Subject {
@@ -19,6 +22,6 @@ class Subject {
         void detach( Observer *o) {
             observers.erase(o);
         }
-        virtual ~Subject() = 0;
-        virtual Resource get_resource() = 0;
+        virtual ~Subject() = default;
 };
+#endif

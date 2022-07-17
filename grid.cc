@@ -1,0 +1,281 @@
+#include <vector>
+#include <utility>
+#include <unordered_map>
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include "building.h"
+#include "tile.h"
+#include "grid.h"
+
+Grid::Grid(): goose_tile{nullptr} {
+    edge_colour = std::unordered_map<size_t, Colour>();
+    node_owner = std::unordered_map<size_t, Building *>();
+
+    for (size_t i = 0; i <= max_edge; i++) {
+        edge_colour[i] = Colour::NoColour;
+    }
+    for (size_t i = 0; i <= max_node; i++) {
+        node_owner[i] = nullptr;
+    }
+
+    tiles = std::vector<Tile *>();
+
+    for (size_t i = 0; i <= max_tile; i++) {
+        tiles.emplace_back(new Tile(Resource::Brick, 8, false));
+    }
+}
+
+void Grid::print_edge(size_t &n) const {
+    Colour colour = edge_colour.at(n);
+    if (colour == Colour::NoColour) {
+        std::cout<<std::setw(2)<<n;
+    } else if (colour == Colour::Blue) {
+        std::cout<<"B ";
+    } else if (colour == Colour::Red) {
+        std::cout<<"R ";
+    } else if (colour == Colour::Yellow) {
+        std::cout<<"Y ";
+    } else if (colour == Colour::Orange) {
+        std::cout<<"O ";
+    }
+    n++;
+}
+
+void Grid::print_node(size_t &n) const{
+    Building *build = node_owner.at(n);
+    std::cout<<"|";
+    if (build == nullptr) {
+        std::cout<<std::setw(2)<<n;
+    }
+    std::cout<<"|";
+    n++;
+}
+
+void Grid::print_tile_break(int n) const {
+    const std::string WHITESPACE = "       ";//7 spaces
+    for (int i = 0; i < n; i++) {
+        std::cout<<"  |"<<WHITESPACE;
+    }
+}
+
+void Grid::print_resource(Resource r) const {
+    if (r == Resource::Brick) {
+        std::cout<<" BRICK";
+    } else if (r == Resource::Energy) {
+        std::cout<<"ENERGY";
+    } else if (r == Resource::Glass) {
+        std::cout<<" GLASS";
+    } else if (r == Resource::Heat) {
+        std::cout<<" HEAT ";
+    } else if (r == Resource::Park) {
+        std::cout<<" PARK ";
+    } else if (r == Resource::Wifi) {
+        std::cout<<" WIFI ";
+    }
+}
+
+void Grid::print_tile_edge(size_t & node_counter, size_t & edge_counter) const {
+    print_node(node_counter);
+    std::cout<<"--";
+    print_edge(edge_counter);
+    std::cout<<"--";
+    print_node(node_counter);
+}
+
+void Grid::print_tile_num(size_t & counter) const {
+    std::cout<<std::setw(5)<<counter<<"   ";
+    counter++;
+}
+
+void Grid::print_tile_dice(size_t & counter) const {
+    if (tiles.at(counter)->get_resource() != Resource::Park) {
+        std::cout<<std::setw(4)<<tiles.at(counter)->get_dice()<<"  ";
+        counter++;
+    } else {
+        std::cout<<"      "; //six spaces
+    }
+    
+}
+
+void Grid::print_tile_res(size_t & counter) const {
+    print_resource(tiles.at(counter)->get_resource());
+    counter++;
+}
+
+void Grid::print_grid() const {
+    size_t edge_counter = 0;
+    size_t node_counter = 0;
+    size_t tile_num_counter = 0;
+    size_t tile_dice_counter = 0;
+    size_t tile_res_counter = 0;
+
+    const std::string WHITESPACE = "          "; //10 spaces
+    const std::string TILE_BREAK = "        "; //8 spaces
+    std::cout<<WHITESPACE<<WHITESPACE;
+    print_tile_edge(node_counter, edge_counter);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE<<WHITESPACE;
+    print_tile_break(2);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE<<WHITESPACE<<" ";
+    print_edge(edge_counter);
+    print_tile_num(tile_num_counter);
+    print_edge(edge_counter);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE<<WHITESPACE<<"  | ";
+    print_tile_res(tile_res_counter);
+    std::cout<<"  |"<<std::endl;
+    std::cout<<WHITESPACE;
+    print_tile_edge(node_counter, edge_counter);
+    print_tile_dice(tile_dice_counter);
+    print_tile_edge(node_counter, edge_counter);
+    std::cout<<std::endl<<WHITESPACE;
+    print_tile_break(4);
+    std::cout<<std::endl<<WHITESPACE<<" ";
+    print_edge(edge_counter);
+    print_tile_num(tile_num_counter);
+    print_edge(edge_counter);
+    std::cout<<TILE_BREAK;
+    print_edge(edge_counter);
+    print_tile_num(tile_num_counter);
+    print_edge(edge_counter);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE<<"  | ";
+    print_tile_res(tile_res_counter);
+    print_tile_break(1);
+    std::cout<<"  | ";
+    print_tile_res(tile_res_counter);
+    std::cout<<"  | "<<std::endl;
+
+    for (int i = 0; i < 3; i++) {
+        //first line
+        print_tile_edge(node_counter, edge_counter);
+        print_tile_dice(tile_dice_counter);
+        print_tile_edge(node_counter, edge_counter);
+        print_tile_dice(tile_dice_counter);
+        print_tile_edge(node_counter, edge_counter);
+        std::cout<<std::endl;
+        //second line
+        print_tile_break(6);
+        std::cout<<std::endl;
+        // third line
+        std::cout<<" ";
+        print_edge(edge_counter);
+        print_tile_num(tile_num_counter);
+        print_edge(edge_counter);
+        std::cout<<TILE_BREAK;
+        print_edge(edge_counter);
+        print_tile_num(tile_num_counter);
+        print_edge(edge_counter);
+        std::cout<<TILE_BREAK;
+        print_edge(edge_counter);
+        print_tile_num(tile_num_counter);
+        print_edge(edge_counter);
+        std::cout<<std::endl;
+        // fourth line
+        std::cout<<"  | ";
+        print_tile_res(tile_res_counter);
+        print_tile_break(1);
+        std::cout<<"  | ";
+        print_tile_res(tile_res_counter);
+        print_tile_break(1);
+        std::cout<<"  | ";
+        print_tile_res(tile_res_counter);
+        std::cout<<"  | "<<std::endl;
+        // fifth line
+        print_node(node_counter);
+        print_tile_dice(tile_dice_counter);
+        print_tile_edge(node_counter, edge_counter);
+        print_tile_dice(tile_dice_counter);
+        print_tile_edge(node_counter, edge_counter);
+        print_tile_dice(tile_dice_counter);
+        print_node(node_counter);
+        std::cout<<std::endl;
+        // sixth line -> same ase second
+        print_tile_break(6);
+        std::cout<<std::endl;
+        // seventh line
+        std::cout<<" ";
+        print_edge(edge_counter);
+        std::cout<<TILE_BREAK;
+        print_edge(edge_counter);
+        print_tile_num(tile_num_counter);
+        print_edge(edge_counter);
+        std::cout<<TILE_BREAK;
+        print_edge(edge_counter);
+        print_tile_num(tile_num_counter);
+        print_edge(edge_counter);
+        std::cout<<TILE_BREAK;
+        print_edge(edge_counter);
+        std::cout<<std::endl;
+        //eighth line
+        print_tile_break(1);
+        std::cout<<"  | ";
+        print_tile_res(tile_res_counter);
+        print_tile_break(1);
+        std::cout<<"  | ";
+        print_tile_res(tile_res_counter);
+        print_tile_break(1);
+        std::cout<<"  | "<<std::endl;
+    }
+    print_tile_edge(node_counter, edge_counter);
+    print_tile_dice(tile_dice_counter);
+    print_tile_edge(node_counter, edge_counter);
+    print_tile_dice(tile_dice_counter);
+    print_tile_edge(node_counter, edge_counter);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE;
+    print_tile_break(4);
+    std::cout<<std::endl<<WHITESPACE<<" ";
+    print_edge(edge_counter);
+    std::cout<<TILE_BREAK;
+    print_edge(edge_counter);
+    print_tile_num(tile_num_counter);
+    print_edge(edge_counter);
+    std::cout<<TILE_BREAK;
+    print_edge(edge_counter);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE;
+    print_tile_break(1);
+    std::cout<<"  | ";
+    print_tile_res(tile_res_counter);
+    print_tile_break(1);
+    std::cout<<"  | "<<std::endl;
+    std::cout<<WHITESPACE;
+    print_tile_edge(node_counter, edge_counter);
+    print_tile_dice(tile_dice_counter);
+    print_tile_edge(node_counter, edge_counter);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE<<WHITESPACE;
+    print_tile_break(2);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE<<WHITESPACE<<" ";
+    print_edge(edge_counter);
+    std::cout<<TILE_BREAK;
+    print_edge(edge_counter);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE<<WHITESPACE;
+    print_tile_break(2);
+    std::cout<<std::endl;
+    std::cout<<WHITESPACE<<WHITESPACE;
+    print_tile_edge(node_counter, edge_counter);
+    std::cout<<std::endl;
+}
+
+Grid::~Grid() {
+    if (goose_tile) {
+        delete goose_tile;
+    }
+    for (auto x : tiles) {
+        if (x) {
+            delete x;
+        }
+    }
+    for (auto kv : node_owner) {
+        if (kv.second) {
+            delete kv.second;
+        }
+    }
+
+}

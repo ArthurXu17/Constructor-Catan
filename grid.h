@@ -1,3 +1,5 @@
+#ifndef _GRID_H_
+#define _GRID_H_
 #include <vector>
 #include <utility>
 #include <unordered_map>
@@ -8,9 +10,10 @@
 enum class Colour{NoColour, Blue, Red, Orange, Yellow};
 
 class Grid {
-    const int max_edge = 71;
-    const int max_node = 53;
     using size_t = std::size_t;
+    const size_t max_edge = 71;
+    const size_t max_node = 53;
+    const size_t max_tile = 18;
     // for each node -> list of adjacent edges
     std::unordered_map<size_t, std::vector<size_t> > adjacent_edges;
 
@@ -21,11 +24,20 @@ class Grid {
     std::unordered_map<size_t, Colour> edge_colour;
     
     // which vertices are owned by "who" -> this information is in the Building
-    std::unordered_map<size_t, Building *> vertex_owner;
+    std::unordered_map<size_t, Building *> node_owner;
 
     std::vector<Tile *> tiles;
 
     Tile *goose_tile;
+
+    void print_edge(size_t &) const;
+    void print_node(size_t &) const;
+    void print_tile_break(int n) const;
+    void print_resource(Resource r) const;
+    void print_tile_edge(size_t &, size_t &) const;
+    void print_tile_num(size_t & counter) const;
+    void print_tile_dice(size_t & counter) const;
+    void print_tile_res(size_t & counter) const;
 
     public: 
     
@@ -45,6 +57,8 @@ class Grid {
         bool valid_building(Colour player, size_t node_id) const;
         // function for printing grid into terminal during gameplay
         void print_grid() const;
-        void move_goose();
+        void move_goose(); 
         ~Grid();
 };
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef _TILE_H_
+#define _TILE_H_
 #include "observer.h"
 
 class Tile : public Subject {
@@ -10,5 +12,8 @@ class Tile : public Subject {
         Tile(Resource r, int val, bool goose);
         Resource get_resource() const;
         Resource set_resource();
+        int get_dice() const;
         bool getGooseStatus() const;
 };
+
+#endif

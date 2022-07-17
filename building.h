@@ -1,7 +1,10 @@
+#ifndef _BUILDING_H_
+#define _BUILDING_H_
+
 #include "player.h"
 #include "observer.h"
 
-enum class Building_Type{Basement, House, Tower};
+enum class Building_Type{NoBuilding, Basement, House, Tower};
 
 class Building : public Observer {
     Player *owner;
@@ -9,4 +12,7 @@ class Building : public Observer {
 
     public:
         void notify(Subject &s);
+        ~Building();
 };
+
+#endif
