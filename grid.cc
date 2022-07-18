@@ -4,6 +4,9 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <algorithm>
+#include <random>
+#include <chrono>
 #include "building.h"
 #include "tile.h"
 #include "grid.h"
@@ -21,8 +24,39 @@ Grid::Grid(): goose_tile{nullptr} {
 
     tiles = std::vector<Tile *>();
 
+    // for random generation of dicerolls and resource tiles
+    std::vector<int> dice_rolls =  {2,3,3,4,4,5,5,6,6,7,8,8,9,9,10,10,11,11,12};
+    std::vector<Resource> tile_res = {
+        Resource::Brick, Resource::Brick, Resource::Brick, Resource::Brick,
+        Resource::Energy, Resource::Energy, Resource::Energy, Resource::Energy,
+        Resource::Glass, Resource::Glass, Resource::Glass, Resource::Glass,
+        Resource::Heat, Resource::Heat, Resource::Heat,
+        Resource::Wifi, Resource::Wifi, Resource::Wifi,
+        Resource::Park};
+
+    // use a time-based seed for the default seed value
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine rng{seed};
+    std::shuffle( dice_rolls.begin(), dice_rolls.end(), rng );
+    std::shuffle( tile_res.begin(), tile_res.end(), rng);
+
+    size_t seven_index;
+    size_t park_index;
+
+    for (size_t i = 0; i < dice_rolls.size(); i++) {
+        if (dice_rolls.at(i) == 7) {
+            seven_index = i;
+        }
+        if (tile_res.at(i) == Resource::Park) {
+            park_index = i;
+        }
+    }
+    
+    int park_roll = dice_rolls.at(park_index);
+    dice_rolls[seven_index] = park_roll;
+
     for (size_t i = 0; i <= max_tile; i++) {
-        tiles.emplace_back(new Tile(Resource::Brick, 8, false));
+        tiles.emplace_back(new Tile(tile_res.at(i), dice_rolls.at(i), false));
     }
 }
 
@@ -91,11 +125,11 @@ void Grid::print_tile_num(size_t & counter) const {
 void Grid::print_tile_dice(size_t & counter) const {
     if (tiles.at(counter)->get_resource() != Resource::Park) {
         std::cout<<std::setw(4)<<tiles.at(counter)->get_dice()<<"  ";
-        counter++;
+        
     } else {
         std::cout<<"      "; //six spaces
     }
-    
+    counter++;
 }
 
 void Grid::print_tile_res(size_t & counter) const {
