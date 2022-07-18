@@ -2,7 +2,7 @@
 #define _OBSERVER_H_
 #include <unordered_set>
 class Subject;
-enum class Resource {Park, Brick, Energy, Glass, Heat, Wifi};
+enum class Resource {Brick, Energy, Glass, Heat, Wifi, Park};
 
 class Observer {
     public: 

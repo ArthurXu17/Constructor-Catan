@@ -30,6 +30,8 @@ class Grid {
 
     Tile *goose_tile;
 
+    Resource int_to_res(int n) const;
+
     void print_edge(size_t &) const;
     void print_node(size_t &) const;
     void print_tile_break(int n) const;
@@ -47,7 +49,7 @@ class Grid {
         // constructor for random board generation
         Grid();
         // constructor for file input board generation
-        Grid(std::ifstream f);
+        Grid(std::ifstream &f);
         
         void save_game(std::ifstream f);
 

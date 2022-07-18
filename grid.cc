@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 #include <string>
 #include <algorithm>
 #include <random>
@@ -57,6 +58,30 @@ Grid::Grid(): goose_tile{nullptr} {
 
     for (size_t i = 0; i <= max_tile; i++) {
         tiles.emplace_back(new Tile(tile_res.at(i), dice_rolls.at(i), false));
+    }
+}
+
+
+Grid::Grid(std::ifstream &f): goose_tile{nullptr} {
+    edge_colour = std::unordered_map<size_t, Colour>();
+    node_owner = std::unordered_map<size_t, Building *>();
+
+    for (size_t i = 0; i <= max_edge; i++) {
+        edge_colour[i] = Colour::NoColour;
+    }
+    for (size_t i = 0; i <= max_node; i++) {
+        node_owner[i] = nullptr;
+    }
+
+    tiles = std::vector<Tile *>();
+    for (int i = 0; i < 19; i++) {
+        // read in resource
+        int res_int;
+        Resource res;
+        int dice_roll;
+        f>>res_int>>dice_roll;
+        res = static_cast<Resource>(res_int);
+        tiles.emplace_back(new Tile(res, dice_roll, false));
     }
 }
 
