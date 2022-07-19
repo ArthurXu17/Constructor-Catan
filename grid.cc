@@ -341,6 +341,14 @@ void Grid::print_grid() const {
     std::cout<<std::endl;
 }
 
+bool Grid::valid_building(Colour player, size_t node_id){
+     for (auto adj_edge : adjacent_edges[node_id]){
+        if (edge_colour[adj_edge] == player)
+            return true;
+     }
+     return false;
+}
+
 bool Grid::valid_upgrade(size_t node_id) {
     if (node_owner[node_id]->get_type() == Building_Type::NoBuilding ||
     node_owner[node_id]->get_type() == Building_Type::Tower) return false;
