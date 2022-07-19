@@ -345,6 +345,20 @@ void Grid::print_grid() const {
     std::cout << std::endl;
 }
 
+bool Grid::valid_building(Colour player, size_t node_id){
+     for (auto adj_edge : adjacent_edges[node_id]){
+        if (edge_colour[adj_edge] == player)
+            return true;
+     }
+     return false;
+}
+
+bool Grid::valid_upgrade(size_t node_id) {
+    if (node_owner[node_id]->get_type() == Building_Type::NoBuilding ||
+    node_owner[node_id]->get_type() == Building_Type::Tower) return false;
+    return true;
+}
+
 void Grid::build_road(Colour colour, size_t edge_id) {
     edge_colour[edge_id] = colour;
 }
@@ -352,6 +366,11 @@ void Grid::build_road(Colour colour, size_t edge_id) {
 void Grid::build_building(Player *player, size_t node_id) {
     Building *b = new Building(player);
     node_owner[node_id] = b;
+}
+
+void Grid::upgrade_building(size_t node_id) {
+    if (!node_owner[node_id]) return; // no building exists
+    node_owner[node_id]->upgrade();
 }
 
 Grid::~Grid() {
