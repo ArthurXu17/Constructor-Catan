@@ -1,1 +1,1 @@
-player.o: player.cc
+player.o: player.cc player.h observer.h

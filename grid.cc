@@ -106,6 +106,25 @@ void Grid::print_node(size_t &n) const{
     std::cout<<"|";
     if (build == nullptr) {
         std::cout<<std::setw(2)<<n;
+    } else {
+        // print colour
+        if (build->get_Owner()->get_Colour() == Colour::Blue) {
+            std::cout<<"B";
+        } else if (build->get_Owner()->get_Colour() == Colour::Red) {
+            std::cout<<"R";
+        } else if (build->get_Owner()->get_Colour() == Colour::Orange) {
+            std::cout<<"O";
+        } else if (build->get_Owner()->get_Colour() == Colour::Yellow) {
+            std::cout<<"Y";
+        }
+        // print type of building
+        if (build->get_type() == Building_Type::Basement) {
+            std::cout<<"B";
+        } else if (build->get_type() == Building_Type::House) {
+            std::cout<<"H";
+        } else if (build->get_type() == Building_Type::Tower) {
+            std::cout<<"T";
+        }
     }
     std::cout<<"|";
     n++;
@@ -320,6 +339,10 @@ void Grid::print_grid() const {
     std::cout<<WHITESPACE<<WHITESPACE;
     print_tile_edge(node_counter, edge_counter);
     std::cout<<std::endl;
+}
+
+void Grid::build_road(Colour colour, size_t edge_id) {
+    edge_colour[edge_id] = colour;
 }
 
 Grid::~Grid() {

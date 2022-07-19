@@ -7,7 +7,6 @@
 #include "building.h"
 #include "tile.h"
 
-enum class Colour{NoColour, Blue, Red, Orange, Yellow};
 
 class Grid {
     using size_t = std::size_t;
@@ -58,6 +57,9 @@ class Grid {
         // can player PLACE a building here
         bool valid_building(Colour player, size_t node_id) const;
         // function for printing grid into terminal during gameplay
+
+        void build_road(Colour player, size_t edge_id);
+        void build_building(Colour player, size_t node_id);
         void print_grid() const;
         void move_goose(); 
         ~Grid();

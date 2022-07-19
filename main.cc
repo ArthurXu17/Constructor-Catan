@@ -20,7 +20,10 @@ int main(int argc, char** argv) {
     } else {
         g = new Grid(infile);
     }
-    
     g->print_grid();
+    for (size_t i = 1; i < 50; i += 5) {
+        g->build_road(Colour::Yellow, i);
+        g->print_grid();
+    }
     delete g;
 }

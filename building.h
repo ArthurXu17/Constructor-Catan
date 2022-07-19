@@ -13,6 +13,8 @@ class Building : public Observer {
     public:
         void notify(Subject &s);
         ~Building();
+        Player *get_Owner() const;
+        Building_Type get_type() const;
 };
 
 #endif
