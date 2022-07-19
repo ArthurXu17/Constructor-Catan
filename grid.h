@@ -56,7 +56,8 @@ class Grid {
         bool valid_road(Colour player, size_t edge_id) const;
         // can player PLACE a building here
         bool valid_building(Colour player, size_t node_id) const;
-        // function for printing grid into terminal during gameplay
+        // check if you can upgrade your building
+        bool valid_upgrade(size_t node_id); // WHY NO CONST????????????????????????????
 
         void build_road(Colour player, size_t edge_id);
         void build_building(Player *player, size_t node_id);
