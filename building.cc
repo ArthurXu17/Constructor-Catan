@@ -2,6 +2,8 @@
 #include "observer.h"
 #include "building.h"
 
+Building::Building(Player *owner): owner{owner} {}
+
 Building::~Building() {
     /*if (owner) {
         delete owner;
@@ -26,4 +28,8 @@ Building_Type Building::get_type() const {
 
 void Building::notify(Subject &s) {
     //do nothing
+}
+
+void Building::upgrade() {
+    resource_gain++;
 }

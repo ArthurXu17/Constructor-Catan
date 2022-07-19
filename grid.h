@@ -60,6 +60,7 @@ class Grid {
 
         void build_road(Colour player, size_t edge_id);
         void build_building(Player *player, size_t node_id);
+        void upgrade_building(size_t node_id);
         void print_grid() const;
         void move_goose(); 
         ~Grid();

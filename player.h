@@ -9,11 +9,12 @@ enum class Colour{NoColour, Blue, Red, Orange, Yellow};
 
 
 class Player {
-    int victory_points;
-    std::vector<int> resource_count;
+    int victory_points = 0;
+    std::vector<int> resource_count = {0, 0, 0, 0, 0};
     Colour colour;
 
     public:
+        Player(Colour colour);
         int get_points() const;
         void increment_points();
         void increment_resource(int index, int amount);

@@ -345,6 +345,12 @@ void Grid::build_road(Colour colour, size_t edge_id) {
     edge_colour[edge_id] = colour;
 }
 
+void Grid::build_building(Player *player, size_t node_id) {
+    Building *b = new Building(player);
+    node_owner[node_id] = b;
+
+}
+
 Grid::~Grid() {
     if (goose_tile) {
         delete goose_tile;
