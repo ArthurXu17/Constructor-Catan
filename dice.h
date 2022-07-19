@@ -55,4 +55,5 @@ int main() {
     dice_choice = nullptr;
     delete fair;
     delete load;
+    //here's a commment to test git
 }
