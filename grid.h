@@ -59,7 +59,7 @@ class Grid {
         // function for printing grid into terminal during gameplay
 
         void build_road(Colour player, size_t edge_id);
-        void build_building(Colour player, size_t node_id);
+        void build_building(Player *player, size_t node_id);
         void print_grid() const;
         void move_goose(); 
         ~Grid();
