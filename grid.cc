@@ -90,13 +90,13 @@ void Grid::print_edge(size_t &n) const {
     if (colour == Colour::NoColour) {
         std::cout<<std::setw(2)<<n;
     } else if (colour == Colour::Blue) {
-        std::cout<<"B ";
+        std::cout<<" B";
     } else if (colour == Colour::Red) {
-        std::cout<<"R ";
+        std::cout<<" R";
     } else if (colour == Colour::Yellow) {
-        std::cout<<"Y ";
+        std::cout<<" Y";
     } else if (colour == Colour::Orange) {
-        std::cout<<"O ";
+        std::cout<<" O";
     }
     n++;
 }
