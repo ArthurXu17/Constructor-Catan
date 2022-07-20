@@ -575,9 +575,10 @@ void Grid::print_grid() const {
     std::cout << std::endl;
 }
 
-bool Grid::valid_upgrade(size_t node_id) const {
-    if (node_owner.at(node_id)->get_type() == Building_Type::NoBuilding ||
-        node_owner.at(node_id)->get_type() == Building_Type::Tower) return false;
+bool Grid::valid_upgrade(Colour colour, size_t node_id) const {
+    if (node_owner.at(node_id) == nullptr||
+        node_owner.at(node_id)->get_type() == Building_Type::Tower ||
+        node_owner.at(node_id)->get_Owner()->get_Colour() != colour) return false;
     return true;
 }
 
@@ -591,7 +592,6 @@ void Grid::build_building(Player *player, size_t node_id) {
 }
 
 void Grid::upgrade_building(size_t node_id) {
-    if (!node_owner[node_id]) return;  // no building exists
     node_owner[node_id]->upgrade();
 }
 
