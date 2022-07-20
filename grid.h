@@ -42,15 +42,7 @@ class Grid {
     void print_tile_edge(size_t &, size_t &) const;
     void print_tile_num(size_t & counter) const;
     void print_tile_dice(size_t & counter) const;
-    void print_tile_res(size_t & counter) const;
-
-    // constructor helper methods
-    void edge_colour_init(std::unordered_map<size_t, Colour> &map);
-    void node_owner_init(std::unordered_map<size_t, Building*> &map);
-    void adjacent_edges_init(std::unordered_map<size_t, std::vector<size_t>> &map);
-    void edge_ends_init(std::unordered_map<size_t, std::pair<size_t, size_t>> &map);
-    void adjacent_tiles_init(std::unordered_map<size_t, std::vector<size_t>> &map);
-    
+    void print_tile_res(size_t & counter) const;    
 
     public: 
         // for making sure the maps have correct values, REMOVE WHEN SUBMITTING
