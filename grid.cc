@@ -153,7 +153,7 @@ void Grid::test_map() {
         std::cout<<std::endl;
     }*/
 
-    for (int i = 0; i < max_node; i++) {
+    for (size_t i = 0; i < max_node; i++) {
         if (valid_building(Colour::Red, i))
             std::cout << "R " << i << std::endl;
         if (valid_building(Colour::Orange, i))
@@ -504,9 +504,9 @@ void Grid::print_grid() const {
     std::cout << std::endl;
 }
 
-bool Grid::valid_upgrade(size_t node_id) {
-    if (node_owner[node_id]->get_type() == Building_Type::NoBuilding ||
-        node_owner[node_id]->get_type() == Building_Type::Tower) return false;
+bool Grid::valid_upgrade(size_t node_id) const {
+    if (node_owner.at(node_id)->get_type() == Building_Type::NoBuilding ||
+        node_owner.at(node_id)->get_type() == Building_Type::Tower) return false;
     return true;
 }
 
@@ -540,7 +540,7 @@ Grid::~Grid() {
     }
 }
 
-bool Grid::valid_building(Colour player, size_t node_id) {
+bool Grid::valid_building(Colour player, size_t node_id) const {
     /*
      Rules:
      • A residence may not be built on a vertex that is adjacent to a vertex with an existing residence.
@@ -549,34 +549,34 @@ bool Grid::valid_building(Colour player, size_t node_id) {
 
       check if there is an edge of the same color and if that edge does not already connect to a building
     */
-    for (auto u : adjacent_edges[node_id]) {
-        if (edge_colour[u] == player &&
-            !(node_owner[edge_ends[u].first]) &&
-            !(node_owner[edge_ends[u].second]))
+    for (auto u : adjacent_edges.at(node_id)) {
+        if (edge_colour.at(u) == player &&
+            !(node_owner.at(edge_ends.at(u).first)) &&
+            !(node_owner.at(edge_ends.at(u).second)))
             return true;
     }
 
     return false;
 }
 
-bool Grid::valid_road(Colour player, size_t edge_id) {
-    if (edge_colour[edge_id] != Colour::NoColour)
+bool Grid::valid_road(Colour player, size_t edge_id) const {
+    if (edge_colour.at(edge_id) != Colour::NoColour)
         return false;
 
     // we require an adjacent road or vertex
 
     // road case
-    for (auto u : adjacent_edges[edge_ends[edge_id].first])
-        if (edge_colour[u] == player)
+    for (auto u : adjacent_edges.at(edge_ends.at(edge_id).first))
+        if (edge_colour.at(u) == player)
             return true;
 
-    for (auto u : adjacent_edges[edge_ends[edge_id].second])
-        if (edge_colour[u] == player)
+    for (auto u : adjacent_edges.at(edge_ends.at(edge_id).second))
+        if (edge_colour.at(u) == player)
             return true;
 
     // vertex case
-    Building *end_point_1 = node_owner[edge_ends[edge_id].first];
-    Building *end_point_2 = node_owner[edge_ends[edge_id].first];
+    Building *end_point_1 = node_owner.at(edge_ends.at(edge_id).first);
+    Building *end_point_2 = node_owner.at(edge_ends.at(edge_id).second);
 
     if (end_point_1)
         if (end_point_1->get_Owner()->get_Colour() == player)
