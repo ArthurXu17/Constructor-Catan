@@ -26,12 +26,8 @@ int main(int argc, char** argv) {
     Player *red = new Player(Colour::Red);
     Player *orange = new Player(Colour::Orange);
     Player *yellow = new Player(Colour::Yellow);
-    g->build_road(Colour::Red, 1);
-    g->build_road(Colour::Red, 2);
-    g->build_road(Colour::Red, 3);
-    g->build_road(Colour::Red, 5);
-    g->build_building(red, 1);
-    g->build_building(red, 3);
+    g->build_road(Colour::Red, 0);
+    g->build_road(Colour::Red, 20);
     g->test_map();
     /*g->build_building(red, 9);
     g->print_grid();*/

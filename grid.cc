@@ -220,10 +220,10 @@ void Grid::test_map() {
     }
 
 
-    for (size_t i = 0; i < max_node; i++) {
-        if (valid_building(Colour::Red, i))
+    for (size_t i = 0; i <= max_edge; i++) {
+        if (valid_road(Colour::Red, i))
             std::cout << "R " << i << std::endl;
-        if (valid_building(Colour::Orange, i))
+        if (valid_road(Colour::Orange, i))
             std::cout << "O " << i << std::endl;
     }
     this->print_grid();
