@@ -277,11 +277,9 @@ Grid::Grid() : goose_tile{nullptr} {
             park_index = i;
         }
     }
-
-    int park_roll = dice_rolls.at(park_index);
-    dice_rolls[seven_index] = park_roll;
-
+    std::swap(dice_rolls.at(park_index), dice_rolls.at(seven_index));
     for (size_t i = 0; i <= max_tile; i++) {
+        //std::cout<<"Resource: "<<static_cast<int>(tile_res.at(i))<<", Dice Roll: "<<dice_rolls.at(i)<<std::endl;
         tiles.emplace_back(new Tile(tile_res.at(i), dice_rolls.at(i), false));
     }
 }
