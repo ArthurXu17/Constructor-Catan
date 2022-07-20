@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
     blue->print_status();
     blue->print_buildings();
     g->build_building(red, 20);
+    g->print_grid();
     g->build_building(red, 21);
     g->build_building(blue, 26);
     g->print_grid();

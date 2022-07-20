@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <string>
 
 #include "building.h"
 #include "tile.h"
@@ -684,6 +685,55 @@ void Grid::update_by_roll(int roll) {
         for (auto x : tiles) {
             if (x->get_dice() == roll) {
                 x->notify_observers();
+                std::unordered_set<Observer*> observers = x->get_observers();
+                for (auto o: observers) { // for each observer, update resources
+                    Player *p = o->get_Owner(); 
+                    Resource resource = x->get_resource();
+                    int resource_index = 0;
+                    int resources_added = o->get_resource_gain();
+
+                    if (resource == Resource::Energy) resource_index = 1; // which resource was added
+                    else if (resource == Resource::Glass) resource_index = 2;
+                    else if (resource == Resource::Heat) resource_index = 3;
+                    else if (resource == Resource::Wifi) resource_index = 4; 
+
+                    if (p->get_Colour() == Colour::Blue) { // added resources to each player
+                        resource_gain_counter[0][resource_index] += resources_added;
+                    } else if (p->get_Colour() == Colour::Red) {
+                        resource_gain_counter[1][resource_index] += resources_added;
+                    } else if (p->get_Colour() == Colour::Orange) {
+                        resource_gain_counter[2][resource_index] += resources_added;
+                    } else if (p->get_Colour() == Colour::Yellow) {
+                        resource_gain_counter[3][resource_index] += resources_added;
+                    } 
+                }
+            }
+        }
+    }
+    
+    std::vector<std::vector<int>> no_builders_gained = {{0,0,0,0,0}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,0,0,0}};
+    std::vector<int> no_resources_gained = {0,0,0,0,0};
+    if (resource_gain_counter == no_builders_gained) { // no builders gained resources
+        std::cout << "No builders gained resources." << std::endl;
+    } else { // show which players gained which resources
+        for (int i = 0; i < 4; i++) {
+            std::string player = " Blue ";
+            if (i == 1) player = " Red "; 
+            else if (i == 2) player = " Orange ";
+            else if (i == 3) player = " Yellow ";
+            if (resource_gain_counter.at(i) != no_resources_gained) {
+                std::cout << "Builder" << player << "has gained: ";
+                if (resource_gain_counter.at(i).at(0) != 0)
+                    std::cout << resource_gain_counter.at(i).at(0) << " Bricks ";
+                if (resource_gain_counter.at(i).at(1) != 0)
+                    std::cout << resource_gain_counter.at(i).at(1) << " Energy ";
+                if (resource_gain_counter.at(i).at(2) != 0)
+                    std::cout << resource_gain_counter.at(i).at(2) << " Glass ";
+                if (resource_gain_counter.at(i).at(3) != 0)
+                    std::cout << resource_gain_counter.at(i).at(3) << " Heat ";
+                if (resource_gain_counter.at(i).at(4) != 0)
+                    std::cout << resource_gain_counter.at(i).at(4) << " Wifi ";
+                std::cout << std::endl;
             }
         }
     }

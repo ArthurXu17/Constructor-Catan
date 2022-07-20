@@ -80,7 +80,7 @@ void Player::print_status() const {
 
 void Player::print_buildings() const {
     print_colour();
-    std::cout<<" has built:"<<std::endl;
+    std::cout<<"has built:"<<std::endl;
     for (auto kv : buildings) {
         std::cout<<kv.first<<" ";
         print_building_type(kv.second);

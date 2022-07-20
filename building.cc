@@ -24,6 +24,10 @@ Building_Type Building::get_type() const {
     }
 }
 
+int Building::get_resource_gain() const {
+    return resource_gain;
+}
+
 void Building::notify(Subject &s) {
     //increment owner's resource based on the subject's (tile) resource and this's resource_gain amount
     int index = static_cast<int>(s.get_resource());
