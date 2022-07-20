@@ -27,6 +27,7 @@ class Player {
         void increment_points();
         void increment_resource(int index, int amount);
         void steal(Player *victim);
+        bool valid_trade(Player *other, Resource resource_to_give, Resource resource_to_gain) const;
         void trade_resources(Player *other, Resource resource_to_give, Resource resource_to_gain);
         void print_status() const;
         void print_buildings() const;

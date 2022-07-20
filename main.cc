@@ -4,6 +4,7 @@
 #include "grid.h"
 #include "player.h"
 #include "building.h"
+#include "observer.h"
 
 int main(int argc, char** argv) {
     std::string file_name = "";
@@ -70,6 +71,28 @@ int main(int argc, char** argv) {
     g->update_by_roll(11);
     red->print_status();
     blue->print_status();
+    if (red->valid_trade(blue, Resource::Brick, Resource::Glass)) {
+        red->trade_resources(blue, Resource::Brick, Resource::Glass);
+        red->print_status();
+        blue->print_status();
+    }
+    if (red->valid_trade(blue, Resource::Wifi, Resource::Wifi)) {
+        red->trade_resources(blue, Resource::Wifi, Resource::Wifi);
+        red->print_status();
+        blue->print_status();
+    }
+    if (red->valid_trade(blue, Resource::Heat, Resource::Wifi)) {
+        red->trade_resources(blue, Resource::Heat, Resource::Wifi);
+        red->print_status();
+        blue->print_status();
+    }
+    if (red->valid_trade(blue, Resource::Wifi, Resource::Glass)) {
+        red->trade_resources(blue, Resource::Wifi, Resource::Glass);
+        red->print_status();
+        blue->print_status();
+    }
+
+    
     //g->test_map();
     /*g->build_building(red, 9);
     g->print_grid();*/
