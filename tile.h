@@ -10,7 +10,7 @@ class Tile : public Subject {
     public:
         ~Tile();
         Tile(Resource r, int val, bool goose);
-        Resource get_resource() const;
+        Resource get_resource() const override;
         Resource set_resource();
         int get_dice() const;
         bool getGooseStatus() const;

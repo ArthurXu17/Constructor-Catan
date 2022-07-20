@@ -15,6 +15,7 @@ class Subject {
         void notify_observers();
         void attach( Observer *o);
         void detach( Observer *o);
+        virtual Resource get_resource() const = 0;
         virtual ~Subject() = default;
 };
 

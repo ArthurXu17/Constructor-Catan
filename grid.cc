@@ -582,17 +582,30 @@ bool Grid::valid_upgrade(Colour colour, size_t node_id) const {
     return true;
 }
 
-void Grid::build_road(Colour colour, size_t edge_id) {
-    edge_colour[edge_id] = colour;
+void Grid::build_road(Player *player, size_t edge_id) {
+    // update grid value
+    edge_colour[edge_id] = player->get_Colour();
+    // update player class
+    player->add_road(edge_id);
 }
 
 void Grid::build_building(Player *player, size_t node_id) {
     Building *b = new Building(player);
     node_owner[node_id] = b;
+    // for every adjacent tile, attach the new building as an observer
+    for (auto x : adjacent_tiles.at(node_id)) {
+        tiles.at(x)->attach(b);
+    }
+    // increment victory points for player
+    player->increment_points();
+    // update player class
+    player->add_building(node_id, Building_Type::Basement);
 }
 
-void Grid::upgrade_building(size_t node_id) {
+void Grid::upgrade_building(Player *player, size_t node_id) {
     node_owner[node_id]->upgrade();
+    //update player class, after updating the building
+    player->add_building(node_id, node_owner.at(node_id)->get_type());
 }
 
 Grid::~Grid() {
@@ -658,4 +671,20 @@ bool Grid::valid_road(Colour player, size_t edge_id) const {
             return true;
 
     return false;
+}
+
+void Grid::update_by_roll(int roll) {
+    // implement stuff to print out details properly by 3.5.5
+
+    //here's some wrong format
+    std::vector<std::vector<int>> resource_gain_counter = {{0,0,0,0,0}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,0,0,0}};
+    // blue, red, orange, yellow
+    
+    if (roll != 7) {
+        for (auto x : tiles) {
+            if (x->get_dice() == roll) {
+                x->notify_observers();
+            }
+        }
+    }
 }

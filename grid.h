@@ -71,9 +71,10 @@ class Grid {
         bool valid_building(Colour player, size_t node_id) const;
         // check if you can upgrade your building
         bool valid_upgrade(Colour colour, size_t node_id) const; 
-        void build_road(Colour player, size_t edge_id);
+        void build_road(Player* player, size_t edge_id);
         void build_building(Player *player, size_t node_id);
-        void upgrade_building(size_t node_id);
+        void upgrade_building(Player *player, size_t node_id);
+        void update_by_roll(int roll);
         void print_grid() const;
         void move_goose(); 
         ~Grid();

@@ -5,9 +5,7 @@
 Building::Building(Player *owner): owner{owner} {}
 
 Building::~Building() {
-    /*if (owner) {
-        delete owner;
-    }*/
+    // don't delete the owner, this is handled in main
 }
 
 Player* Building::get_Owner() const {
@@ -27,9 +25,12 @@ Building_Type Building::get_type() const {
 }
 
 void Building::notify(Subject &s) {
-    //do nothing
+    //increment owner's resource based on the subject's (tile) resource and this's resource_gain amount
+    int index = static_cast<int>(s.get_resource());
+    owner->increment_resource(index, resource_gain);
 }
 
 void Building::upgrade() {
     resource_gain++;
+    owner->increment_points();
 }
