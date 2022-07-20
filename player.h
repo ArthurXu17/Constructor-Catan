@@ -27,8 +27,11 @@ class Player {
         void increment_points();
         void increment_resource(int index, int amount);
         void steal(Player *victim);
-        bool valid_trade(Player *other, Resource resource_to_give, Resource resource_to_gain) const;
         void trade_resources(Player *other, Resource resource_to_give, Resource resource_to_gain);
+        // checks if player possesses the resource they are offering (can they make the trade?)
+        bool valid_trade_offer(Resource resource_to_give) const;
+        // checks if player possesses the resource being asked for (can they accept the trade?)
+        bool valid_trade_acceptance(Resource resource_to_gain) const;
         void print_status() const;
         void print_buildings() const;
         void add_road(size_t edge_id);

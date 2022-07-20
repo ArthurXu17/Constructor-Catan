@@ -685,25 +685,10 @@ void Grid::update_by_roll(int roll) {
                 x->notify_observers();
                 std::unordered_set<Observer*> observers = x->get_observers();
                 for (auto o: observers) { // for each observer, update resources
-                    Player *p = o->get_Owner(); 
-                    Resource resource = x->get_resource();
-                    int resource_index = 0;
+                    int colour_index = static_cast<int>(o->get_Owner()->get_Colour()); 
+                    int resource_index = static_cast<int>(x->get_resource());
                     int resources_added = o->get_resource_gain();
-
-                    if (resource == Resource::Energy) resource_index = 1; // which resource was added
-                    else if (resource == Resource::Glass) resource_index = 2;
-                    else if (resource == Resource::Heat) resource_index = 3;
-                    else if (resource == Resource::Wifi) resource_index = 4; 
-
-                    if (p->get_Colour() == Colour::Blue) { // added resources to each player
-                        resource_gain_counter[0][resource_index] += resources_added;
-                    } else if (p->get_Colour() == Colour::Red) {
-                        resource_gain_counter[1][resource_index] += resources_added;
-                    } else if (p->get_Colour() == Colour::Orange) {
-                        resource_gain_counter[2][resource_index] += resources_added;
-                    } else if (p->get_Colour() == Colour::Yellow) {
-                        resource_gain_counter[3][resource_index] += resources_added;
-                    } 
+                    resource_gain_counter[colour_index][resource_index] += resources_added; // increment resources
                 }
             }
         }

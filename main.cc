@@ -71,27 +71,26 @@ int main(int argc, char** argv) {
     g->update_by_roll(11);
     red->print_status();
     blue->print_status();
-    if (red->valid_trade(blue, Resource::Brick, Resource::Glass)) {
+    if (red->valid_trade_offer(Resource::Brick) && blue->valid_trade_acceptance(Resource::Glass)) {
         red->trade_resources(blue, Resource::Brick, Resource::Glass);
         red->print_status();
         blue->print_status();
     }
-    if (red->valid_trade(blue, Resource::Wifi, Resource::Wifi)) {
+    if (red->valid_trade_offer(Resource::Wifi) && blue->valid_trade_acceptance(Resource::Wifi)) {
         red->trade_resources(blue, Resource::Wifi, Resource::Wifi);
         red->print_status();
         blue->print_status();
     }
-    if (red->valid_trade(blue, Resource::Heat, Resource::Wifi)) {
+    if (red->valid_trade_offer(Resource::Heat) && blue->valid_trade_acceptance(Resource::Wifi)) {
         red->trade_resources(blue, Resource::Heat, Resource::Wifi);
         red->print_status();
         blue->print_status();
     }
-    if (red->valid_trade(blue, Resource::Wifi, Resource::Glass)) {
+    if (red->valid_trade_offer(Resource::Wifi) && blue->valid_trade_acceptance(Resource::Glass)) {
         red->trade_resources(blue, Resource::Wifi, Resource::Glass);
         red->print_status();
         blue->print_status();
     }
-
     
     //g->test_map();
     /*g->build_building(red, 9);
