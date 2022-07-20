@@ -500,11 +500,12 @@ void Grid::update_by_roll(int roll) {
     
     if (roll != 7) {
         for (auto x : tiles) {
-            if (x->get_dice() == roll) {
+            if (x->get_dice() == roll && x->getGooseStatus() == false) {
                 x->notify_observers();
                 std::unordered_set<Observer*> observers = x->get_observers();
                 for (auto o: observers) { // for each observer, update resources
-                    int colour_index = static_cast<int>(o->get_Owner()->get_Colour()); 
+                    // subtract 1 because 0 index is NoColour
+                    int colour_index = static_cast<int>(o->get_Owner()->get_Colour()) - 1; 
                     int resource_index = static_cast<int>(x->get_resource());
                     int resources_added = o->get_resource_gain();
                     resource_gain_counter[colour_index][resource_index] += resources_added; // increment resources
