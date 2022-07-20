@@ -139,6 +139,63 @@ void Grid::adjacent_edges_init(std::unordered_map<size_t, std::vector<size_t>> &
     map[53] = {70, 71};
 }
 
+void Grid::adjacent_tiles_init(std::unordered_map<size_t, std::vector<size_t>> &map) {
+    map[0] = {0};
+    map[1] = {0};
+    map[2] = {1};
+    map[3] = {0,1};
+    map[4] = {0,2};
+    map[5] = {2};
+    map[6] = {3};
+    map[7] = {1,3};
+    map[8] = {0,1,4};
+    map[9] = {0,2,4};
+    map[10] = {2,5};
+    map[11] = {5};
+    map[12] = {3};
+    map[13] = {1,3,6};
+    map[14] = {1,4,6};
+    map[15] = {2,4,7};
+    map[16] = {2,5,7};
+    map[17] = {5};
+    map[18] = {3,8};
+    map[19] = {3,6,8};
+    map[20] = {4,6,9};
+    map[21] = {4,7,9};
+    map[22] = {5,7,10};
+    map[23] = {5,10};
+    map[24] = {8};
+    map[25] = {6,8,11};
+    map[26] = {6,9,11};
+    map[27] = {7,9,12};
+    map[28] = {7,10,12};
+    map[29] = {10};
+    map[30] = {8,13};
+    map[31] = {8,11,13};
+    map[32] = {9,11,14};
+    map[33] = {9,12,14};
+    map[34] = {10,12,15};
+    map[35] = {10,15};
+    map[36] = {13};
+    map[37] = {11,13,16};
+    map[38] = {11,14,16};
+    map[39] = {12,14,17};
+    map[40] = {12,15,17};
+    map[41] = {15};
+    map[42] = {13};
+    map[43] = {13,16};
+    map[44] = {14,16,18};
+    map[45] = {14,17,18};
+    map[46] = {15,17};
+    map[47] = {15};
+    map[48] = {16};
+    map[49] = {16,18};
+    map[50] = {17,18};
+    map[51] = {17};
+    map[52] = {18};
+    map[53] = {18};
+} 
+
 void Grid::test_map() {
     /*std::cout<<"Map edges to neighbouring nodes:"<<std::endl;
     for (auto & kv : edge_ends) {
@@ -152,6 +209,16 @@ void Grid::test_map() {
         }
         std::cout<<std::endl;
     }*/
+
+    std::cout<<"Map node to adjacent tiles:"<<std::endl;
+    for (auto & kv : adjacent_tiles) {
+        std::cout<<kv.first<<": ";
+        for (auto x : kv.second) {
+            std::cout<<x<<", ";
+        }
+        std::cout<<std::endl;
+    }
+
 
     for (size_t i = 0; i < max_node; i++) {
         if (valid_building(Colour::Red, i))
@@ -167,10 +234,12 @@ Grid::Grid() : goose_tile{nullptr} {
     node_owner = std::unordered_map<size_t, Building *>();
     edge_ends = std::unordered_map<size_t, std::pair<size_t, size_t>>();
     adjacent_edges = std::unordered_map<size_t, std::vector<size_t>>();
+    adjacent_tiles = std::unordered_map<size_t, std::vector<size_t>>();
     edge_colour_init(edge_colour);
     node_owner_init(node_owner);
     edge_ends_init(edge_ends);
     adjacent_edges_init(adjacent_edges);
+    adjacent_tiles_init(adjacent_tiles);
     /*for (size_t i = 0; i <= max_edge; i++) {
         edge_colour[i] = Colour::NoColour;
     }
@@ -221,10 +290,12 @@ Grid::Grid(std::ifstream &f) : goose_tile{nullptr} {
     node_owner = std::unordered_map<size_t, Building *>();
     edge_ends = std::unordered_map<size_t, std::pair<size_t, size_t>>();
     adjacent_edges = std::unordered_map<size_t, std::vector<size_t>>();
+    adjacent_tiles = std::unordered_map<size_t, std::vector<size_t>>();
     edge_colour_init(edge_colour);
     node_owner_init(node_owner);
     edge_ends_init(edge_ends);
     adjacent_edges_init(adjacent_edges);
+    adjacent_tiles_init(adjacent_tiles);
 
     /*for (size_t i = 0; i <= max_edge; i++) {
         edge_colour[i] = Colour::NoColour;

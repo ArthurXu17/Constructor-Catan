@@ -25,6 +25,9 @@ class Grid {
     // which vertices are owned by "who" -> this information is in the Building
     std::unordered_map<size_t, Building *> node_owner;
 
+    // for each node -> list of adjacent tiles (tiles it earns income from)
+    std::unordered_map<size_t, std::vector<size_t>> adjacent_tiles;
+
     std::vector<Tile *> tiles;
 
     Tile *goose_tile;
@@ -46,6 +49,7 @@ class Grid {
     void node_owner_init(std::unordered_map<size_t, Building*> &map);
     void adjacent_edges_init(std::unordered_map<size_t, std::vector<size_t>> &map);
     void edge_ends_init(std::unordered_map<size_t, std::pair<size_t, size_t>> &map);
+    void adjacent_tiles_init(std::unordered_map<size_t, std::vector<size_t>> &map);
     
 
     public: 
