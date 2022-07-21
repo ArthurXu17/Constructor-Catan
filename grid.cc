@@ -10,11 +10,10 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include <string>
 
 #include "building.h"
-#include "tile.h"
 #include "grid_constants.h"
+#include "tile.h"
 
 void Grid::test_map() {
     /*std::cout<<"Map edges to neighbouring nodes:"<<std::endl;
@@ -30,15 +29,14 @@ void Grid::test_map() {
         std::cout<<std::endl;
     }*/
 
-    std::cout<<"Map node to adjacent tiles:"<<std::endl;
-    for (auto & kv : adjacent_tiles) {
-        std::cout<<kv.first<<": ";
+    std::cout << "Map node to adjacent tiles:" << std::endl;
+    for (auto &kv : adjacent_tiles) {
+        std::cout << kv.first << ": ";
         for (auto x : kv.second) {
-            std::cout<<x<<", ";
+            std::cout << x << ", ";
         }
-        std::cout<<std::endl;
+        std::cout << std::endl;
     }
-
 
     for (size_t i = 0; i <= max_edge; i++) {
         if (valid_road(Colour::Red, i))
@@ -98,8 +96,8 @@ Grid::Grid() : goose_tile{nullptr} {
     }
     std::swap(dice_rolls.at(park_index), dice_rolls.at(seven_index));
     for (size_t i = 0; i <= max_tile; i++) {
-        //std::cout<<"Resource: "<<static_cast<int>(tile_res.at(i))<<", Dice Roll: "<<dice_rolls.at(i)<<std::endl;
-        tiles.emplace_back(new Tile(tile_res.at(i), dice_rolls.at(i), false));
+        // std::cout<<"Resource: "<<static_cast<int>(tile_res.at(i))<<", Dice Roll: "<<dice_rolls.at(i)<<std::endl;
+        tiles.emplace_back(new Tile(tile_res.at(i), dice_rolls.at(i), tile_res.at(i)==Resource::Park));
     }
 }
 
@@ -394,7 +392,7 @@ void Grid::print_grid() const {
 }
 
 bool Grid::valid_upgrade(Colour colour, size_t node_id) const {
-    if (node_owner.at(node_id) == nullptr||
+    if (node_owner.at(node_id) == nullptr ||
         node_owner.at(node_id)->get_type() == Building_Type::Tower ||
         node_owner.at(node_id)->get_Owner()->get_Colour() != colour) return false;
     return true;
@@ -422,7 +420,7 @@ void Grid::build_building(Player *player, size_t node_id) {
 
 void Grid::upgrade_building(Player *player, size_t node_id) {
     node_owner[node_id]->upgrade();
-    //update player class, after updating the building
+    // update player class, after updating the building
     player->add_building(node_id, node_owner.at(node_id)->get_type());
 }
 
@@ -494,36 +492,39 @@ bool Grid::valid_road(Colour player, size_t edge_id) const {
 void Grid::update_by_roll(int roll) {
     // implement stuff to print out details properly by 3.5.5
 
-    //here's some wrong format
-    std::vector<std::vector<int>> resource_gain_counter = {{0,0,0,0,0}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,0,0,0}};
+    // here's some wrong format
+    std::vector<std::vector<int>> resource_gain_counter = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
     // blue, red, orange, yellow
-    
+
     if (roll != 7) {
         for (auto x : tiles) {
             if (x->get_dice() == roll && x->getGooseStatus() == false) {
                 x->notify_observers();
-                std::unordered_set<Observer*> observers = x->get_observers();
-                for (auto o: observers) { // for each observer, update resources
+                std::unordered_set<Observer *> observers = x->get_observers();
+                for (auto o : observers) {  // for each observer, update resources
                     // subtract 1 because 0 index is NoColour
-                    int colour_index = static_cast<int>(o->get_Owner()->get_Colour()) - 1; 
+                    int colour_index = static_cast<int>(o->get_Owner()->get_Colour()) - 1;
                     int resource_index = static_cast<int>(x->get_resource());
                     int resources_added = o->get_resource_gain();
-                    resource_gain_counter[colour_index][resource_index] += resources_added; // increment resources
+                    resource_gain_counter[colour_index][resource_index] += resources_added;  // increment resources
                 }
             }
         }
-    }
-    
-    std::vector<std::vector<int>> no_builders_gained = {{0,0,0,0,0}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,0,0,0}};
-    std::vector<int> no_resources_gained = {0,0,0,0,0};
-    if (resource_gain_counter == no_builders_gained) { // no builders gained resources
+    } 
+
+    std::vector<std::vector<int>> no_builders_gained = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
+    std::vector<int> no_resources_gained = {0, 0, 0, 0, 0};
+    if (resource_gain_counter == no_builders_gained) {  // no builders gained resources
         std::cout << "No builders gained resources." << std::endl;
-    } else { // show which players gained which resources
+    } else {  // show which players gained which resources
         for (int i = 0; i < 4; i++) {
             std::string player = " Blue ";
-            if (i == 1) player = " Red "; 
-            else if (i == 2) player = " Orange ";
-            else if (i == 3) player = " Yellow ";
+            if (i == 1)
+                player = " Red ";
+            else if (i == 2)
+                player = " Orange ";
+            else if (i == 3)
+                player = " Yellow ";
             if (resource_gain_counter.at(i) != no_resources_gained) {
                 std::cout << "Builder" << player << "has gained: ";
                 if (resource_gain_counter.at(i).at(0) != 0)
@@ -540,4 +541,23 @@ void Grid::update_by_roll(int roll) {
             }
         }
     }
+}
+
+void Grid::move_goose() {
+    std::cout << "Choose where to place the GEESE." << std::endl;
+    size_t new_geese_loc;
+    size_t curr_geese_loc;
+    for (size_t i = 0; i <= max_tile; i++) {
+        if (tiles[i]->getGooseStatus()) {
+            curr_geese_loc = i;
+        }
+    }
+
+    while (std::cin >> new_geese_loc) {
+        if (new_geese_loc <= max_tile && new_geese_loc != curr_geese_loc)
+            break;
+        std::cout << "Please select a valid location." << std::endl;
+    }
+    tiles[new_geese_loc]->setGooseStatus(true);
+    tiles[curr_geese_loc]->setGooseStatus(false);
 }

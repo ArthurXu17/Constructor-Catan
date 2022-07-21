@@ -7,6 +7,10 @@
 // for enum Resource Class
 #include "observer.h"
 
+//for random
+#include <chrono>
+#include <random>
+
 class Building;
 enum class Building_Type{NoBuilding, Basement, House, Tower};
 enum class Colour{NoColour, Blue, Red, Orange, Yellow};
@@ -20,13 +24,15 @@ class Player {
     Colour colour;
     void print_colour() const;
     void print_building_type(Building_Type b) const;
-
+    void print_resource(size_t type);
     public:
         Player(Colour colour);
         int get_points() const;
         void increment_points();
         void increment_resource(int index, int amount);
+        void lose_resource_to_geese();
         void steal(Player *victim);
+        void robbed(Player *robber);
         void trade_resources(Player *other, Resource resource_to_give, Resource resource_to_gain);
         // checks if player possesses the resource they are offering (can they make the trade?)
         bool valid_trade_offer(Resource resource_to_give) const;

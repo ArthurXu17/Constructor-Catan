@@ -14,4 +14,8 @@ bool Tile::getGooseStatus() const {
     return hasGoose;
 }
 
+void Tile::setGooseStatus(bool hasGoose){
+    this->hasGoose = hasGoose;
+}
+
 Tile::~Tile() {}

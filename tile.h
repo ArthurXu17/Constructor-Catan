@@ -14,6 +14,7 @@ class Tile : public Subject {
         Resource set_resource();
         int get_dice() const;
         bool getGooseStatus() const;
+        void setGooseStatus(bool hasGoose);
 };
 
 #endif
