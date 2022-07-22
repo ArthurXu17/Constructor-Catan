@@ -43,6 +43,7 @@ class Grid {
     void print_tile_num(size_t & counter) const;
     void print_tile_dice(size_t & counter) const;
     void print_tile_res(size_t & counter) const;    
+    void print_possible_goose(size_t & counter) const;
 
     public: 
         // for making sure the maps have correct values, REMOVE WHEN SUBMITTING

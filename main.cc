@@ -103,7 +103,10 @@ int main(int argc, char **argv) {
             for (auto p : players)
                 p->lose_resource_to_geese();
         }
-        g->move_goose();
+        for (int i = 0; i <= 18; i++) {
+            g->move_goose();
+            g->print_grid();
+        }
         std::cout << "Builder <colour1> can choose to steal from [builders]" << std::endl;
     }
     // g->test_map();

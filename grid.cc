@@ -128,7 +128,7 @@ Grid::Grid(std::ifstream &f) : goose_tile{nullptr} {
         int dice_roll;
         f >> res_int >> dice_roll;
         res = static_cast<Resource>(res_int);
-        tiles.emplace_back(new Tile(res, dice_roll, false));
+        tiles.emplace_back(new Tile(res, dice_roll, res==Resource::Park));
     }
 }
 
@@ -216,7 +216,6 @@ void Grid::print_tile_num(size_t &counter) const {
 void Grid::print_tile_dice(size_t &counter) const {
     if (tiles.at(counter)->get_resource() != Resource::Park) {
         std::cout << std::setw(4) << tiles.at(counter)->get_dice() << "  ";
-
     } else {
         std::cout << "      ";  // six spaces
     }
@@ -228,12 +227,23 @@ void Grid::print_tile_res(size_t &counter) const {
     counter++;
 }
 
+void Grid::print_possible_goose(size_t &counter) const {
+    if (tiles.at(counter)->getGooseStatus()) {
+        std::cout<<"  |  GEESE";
+        print_tile_break(1);
+    } else {
+        print_tile_break(2);
+    }
+    counter++;
+}
+
 void Grid::print_grid() const {
     size_t edge_counter = 0;
     size_t node_counter = 0;
     size_t tile_num_counter = 0;
     size_t tile_dice_counter = 0;
     size_t tile_res_counter = 0;
+    size_t tile_goose_counter = 0;
 
     const std::string WHITESPACE = "          ";  // 10 spaces
     const std::string TILE_BREAK = "        ";    // 8 spaces
@@ -257,7 +267,9 @@ void Grid::print_grid() const {
     print_tile_edge(node_counter, edge_counter);
     std::cout << std::endl
               << WHITESPACE;
-    print_tile_break(4);
+    print_tile_break(1);
+    print_possible_goose(tile_goose_counter);
+    print_tile_break(1);
     std::cout << std::endl
               << WHITESPACE << " ";
     print_edge(edge_counter);
@@ -284,7 +296,10 @@ void Grid::print_grid() const {
         print_tile_edge(node_counter, edge_counter);
         std::cout << std::endl;
         // second line
-        print_tile_break(6);
+        print_tile_break(1);
+        print_possible_goose(tile_goose_counter);
+        print_possible_goose(tile_goose_counter);
+        print_tile_break(1);
         std::cout << std::endl;
         // third line
         std::cout << " ";
@@ -319,8 +334,10 @@ void Grid::print_grid() const {
         print_tile_dice(tile_dice_counter);
         print_node(node_counter);
         std::cout << std::endl;
-        // sixth line -> same ase second
-        print_tile_break(6);
+        // sixth line 
+        print_possible_goose(tile_goose_counter);
+        print_possible_goose(tile_goose_counter);
+        print_possible_goose(tile_goose_counter);
         std::cout << std::endl;
         // seventh line
         std::cout << " ";
@@ -353,7 +370,8 @@ void Grid::print_grid() const {
     print_tile_edge(node_counter, edge_counter);
     std::cout << std::endl;
     std::cout << WHITESPACE;
-    print_tile_break(4);
+    print_possible_goose(tile_goose_counter);
+    print_possible_goose(tile_goose_counter);
     std::cout << std::endl
               << WHITESPACE << " ";
     print_edge(edge_counter);
@@ -376,7 +394,7 @@ void Grid::print_grid() const {
     print_tile_edge(node_counter, edge_counter);
     std::cout << std::endl;
     std::cout << WHITESPACE << WHITESPACE;
-    print_tile_break(2);
+    print_possible_goose(tile_goose_counter);
     std::cout << std::endl;
     std::cout << WHITESPACE << WHITESPACE << " ";
     print_edge(edge_counter);
