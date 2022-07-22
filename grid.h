@@ -30,8 +30,6 @@ class Grid {
 
     std::vector<Tile *> tiles;
 
-    Tile *goose_tile;
-
     Resource int_to_res(int n) const;
 
     // print helper methods
@@ -45,6 +43,10 @@ class Grid {
     void print_tile_res(size_t & counter) const;    
     void print_possible_goose(size_t & counter) const;
 
+    // seed parameters
+    bool set_seed;
+    unsigned seed;
+
     public: 
         // for making sure the maps have correct values, REMOVE WHEN SUBMITTING
         void test_map();
@@ -52,7 +54,7 @@ class Grid {
         return adjacent_edges[idx];
     }*/    
         // constructor for random board generation
-        Grid();
+        Grid(bool set_seed_input, unsigned seed_input);
         // constructor for file input board generation
         Grid(std::ifstream &f);
         

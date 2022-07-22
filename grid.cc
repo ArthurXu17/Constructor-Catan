@@ -47,7 +47,7 @@ void Grid::test_map() {
     this->print_grid();
 }
 
-Grid::Grid() : goose_tile{nullptr} {
+Grid::Grid(bool set_seed_input, unsigned seed_input): set_seed{set_seed_input}, seed{seed_input} {
     edge_colour = std::unordered_map<size_t, Colour>();
     node_owner = std::unordered_map<size_t, Building *>();
     edge_ends = std::unordered_map<size_t, std::pair<size_t, size_t>>();
@@ -78,7 +78,9 @@ Grid::Grid() : goose_tile{nullptr} {
         Resource::Park};
 
     // use a time-based seed for the default seed value
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    if (!set_seed) {
+        seed = std::chrono::system_clock::now().time_since_epoch().count();
+    }
     std::default_random_engine rng{seed};
     std::shuffle(dice_rolls.begin(), dice_rolls.end(), rng);
     std::shuffle(tile_res.begin(), tile_res.end(), rng);
@@ -101,7 +103,7 @@ Grid::Grid() : goose_tile{nullptr} {
     }
 }
 
-Grid::Grid(std::ifstream &f) : goose_tile{nullptr} {
+Grid::Grid(std::ifstream &f) {
     edge_colour = std::unordered_map<size_t, Colour>();
     node_owner = std::unordered_map<size_t, Building *>();
     edge_ends = std::unordered_map<size_t, std::pair<size_t, size_t>>();
@@ -443,9 +445,6 @@ void Grid::upgrade_building(Player *player, size_t node_id) {
 }
 
 Grid::~Grid() {
-    if (goose_tile) {
-        delete goose_tile;
-    }
     for (auto x : tiles) {
         if (x) {
             delete x;

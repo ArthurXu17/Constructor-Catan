@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Player::Player(Colour colour) : colour{colour} {}
+Player::Player(Colour colour, bool set_seed_input, unsigned seed_input) : colour{colour}, set_seed{set_seed_input}, seed{seed_input} {}
 
 int Player::get_points() const {
     return victory_points;
@@ -129,7 +129,9 @@ void Player::lose_resource_to_geese() {
         std::cout << "loses " << half << " resources to the geese. They lose:" << std::endl;
 
         // use a time-based seed for the default seed value
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        if (!set_seed) {
+            seed = std::chrono::system_clock::now().time_since_epoch().count();
+        }
         std::mt19937 gen(seed);
         std::uniform_int_distribution<std::mt19937::result_type> dist4(0, 4);
         std::vector<int> resource_lost_count{0, 0, 0, 0, 0};  // purely used to keep track of cumulative amount of each resource lost
@@ -156,7 +158,9 @@ void Player::steal(Player *victim) {
 }
 
 void Player::robbed(Player *robber) {
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    if (!set_seed) {
+        seed = std::chrono::system_clock::now().time_since_epoch().count();
+    }
     std::mt19937 gen(seed);
     std::uniform_int_distribution<std::mt19937::result_type> dist4(0, 4);
     while (true) {

@@ -1,6 +1,11 @@
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <string>
+
+//for random
+#include <chrono>
+#include <random>
 
 #include "building.h"
 #include "grid.h"
@@ -9,25 +14,32 @@
 
 int main(int argc, char **argv) {
     std::string file_name = "";
+    bool set_seed = false;
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     for (int i = 1; i < argc; i++) {
         if (std::string(argv[i]) == "-load") {
             i++;
             file_name = argv[i];
         }
+        if (std::string(argv[i]) == "-seed") {
+            set_seed = true;
+            i++;
+            seed = std::stoi(std::string{argv[i]});
+        }
     }
     std::ifstream infile{file_name};
     Grid *g;
     if (file_name == "") {
-        g = new Grid();
+        g = new Grid(set_seed, seed);
     } else {
         g = new Grid(infile);
     }
     g->print_grid();
 
-    Player *blue = new Player(Colour::Blue);
-    Player *red = new Player(Colour::Red);
-    Player *orange = new Player(Colour::Orange);
-    Player *yellow = new Player(Colour::Yellow);
+    Player *blue = new Player(Colour::Blue, set_seed, seed);
+    Player *red = new Player(Colour::Red, set_seed, seed);
+    Player *orange = new Player(Colour::Orange, set_seed, seed);
+    Player *yellow = new Player(Colour::Yellow, set_seed, seed);
     g->build_road(red, 0);
     g->build_road(red, 20);
     g->print_grid();
@@ -97,17 +109,25 @@ int main(int argc, char **argv) {
     int roll = 7;
     std::vector<Player *> players = {blue, red, orange, yellow};
     if (roll == 7) {
-        for (int i = 4; i < 10; i++) {
+        /*for (int i = 4; i < 10; i++) {
             //blue->resource_count = {i, i, i, i, i};
 
-            for (auto p : players)
+            for (auto p : players) {
                 p->lose_resource_to_geese();
+                p->print_status();
+            }
+                
+        }*/
+        for (auto p : players) {
+            
+                p->lose_resource_to_geese();
+                p->print_status();
         }
-        for (int i = 0; i <= 18; i++) {
+        /*for (int i = 0; i <= 18; i++) {
             g->move_goose();
             g->print_grid();
         }
-        std::cout << "Builder <colour1> can choose to steal from [builders]" << std::endl;
+        std::cout << "Builder <colour1> can choose to steal from [builders]" << std::endl;*/
     }
     // g->test_map();
     /*g->build_building(red, 9);

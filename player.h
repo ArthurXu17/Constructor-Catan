@@ -22,11 +22,15 @@ class Player {
     std::vector<std::size_t> roads = std::vector<std::size_t>();
     std::unordered_map<std::size_t, Building_Type> buildings = std::unordered_map<std::size_t, Building_Type>();
     Colour colour;
+    // seed parameters
+    bool set_seed;
+    unsigned seed;
+
     void print_colour() const;
     void print_building_type(Building_Type b) const;
     void print_resource(size_t type);
     public:
-        Player(Colour colour);
+        Player(Colour colour, bool set_seed_input, unsigned seed_input);
         int get_points() const;
         void increment_points();
         void increment_resource(int index, int amount);
