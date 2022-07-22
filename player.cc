@@ -170,28 +170,28 @@ void Player::robbed(Player *robber) {
         if (resource_count[resource] > 0) {
             resource_count[resource]--;
             robber->increment_resource(resource, 1);
-            std::cout << "Builder " << robber->get_Colour() << " steals " << resource << " from builder " << this->get_Colour() << " ."<< std::endl;
+            std::cout << "Builder " << robber->get_Colour() << " steals " << print_resource(resource) << " from builder " << this->get_Colour() << " ."<< std::endl;
             break;
         }
     }
 }
 
-void Player::print_resource(size_t type) {
+std::string Player::print_resource(size_t type) {
     switch (type) {
         case 0:
-            std::cout << "Brick "<< std::endl;
+            return "Brick";
             break;
         case 1:
-            std::cout << "Energy "<< std::endl;
+            return "Energy";
             break;
         case 2:
-            std::cout << "Glass "<< std::endl;
+            return "Glass";
             break;
         case 3:
-            std::cout << "Heat "<< std::endl;
+            return "Heat";
             break;
         default:
-            std::cout << "Wifi "<< std::endl;
+            return "Wifi";
     }
 }
 
