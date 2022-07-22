@@ -181,13 +181,7 @@ void Grid::print_node(size_t &n) const {
             std::cout << "Y";
         }
         // print type of building
-        if (build->get_type() == Building_Type::Basement) {
-            std::cout << "B";
-        } else if (build->get_type() == Building_Type::House) {
-            std::cout << "H";
-        } else if (build->get_type() == Building_Type::Tower) {
-            std::cout << "T";
-        }
+        std::cout<<build->get_type();
     }
     std::cout << "|";
     n++;

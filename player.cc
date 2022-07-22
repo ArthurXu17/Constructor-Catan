@@ -65,16 +65,6 @@ void Player::print_colour() const {
     }
 }
 
-void Player::print_building_type(Building_Type b) const {
-    if (b == Building_Type::Basement) {
-        std::cout << "B ";
-    } else if (b == Building_Type::House) {
-        std::cout << "H ";
-    } else if (b == Building_Type::Tower) {
-        std::cout << "T ";
-    }
-}
-
 void Player::print_status() const {
     print_colour();
     std::cout << "has " << victory_points << " building points, ";
@@ -111,7 +101,8 @@ void Player::print_buildings() const {
     std::cout << "has built:" << std::endl;
     for (auto kv : buildings) {
         std::cout << kv.first << " ";
-        print_building_type(kv.second);
+        std::cout<<kv.second;
+        //print_building_type(kv.second);
         std::cout << std::endl;
     }
 }

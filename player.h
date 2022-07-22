@@ -25,7 +25,6 @@ class Player {
     unsigned seed;
 
     void print_colour() const;
-    void print_building_type(Building_Type b) const;
     void print_resource(size_t type);
     public:
         Player(Colour colour, bool set_seed_input, unsigned seed_input);
