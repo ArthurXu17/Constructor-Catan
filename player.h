@@ -29,6 +29,7 @@ class Player {
     public:
         Player(Colour colour, bool set_seed_input, unsigned seed_input);
         int get_points() const;
+        int get_total_resource() const;
         void increment_points();
         void increment_resource(int index, int amount);
         void lose_resource_to_geese();

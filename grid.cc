@@ -471,22 +471,21 @@ Grid::~Grid() {
 bool Grid::valid_building(Colour player, size_t node_id, bool starting_buildings) const {
     if (node_id > 53) return false; // out of bounds
 
-    if (starting_buildings) { // players put down residences in the beginning phase
-        for (auto u : adjacent_edges.at(node_id)) { 
-            if (!(node_owner.at(edge_ends.at(u).first)) && // no current or adjacent residences
-                !(node_owner.at(edge_ends.at(u).second)))
-                return true;
-        }
-        return false;
+    // check for adjacent residences
+    for (auto u : adjacent_edges.at(node_id)) { 
+        if (node_owner.at(edge_ends.at(u).first) != nullptr ||
+            node_owner.at(edge_ends.at(u).second) != nullptr)
+            return false;
     }
 
-    // during game phase
+    if (starting_buildings) // don't need to check for adjacent roads in the beginning
+        return true;
+
     for (auto u : adjacent_edges.at(node_id)) { 
-        if (edge_colour.at(u) == player && // adjacent road is the same colour
-            !(node_owner.at(edge_ends.at(u).first)) && // no current or adjacent residences
-            !(node_owner.at(edge_ends.at(u).second)))
+        if (edge_colour.at(u) == player) // must have adjacent road
             return true;
     }
+
     return false;
 }
 
@@ -569,28 +568,58 @@ void Grid::update_by_roll(int roll) {
     }
 }
 
-void Grid::move_goose() {
-    std::cout << "Choose where to place the GEESE." << std::endl;
+size_t Grid::move_goose() {
     size_t new_geese_loc;
     size_t curr_geese_loc;
-    for (size_t i = 0; i <= max_tile; i++) {
+    for (size_t i = 0; i <= max_tile; i++) { // get current geese location
         if (tiles[i]->getGooseStatus()) {
             curr_geese_loc = i;
         }
     }
 
-    while (std::cin >> new_geese_loc) {
-        if (new_geese_loc <= max_tile && new_geese_loc != curr_geese_loc)
+    std::cout << "Choose where to place the GEESE. "; // prompt for new location
+    while (std::cin >> new_geese_loc) { 
+        if (new_geese_loc <= max_tile && new_geese_loc != curr_geese_loc) // must be new tile within range
             break;
-        std::cout << "Please select a valid location." << std::endl;
+        std::cout << "Please select a valid location. ";
     }
-    tiles[new_geese_loc]->setGooseStatus(true);
+    tiles[new_geese_loc]->setGooseStatus(true); // change geese status
     tiles[curr_geese_loc]->setGooseStatus(false);
-    std::cout << "The GEESE have been moves to " << new_geese_loc << "." << std::endl;
+
+    return new_geese_loc;
 }
 
-// void Grid::can_steal_from(size_t curr_geese_loc) const {
-//     for(auto buildings: tiles.at(curr_geese_loc)){
+bool Grid::can_steal_from(size_t geese_loc) const {
+    // no builders own a building on tile geese_loc
+    if (tiles.at(geese_loc)->get_observers().size() == 0) {
+        std::cout << " has no builders to steal from." << std::endl;
+        return false;
+    }
 
-//     }
-// }
+    // blue, red, orange, yellow
+    bool builders[] = {false, false, false, false}; 
+    for(auto buildings: tiles.at(geese_loc)->get_observers()) {
+        // if a players owns a building on tile geese_loc, set to true
+        builders[static_cast<int>(buildings->get_Owner()->get_Colour()) - 1] = true; 
+    }
+
+    // print builders that own a building on tile geese_loc
+    std::cout << " can choose to steal from ";
+    if (builders[0]) {
+        std::cout << "Blue";
+    }
+    if (builders[1]) {
+        if (builders[0]) std::cout << ", ";
+        std::cout << "Red";
+    }
+    if (builders[2]) {
+        if (builders[0] || builders[1]) std::cout << ", ";
+        std::cout << "Orange";
+    }
+    if (builders[3]) {
+        if (builders[0] || builders[1] || builders[2]) std::cout << ", ";
+        std::cout << "Yellow";
+    }
+    std::cout << "." << std::endl;
+    return true;
+}

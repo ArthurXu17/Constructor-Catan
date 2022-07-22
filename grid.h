@@ -72,8 +72,8 @@ class Grid {
         void upgrade_building(Player *player, size_t node_id);
         void update_by_roll(int roll);
         void print_grid() const;
-        void move_goose(); 
-        void can_steal_from(size_t curr_geese_loc) const;
+        size_t move_goose(); 
+        bool can_steal_from(size_t geese_loc) const;
         ~Grid();
 };
 

@@ -8,6 +8,15 @@ int Player::get_points() const {
     return victory_points;
 }
 
+// get total number of resources
+int Player::get_total_resource() const{
+    int count = 0;
+    for (auto r: resource_count) {
+        count += r;
+    }
+    return count;
+}
+
 void Player::increment_points() {
     victory_points++;
 }
@@ -112,9 +121,7 @@ Colour Player::get_Colour() const {
 }
 
 void Player::lose_resource_to_geese() {
-    int total_resources_count = 0;
-    for (auto u : resource_count)
-        total_resources_count += u;
+    int total_resources_count = get_total_resource();
 
     if (total_resources_count >= 10) {
         int half = total_resources_count / 2;

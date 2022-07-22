@@ -33,8 +33,7 @@ void Game::play() {
         size_t node; // building vertex
         std::cin >> node;
         while(!g->valid_building(p->get_Colour(), node, true)) { // invalid building placement
-            std::cout << "Invalid command. Please try again." << std::endl;
-            std::cout << "Builder " << player << ", where do you want to build a basement?" << std::endl;
+            std::cout << "Cannot build there. Please try again." << std::endl;
             std::cin >> node;
         }
         g->build_building(p, node);
@@ -45,6 +44,7 @@ void Game::play() {
     Dice *fair = new RandomDice();
     Dice *load = new LoadedDice(); 
     Dice *current_dice = fair;
+    std::string begin_cmd = "fair";
     // end when a player has at least 10 points
     while(true) {
         if (turn % 4 == 0) {
@@ -64,40 +64,60 @@ void Game::play() {
         p->print_status();
 
         // Beginning of turn phase
-        std::string begin_cmd = "fair";
         size_t roll;
-        while (true) {
-            std::cout << "Current dice are " << begin_cmd;
-            std::cout << ". Enter \"load\" to change current dice to loaded dice, \"fair\" to change current dice to fair dice, or \"roll\" to roll the current dice: ";
-            std::string cmd;
-            std::cin >> cmd; 
-            if (cmd != "fair" && cmd != "load" && cmd != "roll") { // invalid command
-                std::cout << "Invalid command. Please try again." << std::endl;
-                continue;
-            } else if (cmd == "fair") { // fair dice
-                begin_cmd = "fair";
-                current_dice = fair;
-            } else if (cmd == "load") { // loaded dice
-                begin_cmd = "fair";
-                current_dice = load;
+        std::cout << "Current dice are " << begin_cmd;
+        std::cout << ". Enter \"load\" to change current dice to loaded dice, \"fair\" to change current dice to fair dice, or \"roll\" to roll the current dice: ";
+        std::string cmd;
+        std::cin >> cmd; 
+        if (cmd == "fair") { // fair dice
+            begin_cmd = "fair";
+            current_dice = fair;
+        } else if (cmd == "load") { // loaded dice
+            begin_cmd = "loaded";
+            current_dice = load;
+        }
+        roll = current_dice->generateNumber(); // roll dice
+        std::cout << "You have rolled a " << roll << "." << std::endl;
+        if (roll == 7) { // roll 7 --> activate geese
+            blue->lose_resource_to_geese(); // lose resources if more than 10
+            red->lose_resource_to_geese();
+            orange->lose_resource_to_geese();
+            yellow->lose_resource_to_geese();
+
+            int new_geese_loc = g->move_goose(); // move goose
+            std::cout << "The GEESE have been moved to " << new_geese_loc << "." << std::endl;
+
+            std::cout << "Builder " << player; // players that can be stolen from
+            if (g->can_steal_from(new_geese_loc)) {
+                std::cout << "Choose a builder to steal from. ";
+                std::string victim;
+                std::cin >> victim;
+                transform(victim.begin(), victim.end(), victim.begin(), toupper); 
+                if (victim == "BLUE") { // steal from blue
+                    if (blue->get_total_resource() == 0)
+                        std::cout << player << " cannot steal from Blue." << std::endl;
+                    else
+                        p->steal(blue);
+                } else if (victim == "RED") { // steal from red
+                    if (red->get_total_resource() == 0)
+                        std::cout << player << " cannot steal from Red." << std::endl;
+                    else
+                        p->steal(red);
+                } else if (victim == "ORANGE") { // steal from orange
+                    if (orange->get_total_resource() == 0)
+                        std::cout << player << " cannot steal from Orange." << std::endl;
+                    else
+                        p->steal(orange);
+                } else if (victim == "YELLOW") { // steal from yellow
+                    if (yellow->get_total_resource() == 0)
+                        std::cout << player << " cannot steal from Yellow." << std::endl;
+                    else
+                        p->steal(yellow);
+                }
             }
-            roll = current_dice->generateNumber(); // roll dice
-            std::cout << "You have rolled a " << roll << "." << std::endl;
-            if (roll == 7) { // roll 7 --> activate geese
-                blue->lose_resource_to_geese(); // lose resources if more than 10
-                red->lose_resource_to_geese();
-                orange->lose_resource_to_geese();
-                yellow->lose_resource_to_geese();
-
-                g->move_goose(); // move goose
-
-                // implement stealing
-                std::cout << "Builder " << player << " can choose to steal from " << std::endl;
-            } else {
+         } else {
                 g->update_by_roll(roll);
             }
-            break;
-        }
         
         // During the turn phase
         std::string turn_cmd;
@@ -163,7 +183,7 @@ void Game::play() {
                 std::cin >> give >> gain; // resources being traded
                 transform(other.begin(), other.end(), other.begin(), toupper); // converts to uppercase
                 transform(give.begin(), give.end(), give.begin(), toupper); 
-                transform(gain.begin(), gain.end(), gain.begin(), toupper); 
+                transform(gain.begin(), gain.end(), gain.begin(), toupper);
 
                 Resource resource_to_give, resource_to_gain; // resources being traded
                 if (give == "BRICK") resource_to_give = Resource::Brick;
@@ -182,44 +202,38 @@ void Game::play() {
                     break;
                 }
 
-                while (true) {
-                    std::cout << player << " offers" << other << " one " << give << " for one " << gain << "." << std::endl;
-                    std::cout << "Does " << other << " accept this offer? "; // trade offer
-                    std::string reply;
-                    std::cin >> reply;
-                    transform(reply.begin(), reply.end(), reply.begin(), toupper);
-                    if (reply != "NO" && reply != "YES") { // neither yes nor no
-                        std::cout << "Invalid command. Please try again." << std::endl;
-                    } else if (reply == "NO") { // no
-                        std::cout << "Trade declined." << std::endl;
-                        break;
-                    } else { // yes
-                        if (other == "BLUE") { // trade with blue
-                            if (!blue->valid_trade_acceptance(resource_to_gain)) {
-                                std::cout << "You do not have enough resources." << std::endl;
-                                break;
-                            }
-                            p->trade_resources(blue, resource_to_give, resource_to_gain);
-                        } else if (other == "RED") { // trade with red
-                            if (!red->valid_trade_acceptance(resource_to_gain)) {
-                                std::cout << "You do not have enough resources." << std::endl;
-                                break;
-                            }
-                            p->trade_resources(red, resource_to_give, resource_to_gain);
-                        } else if (other == "ORANGE") { // trade with orange
-                            if (!orange->valid_trade_acceptance(resource_to_gain)) {
-                                std::cout << "You do not have enough resources." << std::endl;
-                                break;
-                            }
-                            p->trade_resources(orange, resource_to_give, resource_to_gain);
-                        } else if (other == "YELLOW") { // trade with yellow
-                            if (!yellow->valid_trade_acceptance(resource_to_gain)) {
-                                std::cout << "You do not have enough resources." << std::endl;
-                                break;
-                            }
-                            p->trade_resources(yellow, resource_to_give, resource_to_gain);
+                std::cout << player << " offers" << other << " one " << give << " for one " << gain << "." << std::endl;
+                std::cout << "Does " << other << " accept this offer? "; // trade offer
+                std::string reply;
+                std::cin >> reply;
+                transform(reply.begin(), reply.end(), reply.begin(), toupper);
+                if (reply == "NO") { // no
+                    std::cout << "Trade declined." << std::endl;
+                } else { // yes
+                    if (other == "BLUE") { // trade with blue
+                        if (!blue->valid_trade_acceptance(resource_to_gain)) {
+                            std::cout << "You do not have enough resources." << std::endl;
+                            break;
                         }
-                        break;
+                        p->trade_resources(blue, resource_to_give, resource_to_gain);
+                    } else if (other == "RED") { // trade with red
+                        if (!red->valid_trade_acceptance(resource_to_gain)) {
+                            std::cout << "You do not have enough resources." << std::endl;
+                            break;
+                        }
+                        p->trade_resources(red, resource_to_give, resource_to_gain);
+                    } else if (other == "ORANGE") { // trade with orange
+                        if (!orange->valid_trade_acceptance(resource_to_gain)) {
+                            std::cout << "You do not have enough resources." << std::endl;
+                            break;
+                        }
+                        p->trade_resources(orange, resource_to_give, resource_to_gain);
+                    } else if (other == "YELLOW") { // trade with yellow
+                        if (!yellow->valid_trade_acceptance(resource_to_gain)) {
+                            std::cout << "You do not have enough resources." << std::endl;
+                            break;
+                        }
+                        p->trade_resources(yellow, resource_to_give, resource_to_gain);
                     }
                 }
             }
