@@ -11,6 +11,7 @@
 #include "grid.h"
 #include "observer.h"
 #include "player.h"
+#include "game.h"
 
 int main(int argc, char **argv) {
     std::string file_name = "";
@@ -34,9 +35,13 @@ int main(int argc, char **argv) {
     } else {
         g = new Grid(infile);
     }
-    g->print_grid();
+    //g->print_grid();
+    Game *game = new Game(set_seed, seed, g);
+    game->play();
+    delete game;
+    delete g;
 
-    Player *blue = new Player(Colour::Blue, set_seed, seed);
+    /*Player *blue = new Player(Colour::Blue, set_seed, seed);
     Player *red = new Player(Colour::Red, set_seed, seed);
     Player *orange = new Player(Colour::Orange, set_seed, seed);
     Player *yellow = new Player(Colour::Yellow, set_seed, seed);
@@ -108,7 +113,7 @@ int main(int argc, char **argv) {
     // to be called whenever a 7 is rolled
     int roll = 7;
     std::vector<Player *> players = {blue, red, orange, yellow};
-    if (roll == 7) {
+    if (roll == 7) {*/
         /*for (int i = 4; i < 10; i++) {
             //blue->resource_count = {i, i, i, i, i};
 
@@ -118,17 +123,17 @@ int main(int argc, char **argv) {
             }
                 
         }*/
-        for (auto p : players) {
+        /*for (auto p : players) {
             
                 p->lose_resource_to_geese();
                 p->print_status();
-        }
+        }*/
         /*for (int i = 0; i <= 18; i++) {
             g->move_goose();
             g->print_grid();
         }
-        std::cout << "Builder <colour1> can choose to steal from [builders]" << std::endl;*/
-    }
+        std::cout << "Builder <colour1> can choose to steal from [builders]" << std::endl;
+    }*/
     // g->test_map();
     /*g->build_building(red, 9);
     g->print_grid();*/
@@ -137,9 +142,5 @@ int main(int argc, char **argv) {
     //     g->build_road(Colour::Yellow, i);
     //     g->print_grid();
     // }
-    delete blue;
-    delete red;
-    delete orange;
-    delete yellow;
-    delete g;
+    
 }

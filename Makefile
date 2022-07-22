@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++14 -g -Wall -MMD -Werror=vla #-fsanitize=address
 #BUILD = bin
-OBJECTS = main.o grid.o observer.o building.o subject.o player.o tile.o grid_constants.o
+OBJECTS = main.o grid.o observer.o building.o subject.o player.o tile.o grid_constants.o game.o
 DEPENDS = ${OBJECTS:.o=.d}
 EXEC = constructor
 
