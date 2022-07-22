@@ -112,7 +112,7 @@ void Game::play() {
                 int edge;
                 std::cin >> edge;
                 if (!g->valid_road(p->get_Colour(), edge)) {
-                    std::cout << "Invalid command." << std::endl;
+                    std::cout << "Invalid command." << std::endl; // FIX ERROR MESSAGE IF INSUFFICIENT RESOURCES OR CANNOT BUILD ON THAT EDGE!!!!!!!!!!!!!!!
                 } else {
                     g->build_road(p, edge);
                     std::cout << "Congrats! You have built a road on edge " << edge << "." << std::endl;
@@ -123,7 +123,7 @@ void Game::play() {
                 int node;
                 std::cin >> node;
                 if (!g->valid_building(p->get_Colour(), node, false)) {
-                    std::cout << "Invalid command." << std::endl;
+                    std::cout << "Invalid command." << std::endl; // FIX ERROR MESSAGE IF INSUFFICIENT RESOURCES OR CANNOT BUILD ON THAT NODE!!!!!!!!!!!!!!!
                 } else {
                     g->build_building(p, node);
                     std::cout << "Congrats! You have built a basement on vertex " << node << ". ";
@@ -136,7 +136,7 @@ void Game::play() {
                 int node;
                 std::cin >> node;
                 if (!g->valid_upgrade(p->get_Colour(), node)) {
-                    std::cout << "Invalid command." << std::endl;
+                    std::cout << "Invalid command." << std::endl; // FIX ERROR MESSAGE IF INSUFFICIENT RESOURCES OR UPGRADE!!!!!!!!!!!!!!!
                 } else {
                     g->upgrade_building(p, node);
                     std::cout << "Congrats! You have updated your residence on vertex " << node << ". ";
