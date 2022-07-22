@@ -524,21 +524,19 @@ void Grid::update_by_roll(int roll) {
     // blue, red, orange, yellow
     std::vector<std::vector<int>> resource_gain_counter = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
 
-    if (roll != 7) { // 7 is Park -> no resources
-        for (auto x : tiles) {
-            if (x->get_dice() == roll && x->getGooseStatus() == false) {
-                x->notify_observers();
-                std::unordered_set<Observer *> observers = x->get_observers();
-                for (auto o : observers) {  // for each observer, update resources
-                    // subtract 1 because 0 index is NoColour
-                    int colour_index = static_cast<int>(o->get_Owner()->get_Colour()) - 1;
-                    int resource_index = static_cast<int>(x->get_resource());
-                    int resources_added = o->get_resource_gain();
-                    resource_gain_counter[colour_index][resource_index] += resources_added;  // increment resources
-                }
+    for (auto x : tiles) {
+        if (x->get_dice() == roll && x->getGooseStatus() == false) {
+            x->notify_observers();
+            std::unordered_set<Observer *> observers = x->get_observers();
+            for (auto o : observers) {  // for each observer, update resources
+                // subtract 1 because 0 index is NoColour
+                int colour_index = static_cast<int>(o->get_Owner()->get_Colour()) - 1;
+                int resource_index = static_cast<int>(x->get_resource());
+                int resources_added = o->get_resource_gain();
+                resource_gain_counter[colour_index][resource_index] += resources_added;  // increment resources
             }
         }
-    } 
+    }
 
     std::vector<std::vector<int>> no_builders_gained = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
     std::vector<int> no_resources_gained = {0, 0, 0, 0, 0};
@@ -588,4 +586,11 @@ void Grid::move_goose() {
     }
     tiles[new_geese_loc]->setGooseStatus(true);
     tiles[curr_geese_loc]->setGooseStatus(false);
+    std::cout << "The GEESE have been moves to " << new_geese_loc << "." << std::endl;
 }
+
+// void Grid::can_steal_from(size_t curr_geese_loc) const {
+//     for(auto buildings: tiles.at(curr_geese_loc)){
+
+//     }
+// }

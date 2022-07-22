@@ -12,7 +12,7 @@ class RandomDice : public Dice {
         int generateNumber() override {
             int rolls[] = {2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 11, 11, 12};
             int length = 36;
-            int roll = rolls[rand() % length];
+            int roll = rolls[rand() % length]; // random number in array
             return roll;
         };
 };
@@ -23,10 +23,11 @@ class LoadedDice : public Dice {
             int min = 2, max = 12;
             int roll = 0;
             while (true) {
-                std::cout << "Input a roll between " << min << " and " << max << ": ";
+                std::cout << "Input a roll between " << min << " and " << max << ": "; // prompt for roll
                 std::cin >> roll;
-                if (roll < min || roll > max)
+                if (roll < min || roll > max) { // not within range
                     std::cout << "Invalid roll." << std::endl;
+                }
                 else break;
             }
             return roll;

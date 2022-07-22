@@ -73,6 +73,7 @@ class Grid {
         void update_by_roll(int roll);
         void print_grid() const;
         void move_goose(); 
+        void can_steal_from(size_t curr_geese_loc) const;
         ~Grid();
 };
 

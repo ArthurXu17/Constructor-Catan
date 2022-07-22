@@ -83,7 +83,19 @@ void Game::play() {
             }
             roll = current_dice->generateNumber(); // roll dice
             std::cout << "You have rolled a " << roll << "." << std::endl;
-            g->update_by_roll(roll);
+            if (roll == 7) { // roll 7 --> activate geese
+                blue->lose_resource_to_geese(); // lose resources if more than 10
+                red->lose_resource_to_geese();
+                orange->lose_resource_to_geese();
+                yellow->lose_resource_to_geese();
+
+                g->move_goose(); // move goose
+
+                // implement stealing
+                std::cout << "Builder " << player << " can choose to steal from " << std::endl;
+            } else {
+                g->update_by_roll(roll);
+            }
             break;
         }
         
