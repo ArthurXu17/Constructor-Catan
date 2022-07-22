@@ -59,11 +59,12 @@ class Grid {
         Grid(std::ifstream &f);
         
         void save_game(std::ifstream f);
+        void help() const;
 
         // can player PLACE a road here
         bool valid_road(Colour player, size_t edge_id) const;
         // can player PLACE a building here
-        bool valid_building(Colour player, size_t node_id) const;
+        bool valid_building(Colour player, size_t node_id, bool starting_buildings) const;
         // check if you can upgrade your building
         bool valid_upgrade(Colour colour, size_t node_id) const; 
         void build_road(Player* player, size_t edge_id);

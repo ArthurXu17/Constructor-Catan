@@ -13,15 +13,7 @@ Player* Building::get_Owner() const {
 }
 
 Building_Type Building::get_type() const {
-    if (resource_gain == 1) {
-        return Building_Type::Basement;
-    } else if (resource_gain == 2) {
-        return Building_Type::House;
-    } else if (resource_gain == 3) {
-        return Building_Type::Tower;
-    } else {
-        return Building_Type::NoBuilding;
-    }
+    return Building_Type(resource_gain);
 }
 
 int Building::get_resource_gain() const {

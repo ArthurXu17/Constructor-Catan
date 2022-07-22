@@ -34,7 +34,7 @@ class LoadedDice : public Dice {
 };
 
 
-int main() {
+/*int main() {
     Dice *fair = new RandomDice();
     Dice *load = new LoadedDice(); 
     Dice *dice_choice = nullptr;
@@ -56,4 +56,4 @@ int main() {
     delete fair;
     delete load;
     //here's a commment to test git uwu
-}
+}*/

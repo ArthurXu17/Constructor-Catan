@@ -134,6 +134,20 @@ Grid::Grid(std::ifstream &f) {
     }
 }
 
+void Grid::help() const {
+    std::cout << "Valid commands: " << std::endl;
+    std::cout << "board" << std::endl;
+    std::cout << "status" << std::endl;
+    std::cout << "residences" << std::endl;
+    std::cout << "build-road <edge#>" << std::endl;
+    std::cout << "build-red <housing#>" << std::endl;
+    std::cout << "improve <housing#>" << std::endl;
+    std::cout << "trade <colour> <give> <take>" << std::endl;
+    std::cout << "next" << std::endl;
+    std::cout << "save <file>" << std::endl;
+    std::cout << "help" << std::endl;
+}
+
 void Grid::print_edge(size_t &n) const {
     Colour colour = edge_colour.at(n);
     if (colour == Colour::NoColour) {
@@ -412,9 +426,12 @@ void Grid::print_grid() const {
 }
 
 bool Grid::valid_upgrade(Colour colour, size_t node_id) const {
-    if (node_owner.at(node_id) == nullptr ||
-        node_owner.at(node_id)->get_type() == Building_Type::Tower ||
-        node_owner.at(node_id)->get_Owner()->get_Colour() != colour) return false;
+    if (node_id > 53) return false; // out of bounds
+
+    if (node_owner.at(node_id) == nullptr || // no building there
+        node_owner.at(node_id)->get_type() == Building_Type::Tower || // building is already a tower
+        node_owner.at(node_id)->get_Owner()->get_Colour() != colour) // does not own the building
+        return false;
     return true;
 }
 
@@ -457,22 +474,25 @@ Grid::~Grid() {
     }
 }
 
-bool Grid::valid_building(Colour player, size_t node_id) const {
-    /*
-     Rules:
-     • A residence may not be built on a vertex that is adjacent to a vertex with an existing residence.
-     • It is either the beginning of the game, in which case a residence can be built on any vertex, or they have built a road that
-       is adjacent to the vertex.
+bool Grid::valid_building(Colour player, size_t node_id, bool starting_buildings) const {
+    if (node_id > 53) return false; // out of bounds
 
-      check if there is an edge of the same color and if that edge does not already connect to a building
-    */
-    for (auto u : adjacent_edges.at(node_id)) {
-        if (edge_colour.at(u) == player &&
-            !(node_owner.at(edge_ends.at(u).first)) &&
+    if (starting_buildings) { // players put down residences in the beginning phase
+        for (auto u : adjacent_edges.at(node_id)) { 
+            if (!(node_owner.at(edge_ends.at(u).first)) && // no current or adjacent residences
+                !(node_owner.at(edge_ends.at(u).second)))
+                return true;
+        }
+        return false;
+    }
+
+    // during game phase
+    for (auto u : adjacent_edges.at(node_id)) { 
+        if (edge_colour.at(u) == player && // adjacent road is the same colour
+            !(node_owner.at(edge_ends.at(u).first)) && // no current or adjacent residences
             !(node_owner.at(edge_ends.at(u).second)))
             return true;
     }
-
     return false;
 }
 
@@ -507,13 +527,10 @@ bool Grid::valid_road(Colour player, size_t edge_id) const {
 }
 
 void Grid::update_by_roll(int roll) {
-    // implement stuff to print out details properly by 3.5.5
-
-    // here's some wrong format
-    std::vector<std::vector<int>> resource_gain_counter = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
     // blue, red, orange, yellow
+    std::vector<std::vector<int>> resource_gain_counter = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
 
-    if (roll != 7) {
+    if (roll != 7) { // 7 is Park -> no resources
         for (auto x : tiles) {
             if (x->get_dice() == roll && x->getGooseStatus() == false) {
                 x->notify_observers();

@@ -14,7 +14,7 @@ class Building : public Observer {
         ~Building();
         Player *get_Owner() const override;
         Building_Type get_type() const;
-        int get_resource_gain() const override; // added
+        int get_resource_gain() const override;
         void upgrade();
 };
 

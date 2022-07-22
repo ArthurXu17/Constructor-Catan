@@ -4,16 +4,14 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
-// for enum Resource Class
-#include "observer.h"
+// for enum resources, building types
+#include "components.h"
 
 //for random
 #include <chrono>
 #include <random>
 
 class Building;
-enum class Building_Type{NoBuilding, Basement, House, Tower};
-enum class Colour{NoColour, Blue, Red, Orange, Yellow};
 
 
 class Player {
@@ -47,6 +45,7 @@ class Player {
         void add_road(size_t edge_id);
         void add_building(size_t node_id, Building_Type building_type);
         Colour get_Colour() const;
+        bool win() const;
         ~Player() = default;
 };
 

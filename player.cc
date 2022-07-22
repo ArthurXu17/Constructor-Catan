@@ -17,13 +17,17 @@ void Player::increment_resource(int index, int amount) {
 }
 
 void Player::trade_resources(Player *other, Resource resource_to_give, Resource resource_to_gain) {
-    int give_index = static_cast<int>(resource_to_give);
-    int gain_index = static_cast<int>(resource_to_gain);
+    if (this == other) { // cannot trade with oneself
+        std::cout << "Invalid command. Cannot trade with oneself. " << std::endl;
+    } else {
+        int give_index = static_cast<int>(resource_to_give);
+        int gain_index = static_cast<int>(resource_to_gain);
 
-    resource_count[give_index] -= 1;  // trade resources
-    other->resource_count[give_index] += 1;
-    resource_count[gain_index] += 1;
-    other->resource_count[gain_index] -= 1;
+        resource_count[give_index] -= 1;  // trade resources
+        other->resource_count[give_index] += 1;
+        resource_count[gain_index] += 1;
+        other->resource_count[gain_index] -= 1;
+    }
 }
 
 bool Player::valid_trade_offer(Resource resource_to_give) const {
@@ -197,4 +201,12 @@ void Player::print_resource(size_t type) {
         default:
             std::cout << "Wifi "<< std::endl;
     }
+}
+
+bool Player::win() const {
+    if (victory_points >= 10) {
+        
+        return true;
+    }
+    return false;
 }

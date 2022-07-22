@@ -1,7 +1,9 @@
 #ifndef _OBSERVER_H_
 #define _OBSERVER_H_
 #include <unordered_set>
-enum class Resource {Brick, Energy, Glass, Heat, Wifi, Park};
+// for enum resources
+#include "components.h"
+
 class Subject;
 class Player;
 class Observer {
