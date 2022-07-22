@@ -24,8 +24,7 @@ class Player {
     bool set_seed;
     unsigned seed;
 
-    void print_colour() const;
-    std::string print_resource(size_t type);
+    std::string print_resource(size_t type) const;
     public:
         Player(Colour colour, bool set_seed_input, unsigned seed_input);
         int get_points() const;
