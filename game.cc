@@ -49,6 +49,7 @@ void Game::play() {
     while (true) {
         p = players[turn % 4];
 
+        g->print_grid();
         std::cout << "Builder " << p->get_Colour() << "'s turn." << std::endl;
         p->print_status();
 
@@ -59,6 +60,7 @@ void Game::play() {
             std::cout << ". Enter \"load\" to change current dice to loaded dice, \"fair\" to change current dice to fair dice, or \"roll\" to roll the current dice: ";
             std::string cmd;
             std::cin >> cmd;
+            std::cout << std::endl;
             if (cmd == "fair") {  // fair dice
                 begin_cmd = "fair";
                 current_dice = fair;
@@ -67,7 +69,6 @@ void Game::play() {
                 current_dice = load;
             } else if (cmd == "roll")
                 break;
-            std::cout << std::endl;
         }
         roll = current_dice->generateNumber();  // roll dice
         std::cout << "You have rolled a " << roll << "." << std::endl;
@@ -86,6 +87,7 @@ void Game::play() {
 
         } else {
             g->update_by_roll(roll);
+            std::cout << std::endl;
         }
 
         // During the turn phase
@@ -218,7 +220,6 @@ void Game::play() {
             }
 
             else if (turn_cmd == "next") {  // passes control to next player
-                std::cout << std::endl;
                 continue;
             }
 
@@ -233,6 +234,7 @@ void Game::play() {
             else {  // invalid command
                 std::cout << "Invalid command." << std::endl;
             }
+            std::cout << std::endl;
         }
 
         turn++;
