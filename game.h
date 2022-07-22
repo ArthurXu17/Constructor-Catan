@@ -4,11 +4,8 @@
 #include "grid.h"
 
 class Game {
-    Player *blue;
-    Player *red;
-    Player *orange;
-    Player *yellow;
-    
+    std::vector<Player*> players;//blue, red, orange, yellow
+    Player *blue, *red, *orange, *yellow;
     // seed parameters
     bool set_seed;
     unsigned seed;

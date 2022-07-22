@@ -47,7 +47,7 @@ void Grid::test_map() {
     this->print_grid();
 }
 
-Grid::Grid(bool set_seed_input, unsigned seed_input): set_seed{set_seed_input}, seed{seed_input} {
+Grid::Grid(bool set_seed_input, unsigned seed_input) : set_seed{set_seed_input}, seed{seed_input} {
     edge_colour = std::unordered_map<size_t, Colour>();
     node_owner = std::unordered_map<size_t, Building *>();
     edge_ends = std::unordered_map<size_t, std::pair<size_t, size_t>>();
@@ -99,7 +99,7 @@ Grid::Grid(bool set_seed_input, unsigned seed_input): set_seed{set_seed_input}, 
     std::swap(dice_rolls.at(park_index), dice_rolls.at(seven_index));
     for (size_t i = 0; i <= max_tile; i++) {
         // std::cout<<"Resource: "<<static_cast<int>(tile_res.at(i))<<", Dice Roll: "<<dice_rolls.at(i)<<std::endl;
-        tiles.emplace_back(new Tile(tile_res.at(i), dice_rolls.at(i), tile_res.at(i)==Resource::Park));
+        tiles.emplace_back(new Tile(tile_res.at(i), dice_rolls.at(i), tile_res.at(i) == Resource::Park));
     }
 }
 
@@ -130,7 +130,7 @@ Grid::Grid(std::ifstream &f) {
         int dice_roll;
         f >> res_int >> dice_roll;
         res = static_cast<Resource>(res_int);
-        tiles.emplace_back(new Tile(res, dice_roll, res==Resource::Park));
+        tiles.emplace_back(new Tile(res, dice_roll, res == Resource::Park));
     }
 }
 
@@ -181,7 +181,7 @@ void Grid::print_node(size_t &n) const {
             std::cout << "Y";
         }
         // print type of building
-        std::cout<<build->get_type();
+        std::cout << build->get_type();
     }
     std::cout << "|";
     n++;
@@ -239,7 +239,7 @@ void Grid::print_tile_res(size_t &counter) const {
 
 void Grid::print_possible_goose(size_t &counter) const {
     if (tiles.at(counter)->getGooseStatus()) {
-        std::cout<<"  |  GEESE";
+        std::cout << "  |  GEESE";
         print_tile_break(1);
     } else {
         print_tile_break(2);
@@ -344,7 +344,7 @@ void Grid::print_grid() const {
         print_tile_dice(tile_dice_counter);
         print_node(node_counter);
         std::cout << std::endl;
-        // sixth line 
+        // sixth line
         print_possible_goose(tile_goose_counter);
         print_possible_goose(tile_goose_counter);
         print_possible_goose(tile_goose_counter);
@@ -420,11 +420,11 @@ void Grid::print_grid() const {
 }
 
 bool Grid::valid_upgrade(Colour colour, size_t node_id) const {
-    if (node_id > 53) return false; // out of bounds
+    if (node_id > 53) return false;  // out of bounds
 
-    if (node_owner.at(node_id) == nullptr || // no building there
-        node_owner.at(node_id)->get_type() == Building_Type::Tower || // building is already a tower
-        node_owner.at(node_id)->get_Owner()->get_Colour() != colour) // does not own the building
+    if (node_owner.at(node_id) == nullptr ||                           // no building there
+        node_owner.at(node_id)->get_type() == Building_Type::Tower ||  // building is already a tower
+        node_owner.at(node_id)->get_Owner()->get_Colour() != colour)   // does not own the building
         return false;
     return true;
 }
@@ -469,20 +469,20 @@ Grid::~Grid() {
 }
 
 bool Grid::valid_building(Colour player, size_t node_id, bool starting_buildings) const {
-    if (node_id > 53) return false; // out of bounds
+    if (node_id > 53) return false;  // out of bounds
 
     // check for adjacent residences
-    for (auto u : adjacent_edges.at(node_id)) { 
+    for (auto u : adjacent_edges.at(node_id)) {
         if (node_owner.at(edge_ends.at(u).first) != nullptr ||
             node_owner.at(edge_ends.at(u).second) != nullptr)
             return false;
     }
 
-    if (starting_buildings) // don't need to check for adjacent roads in the beginning
+    if (starting_buildings)  // don't need to check for adjacent roads in the beginning
         return true;
 
-    for (auto u : adjacent_edges.at(node_id)) { 
-        if (edge_colour.at(u) == player) // must have adjacent road
+    for (auto u : adjacent_edges.at(node_id)) {
+        if (edge_colour.at(u) == player)  // must have adjacent road
             return true;
     }
 
@@ -571,55 +571,67 @@ void Grid::update_by_roll(int roll) {
 size_t Grid::move_goose() {
     size_t new_geese_loc;
     size_t curr_geese_loc;
-    for (size_t i = 0; i <= max_tile; i++) { // get current geese location
+    for (size_t i = 0; i <= max_tile; i++) {  // get current geese location
         if (tiles[i]->getGooseStatus()) {
             curr_geese_loc = i;
         }
     }
 
-    std::cout << "Choose where to place the GEESE. "; // prompt for new location
-    while (std::cin >> new_geese_loc) { 
-        if (new_geese_loc <= max_tile && new_geese_loc != curr_geese_loc) // must be new tile within range
+    std::cout << "Choose where to place the GEESE. ";  // prompt for new location
+    while (std::cin >> new_geese_loc) {
+        if (new_geese_loc <= max_tile && new_geese_loc != curr_geese_loc)  // must be new tile within range
             break;
         std::cout << "Please select a valid location. ";
     }
-    tiles[new_geese_loc]->setGooseStatus(true); // change geese status
+    tiles[new_geese_loc]->setGooseStatus(true);  // change geese status
     tiles[curr_geese_loc]->setGooseStatus(false);
 
     return new_geese_loc;
 }
 
-bool Grid::can_steal_from(size_t geese_loc) const {
-    // no builders own a building on tile geese_loc
-    if (tiles.at(geese_loc)->get_observers().size() == 0) {
-        std::cout << " has no builders to steal from." << std::endl;
-        return false;
+int Grid::who_to_steal_from(size_t geese_loc, Player *curr_player) {
+    std::cout << "Builder " << curr_player->get_Colour();  // players that can be stolen from
+
+    // determine who can we steal from
+    //  blue, red, orange, yellow
+    std::vector<Colour> victim_choices;
+    for (auto buildings : tiles.at(geese_loc)->get_observers()) {
+        // if a players owns a building on tile geese_loc, set to true
+        Player *potential_victim = buildings->get_Owner();
+        if (potential_victim->get_total_resource() > 0 &&
+            potential_victim != curr_player &&
+            std::find(victim_choices.begin(), victim_choices.end(), potential_victim->get_Colour()) == victim_choices.end())
+            victim_choices.push_back(potential_victim->get_Colour());
     }
 
-    // blue, red, orange, yellow
-    bool builders[] = {false, false, false, false}; 
-    for(auto buildings: tiles.at(geese_loc)->get_observers()) {
-        // if a players owns a building on tile geese_loc, set to true
-        builders[static_cast<int>(buildings->get_Owner()->get_Colour()) - 1] = true; 
+    // no builders own a building on tile geese_loc
+    if (victim_choices.size() == 0) {
+        std::cout << " has no builders to steal from." << std::endl;
+        return -1;
     }
 
     // print builders that own a building on tile geese_loc
-    std::cout << " can choose to steal from ";
-    if (builders[0]) {
-        std::cout << "Blue";
-    }
-    if (builders[1]) {
-        if (builders[0]) std::cout << ", ";
-        std::cout << "Red";
-    }
-    if (builders[2]) {
-        if (builders[0] || builders[1]) std::cout << ", ";
-        std::cout << "Orange";
-    }
-    if (builders[3]) {
-        if (builders[0] || builders[1] || builders[2]) std::cout << ", ";
-        std::cout << "Yellow";
-    }
+    std::cout << " can choose to steal from";
+    for (auto p : victim_choices)
+        std::cout << " " << p;
     std::cout << "." << std::endl;
-    return true;
+
+    std::cout << "Choose a builder to steal from. ";
+    std::string victim;
+
+    while (true) {
+        std::cin >> victim;
+        transform(victim.begin(), victim.end(), victim.begin(), toupper);
+        if (victim == "BLUE" && std::find(victim_choices.begin(), victim_choices.end(), Colour::Blue) != victim_choices.end()) {  // steal from blue
+            return 0;
+        } else if (victim == "RED" && std::find(victim_choices.begin(), victim_choices.end(), Colour::Red) != victim_choices.end()) {  // steal from blue
+            return 1;
+        } else if (victim == "ORANGE" && std::find(victim_choices.begin(), victim_choices.end(), Colour::Orange) != victim_choices.end()) {  // steal from blue
+            return 2;
+        } else if (victim == "YELLOW" && std::find(victim_choices.begin(), victim_choices.end(), Colour::Yellow) != victim_choices.end()) {  // steal from blue
+            return 3;
+        } else {
+            std::cout << "Please choose a valid player" << std::endl;
+        }
+    }
 }

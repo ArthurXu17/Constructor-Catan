@@ -170,13 +170,7 @@ void Player::robbed(Player *robber) {
         if (resource_count[resource] > 0) {
             resource_count[resource]--;
             robber->increment_resource(resource, 1);
-            std::cout << "Builder ";
-            robber->print_colour();
-            std::cout << "steals ";
-            this->print_resource(resource);
-            std::cout << "from builder";
-            this->print_colour();
-            std::cout << "."<< std::endl;
+            std::cout << "Builder " << robber->get_Colour() << " steals " << resource << " from builder " << this->get_Colour() << " ."<< std::endl;
             break;
         }
     }
