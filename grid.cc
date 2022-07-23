@@ -107,13 +107,13 @@ void Grid::print_edge(size_t &n) const {
     if (colour == Colour::NoColour) {
         std::cout << std::setw(2) << n;
     } else if (colour == Colour::Blue) {
-        std::cout << " B";
+        std::cout << BLUE_OUTPUT<<" B"<<RESET_OUTPUT;
     } else if (colour == Colour::Red) {
-        std::cout << " R";
+        std::cout << RED_OUTPUT<< " R"<<RESET_OUTPUT;
     } else if (colour == Colour::Yellow) {
-        std::cout << " Y";
+        std::cout << YELLOW_OUTPUT<<" Y"<<RESET_OUTPUT;
     } else if (colour == Colour::Orange) {
-        std::cout << " O";
+        std::cout << ORANGE_OUTPUT<<" O"<<RESET_OUTPUT;
     }
     n++;
 }
@@ -126,16 +126,16 @@ void Grid::print_node(size_t &n) const {
     } else {
         // print colour
         if (build->get_Owner()->get_Colour() == Colour::Blue) {
-            std::cout << "B";
+            std::cout << BLUE_OUTPUT<<"B";
         } else if (build->get_Owner()->get_Colour() == Colour::Red) {
-            std::cout << "R";
+            std::cout << RED_OUTPUT<<"R";
         } else if (build->get_Owner()->get_Colour() == Colour::Orange) {
-            std::cout << "O";
+            std::cout << ORANGE_OUTPUT<< "O";
         } else if (build->get_Owner()->get_Colour() == Colour::Yellow) {
-            std::cout << "Y";
+            std::cout << YELLOW_OUTPUT<<"Y";
         }
         // print type of building
-        std::cout << build->get_type();
+        std::cout << build->get_type()<<RESET_OUTPUT;
     }
     std::cout << "|";
     n++;
@@ -514,15 +514,17 @@ void Grid::update_by_roll(int roll) {
         std::cout << "No builders gained resources." << std::endl;
     } else {  // show which players gained which resources
         for (int i = 0; i < 4; i++) {
-            std::string player = " Blue ";
+            Colour player = static_cast<Colour>(i + 1);
+            
+            /*std::string player = " Blue ";
             if (i == 1)
                 player = " Red ";
             else if (i == 2)
                 player = " Orange ";
             else if (i == 3)
-                player = " Yellow ";
+                player = " Yellow ";*/
             if (resource_gain_counter.at(i) != no_resources_gained) {
-                std::cout << "Builder" << player << "has gained: ";
+                std::cout << "Builder " << player << " has gained: ";
                 if (resource_gain_counter.at(i).at(0) != 0)
                     std::cout << resource_gain_counter.at(i).at(0) << " Bricks ";
                 if (resource_gain_counter.at(i).at(1) != 0)

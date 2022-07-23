@@ -101,7 +101,12 @@ void Game::save_game(std::ofstream& f) {
 }
 
 void Game::play(bool play_beginning) {
-    g->print_grid();  // starting board    
+    //g->print_grid();  // starting board    
+    std::cout<<BLUE_OUTPUT<<"TESTING TEXT"<<RESET_OUTPUT<<std::endl;
+    std::cout<<RED_OUTPUT<<"TESTING TEXT"<<RESET_OUTPUT<<std::endl;
+    std::cout<<YELLOW_OUTPUT<<"TESTING TEXT"<<RESET_OUTPUT<<std::endl;
+    std::cout<<ORANGE_OUTPUT<<"TESTING TEXT"<<RESET_OUTPUT<<std::endl;
+    
     Player *p; // keep track of whose turn it is
 
     if (play_beginning) {
@@ -323,8 +328,8 @@ void Game::play(bool play_beginning) {
                 } else if (!p->valid_trade_offer(resource_to_give)) {  // does not possess sufficient resources to give
                     std::cout << "You do not have enough resources." << std::endl;
                 } else {
-                    std::cout << p->get_Colour() << " offers " << other << " one " << give << " for one " << gain << "." << std::endl;
-                    std::cout << "Does " << other << " accept this offer?" << std::endl;  // trade offer
+                    std::cout << p->get_Colour() << " offers " << other_colour << " one " << give << " for one " << gain << "." << std::endl;
+                    std::cout << "Does " << other_colour << " accept this offer?" << std::endl;  // trade offer
                     std::cout << "> ";
                     std::string reply;
                     std::cin >> reply;
@@ -334,25 +339,25 @@ void Game::play(bool play_beginning) {
                     } else {                    // yes
                         if (other == "BLUE") {  // trade with blue
                             if (!blue->valid_trade_acceptance(resource_to_gain)) {
-                                std::cout << "BLUE does not have enough resources to make the trade." << std::endl;
+                                std::cout << other_colour<< " does not have enough resources to make the trade." << std::endl;
                             } else {
                                 p->trade_resources(blue, resource_to_give, resource_to_gain);
                             }
                         } else if (other == "RED") {  // trade with red
                             if (!red->valid_trade_acceptance(resource_to_gain)) {
-                                std::cout << "RED does not have enough resources to make the trade." << std::endl;
+                                std::cout << other_colour<< " does not have enough resources to make the trade." << std::endl;
                             } else {
                                 p->trade_resources(red, resource_to_give, resource_to_gain);
                             }
                         } else if (other == "ORANGE") {  // trade with orange
                             if (!orange->valid_trade_acceptance(resource_to_gain)) {
-                                std::cout << "ORANGE does not have enough resources to make the trade." << std::endl;
+                                std::cout << other_colour<< " does not have enough resources to make the trade." << std::endl;
                             } else {
                                 p->trade_resources(orange, resource_to_give, resource_to_gain);
                             }
                         } else if (other == "YELLOW") {  // trade with yellow
                             if (!yellow->valid_trade_acceptance(resource_to_gain)) {
-                                std::cout << "YELLOW does not have enough resources to make the trade." << std::endl;
+                                std::cout << other_colour<< " YELLOW does not have enough resources to make the trade." << std::endl;
                             } else {
                                 p->trade_resources(yellow, resource_to_give, resource_to_gain);
                             }

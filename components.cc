@@ -17,9 +17,9 @@ std::ostream &operator<<(std::ostream &out, const Building_Type b) {
 }
 
 std::ostream &operator<<(std::ostream &out, const Colour c) {
-    if (c == Colour::Blue) return out << "BLUE";
-    if (c == Colour::Red) return out << "RED";
-    if (c == Colour::Orange) return out << "ORANGE";
-    if (c == Colour::Yellow) return out << "YELLOW";
+    if (c == Colour::Blue) return out << BLUE_OUTPUT<< "BLUE"<<RESET_OUTPUT;
+    if (c == Colour::Red) return out << RED_OUTPUT<<"RED"<<RESET_OUTPUT;
+    if (c == Colour::Orange) return out << ORANGE_OUTPUT<<"ORANGE"<<RESET_OUTPUT;
+    if (c == Colour::Yellow) return out << YELLOW_OUTPUT<<"YELLOW"<<RESET_OUTPUT;
     return out << "NO COLOUR";
 }

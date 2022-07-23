@@ -14,4 +14,10 @@ std::ostream &operator<<(std::ostream &out, const Building_Type b);
 
 std::ostream &operator<<(std::ostream &out, const Colour c);
 
+const std::string BLUE_OUTPUT =  "\033[34m";
+const std::string RED_OUTPUT =  "\033[38;5;196m";
+const std::string YELLOW_OUTPUT =  "\033[33m";
+const std::string ORANGE_OUTPUT =  "\033[38;5;209m";
+const std::string RESET_OUTPUT = "\033[0m";
+
 #endif
