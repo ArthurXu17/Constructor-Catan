@@ -35,17 +35,50 @@ int main(int argc, char **argv) {
     }
     //Grid *g;
     Game *game;
+    std::string play_again_cmd;
+    bool play_again = true;
     if (game_file_name != "") {
-        std::ifstream infile{game_file_name};
-        game = new Game(set_seed, seed, infile, false);
-        game->play(false);
+        while (play_again) {
+            std::ifstream infile{game_file_name};
+            game = new Game(set_seed, seed, infile, false);
+            game->play(false);
+            std::cout<<"Would you like to play again?"<<std::endl;
+            std::cin>>play_again_cmd;
+            if (play_again_cmd != "yes") {
+                // not playing another game, game is deleted at end of program
+                play_again = false;
+            } else {
+                delete game;
+            } 
+        }
     } else if (board_file_name != "") {
-        std::ifstream infile{board_file_name};
-        game = new Game(set_seed, seed, infile, true);
-        game->play(true);
+        while (play_again) {
+            std::ifstream infile{board_file_name};
+            game = new Game(set_seed, seed, infile, true);
+            game->play(true);
+            std::cout<<"Would you like to play again?"<<std::endl;
+            std::cin>>play_again_cmd;
+            if (play_again_cmd != "yes") {
+                // not playing another game, game is deleted at end of program
+                play_again = false;
+            } else {
+                delete game;
+            }
+        }
+        
     } else {
-        game = new Game(set_seed, seed);
-        game->play(true);
+        while (play_again) {
+            game = new Game(set_seed, seed);
+            game->play(true);
+            std::cout<<"Would you like to play again?"<<std::endl;
+            std::cin>>play_again_cmd;
+            if (play_again_cmd != "yes") {
+                // not playing another game, game is deleted at end of program
+                play_again = false;
+            } else {
+                delete game;
+            }
+        }
     }
     
     delete game;
