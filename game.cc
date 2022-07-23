@@ -121,8 +121,8 @@ void Game::play(bool play_beginning) {
     // Actual Game Loop
     Dice *fair = new RandomDice(set_seed, seed);
     Dice *load = new LoadedDice();
-    Dice *current_dice = fair;
-    std::string begin_cmd = "fair";
+    Dice *current_dice = load;
+    std::string begin_cmd = "load";
     bool somebody_has_won = false;
     // end when a player has at least 10 points
     while (true) {
@@ -352,7 +352,7 @@ void Game::play(bool play_beginning) {
                 std::cout << "status" << std::endl;
                 std::cout << "residences" << std::endl;
                 std::cout << "build-road <edge#>" << std::endl;
-                std::cout << "build-red <housing#>" << std::endl;
+                std::cout << "build-res <housing#>" << std::endl;
                 std::cout << "improve <housing#>" << std::endl;
                 std::cout << "trade <colour> <give> <take>" << std::endl;
                 std::cout << "next" << std::endl;

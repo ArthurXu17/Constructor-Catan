@@ -456,15 +456,6 @@ bool Grid::valid_road(Colour player, size_t edge_id) const {
 
     // we require an adjacent road or vertex
 
-    // road case
-    for (auto u : adjacent_edges.at(edge_ends.at(edge_id).first))
-        if (edge_colour.at(u) == player)
-            return true;
-
-    for (auto u : adjacent_edges.at(edge_ends.at(edge_id).second))
-        if (edge_colour.at(u) == player)
-            return true;
-
     // vertex case
     Building *end_point_1 = node_owner.at(edge_ends.at(edge_id).first);
     Building *end_point_2 = node_owner.at(edge_ends.at(edge_id).second);
@@ -476,6 +467,16 @@ bool Grid::valid_road(Colour player, size_t edge_id) const {
     if (end_point_2)
         if (end_point_2->get_Owner()->get_Colour() == player)
             return true;
+
+    // road case
+    for (auto u : adjacent_edges.at(edge_ends.at(edge_id).first))
+        if (edge_colour.at(u) == player && !end_point_1)
+            return true;
+
+    for (auto u : adjacent_edges.at(edge_ends.at(edge_id).second))
+        if (edge_colour.at(u) == player && !end_point_2)
+            return true;
+
 
     return false;
 }
@@ -589,7 +590,7 @@ int Grid::who_to_steal_from(size_t geese_loc, Player *curr_player) {
 
     // no builders own a building on tile geese_loc
     if (victim_choices.size() == 0) {
-        std::cout << " has no builders to steal from." << std::endl;
+        std::cout << " has no builders to steal from.\n" << std::endl;
         return -1;
     }
 
