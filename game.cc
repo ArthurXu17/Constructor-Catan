@@ -194,10 +194,15 @@ void Game::play(bool play_beginning) {
             else if (turn_cmd == "build-road") {  // attempts to build road
                 int edge;
                 std::cin >> edge;
-                if (!g->valid_road(p->get_Colour(), edge)) {
-                    std::cout << "Invalid command." << std::endl;  // FIX ERROR MESSAGE IF INSUFFICIENT RESOURCES OR CANNOT BUILD ON THAT EDGE!!!!!!!!!!!!!!!
+                if (!p->can_buy_road()) {
+                    std::cout<<"You do not have enough resources."<<std::endl;
+                }
+                else if (!g->valid_road(p->get_Colour(), edge)) {
+                    std::cout << "You cannot build here." << std::endl;  
                 } else {
                     g->build_road(p, edge);
+                    //call purchase in game and not grid because g->build_road is called in loading game from saved state
+                    p->purchase_road(); 
                     std::cout << "Congrats! You have built a road on edge " << edge << "." << std::endl;
                 }
             }
@@ -205,10 +210,14 @@ void Game::play(bool play_beginning) {
             else if (turn_cmd == "build-res") {  // attempts to build a basement
                 int node;
                 std::cin >> node;
-                if (!g->valid_building(p->get_Colour(), node, false)) {
-                    std::cout << "Invalid command." << std::endl;  // FIX ERROR MESSAGE IF INSUFFICIENT RESOURCES OR CANNOT BUILD ON THAT NODE!!!!!!!!!!!!!!!
+                if (!p->can_buy_basement()) {
+                    std::cout<<"You do not have enough resources."<<std::endl;
+                } else if (!g->valid_building(p->get_Colour(), node, false)) {
+                    std::cout << "You cannot build here." << std::endl;  
                 } else {
                     g->build_building(p, node);
+                    //call purchase in game and not grid because g->build_road is called in loading game from saved state
+                    p->purchase_basement();
                     std::cout << "Congrats! You have built a basement on vertex " << node << ". ";
                     std::cout << "You have received 1 building point." << std::endl;
                 }
@@ -221,13 +230,42 @@ void Game::play(bool play_beginning) {
             else if (turn_cmd == "improve") {  // attempts to improve residence
                 int node;
                 std::cin >> node;
-                if (!g->valid_upgrade(p->get_Colour(), node)) {
+                Building_Type cur_type = g->get_building_type_at_node(node);
+                if (cur_type == Building_Type::Basement) {
+                    if (!p->can_buy_house()) {
+                        std::cout<<"You do not have enough resources."<<std::endl;
+                    } else if (!g->valid_upgrade(p->get_Colour(), node)) {
+                        std::cout<<"You cannot build here."<<std::endl;
+                    } else {
+                        g->upgrade_building(p, node);
+                        //call purchase in game and not grid because g->build_road is called in loading game from saved state
+                        p->purchase_house();
+                        std::cout << "Congrats! You have improved your Basement to a House on vertex " << node << ". ";
+                        std::cout << "You have received 1 additional building point." << std::endl;
+                    }
+                } else if (cur_type == Building_Type::House) {
+                    if (!p->can_buy_tower()) {
+                        std::cout<<"You do not have enough resources."<<std::endl;
+                    } else if (!g->valid_upgrade(p->get_Colour(), node)) {
+                        std::cout<<"You cannot build here."<<std::endl;
+                    } else {
+                        g->upgrade_building(p, node);
+                        //call purchase in game and not grid because g->build_road is called in loading game from saved state
+                        p->purchase_tower();
+                        std::cout << "Congrats! You have improved your House to a Tower on vertex " << node << ". ";
+                        std::cout << "You have received 1 additional building point." << std::endl;
+                    }
+                } else {
+                    // cur type is a NoBuilding or tower, so invalid upgrade
+                    std::cout<<"You cannot build here."<<std::endl;
+                }
+                /*if (!g->valid_upgrade(p->get_Colour(), node)) {
                     std::cout << "Invalid command." << std::endl;  // FIX ERROR MESSAGE IF INSUFFICIENT RESOURCES OR UPGRADE!!!!!!!!!!!!!!!
                 } else {
                     g->upgrade_building(p, node);
                     std::cout << "Congrats! You have updated your residence on vertex " << node << ". ";
                     std::cout << "You have received 1 additional building point." << std::endl;
-                }
+                }*/
                 if (p->win()) {
                     somebody_has_won = true;
                     break;
@@ -269,7 +307,7 @@ void Game::play(bool play_beginning) {
                     break;
                 }
 
-                std::cout << p->get_Colour() << " offers" << other << " one " << give << " for one " << gain << "." << std::endl;
+                std::cout << p->get_Colour() << " offers " << other << " one " << give << " for one " << gain << "." << std::endl;
                 std::cout << "Does " << other << " accept this offer? ";  // trade offer
                 std::string reply;
                 std::cin >> reply;

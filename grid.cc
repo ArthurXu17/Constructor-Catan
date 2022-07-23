@@ -533,6 +533,15 @@ bool Grid::valid_road(Colour player, size_t edge_id) const {
     return false;
 }
 
+Building_Type Grid::get_building_type_at_node(size_t node_id) const {
+    if (node_owner.at(node_id) == nullptr) {
+        return Building_Type::NoBuilding;
+    } else {
+        return node_owner.at(node_id)->get_type();
+    }
+
+}
+
 void Grid::update_by_roll(int roll) {
     // blue, red, orange, yellow
     std::vector<std::vector<int>> resource_gain_counter = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};

@@ -27,12 +27,35 @@ class Player {
     std::string print_resource(size_t type) const;
     public:
         Player(Colour colour, bool set_seed_input, unsigned seed_input);
+        // functions for getting player status
+        Colour get_Colour() const;
         int get_points() const;
         int get_total_resource() const;
         std::vector<std::size_t> get_roads() const;
         std::unordered_map<std::size_t, Building_Type> get_buildings() const;
+        void print_status() const;
+        void update_player_by_file(std::istringstream &f);
+        void output_status_to_file(std::ofstream &f) const;
+        void print_buildings() const;
+        // functions for purchasing things, they only affect the resources of the player
+        // don't have any affect on the actual board
+        // purhcase functions assume player has resources to purchase the corresponding item
+        bool can_buy_road() const;
+        bool can_buy_basement() const;
+        bool can_buy_house() const;
+        bool can_buy_tower() const;
+
+        void purchase_road();
+        void purchase_basement();
+        void purchase_house();
+        void purchase_tower();
+
+        // functions for changing player status
         void increment_points();
         void increment_resource(int index, int amount);
+        void add_road(size_t edge_id);
+        void add_building(size_t node_id, Building_Type building_type);
+        // goose and trading functions
         void lose_resource_to_geese();
         void steal(Player *victim);
         void robbed(Player *robber);
@@ -41,13 +64,7 @@ class Player {
         bool valid_trade_offer(Resource resource_to_give) const;
         // checks if player possesses the resource being asked for (can they accept the trade?)
         bool valid_trade_acceptance(Resource resource_to_gain) const;
-        void print_status() const;
-        void update_player_by_file(std::istringstream &f);
-        void output_status_to_file(std::ofstream &f) const;
-        void print_buildings() const;
-        void add_road(size_t edge_id);
-        void add_building(size_t node_id, Building_Type building_type);
-        Colour get_Colour() const;
+
         bool win() const;
         ~Player() = default;
 };

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include "resource_costs.h"
 
 Player::Player(Colour colour, bool set_seed_input, unsigned seed_input) : colour{colour}, set_seed{set_seed_input}, seed{seed_input} {}
 
@@ -82,33 +83,77 @@ void Player::add_building(size_t node_id, Building_Type building_type) {
     // buildings.emplace_back(std::make_pair(node_id, building_type));
 }
 
+bool Player::can_buy_road() const {
+    // cost 1 heat (3) and 1 wifi (4)
+    //return (resource_count.at(3) >= 1 && resource_count.at(4) >= 1);
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        if (resource_count.at(i) < road_cost.at(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+bool Player::can_buy_basement() const {
+    // cost 1 brick (0), 1 energy (1), 1 glass (2), 1 wifi (4)
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        if (resource_count.at(i) < basement_cost.at(i)) {
+            return false;
+        }
+    }
+    return true;
+    /*return (resource_count.at(0) >= 1 && resource_count.at(1) >= 1 &&
+            resource_count.at(2) >= 1 && resource_count.at(4) >= 1);*/
+}
+bool Player::can_buy_house() const {
+    // cost 2 glass (2), 3 heat (3)
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        if (resource_count.at(i) < house_cost.at(i)) {
+            return false;
+        }
+    }
+    return true;
+    //return (resource_count.at(3) >= 3 && resource_count.at(2) >= 2);
+}
+bool Player::can_buy_tower() const {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        if (resource_count.at(i) < tower_cost.at(i)) {
+            return false;
+        }
+    }
+    return true;
+    // cost 3 brick (0), 2 energy (1), 2 glass (2), 2 heat (3), 1 wifi (4)
+    /*return (resource_count.at(0) >= 3 && resource_count.at(1) >= 2 &&
+            resource_count.at(2) >= 2 && resource_count.at(3) >= 2 &&
+            resource_count.at(4) >= 1);*/
+}
+
+void Player::purchase_road() {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        resource_count.at(i) -= road_cost.at(i);
+    }
+}
+void Player::purchase_basement() {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        resource_count.at(i) -= basement_cost.at(i);
+    }
+}
+void Player::purchase_house() {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        resource_count.at(i) -= house_cost.at(i);
+    }
+}
+void Player::purchase_tower() {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        resource_count.at(i) -= tower_cost.at(i);
+    }
+}
+
 void Player::print_status() const {
     std::cout << this->get_Colour() << " has " << victory_points << " building points, ";
     for (int i = 0; i < 5; i++) {
         std::cout << resource_count.at(i) << " " << print_resource(i) << ((i == 4) ? "." : ", ");
     }
     std::cout << std::endl;
-
-    // below code is useful for outputting into file
-    /*for (auto x : resource_count) {
-        std::cout<<x<<" ";
-    }
-    std::cout<<"r ";
-    for (auto x : roads) {
-        std::cout<<x<<" ";
-    }
-    std::cout<<"h ";
-    for (auto kv : buildings) {
-        std::cout<<kv.first<<" ";
-        if (kv.second == Building_Type::Basement) {
-            std::cout<<"B ";
-        } else if (kv.second == Building_Type::House) {
-            std::cout<<"H ";
-        } else if (kv.second == Building_Type::Tower) {
-            std::cout<<"T ";
-        }
-    }
-    std::cout<<std::endl;*/
 }
 
 void Player::update_player_by_file(std::istringstream &s) {

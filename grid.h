@@ -52,9 +52,6 @@ class Grid {
     public: 
         // for making sure the maps have correct values, REMOVE WHEN SUBMITTING
         void test_map();
-    /*std::vector<size_t>& get_edges(size_t idx) {
-        return adjacent_edges[idx];
-    }*/    
         // constructor for random board generation
         Grid(bool set_seed_input, unsigned seed_input);
         // constructor for file input board generation
@@ -67,11 +64,14 @@ class Grid {
         bool valid_road(Colour player, size_t edge_id) const;
         // can player PLACE a building here
         bool valid_building(Colour player, size_t node_id, bool starting_buildings) const;
-        // check if you can upgrade your building
+        // check if you can upgrade your building -> according to rules of the game
         bool valid_upgrade(Colour colour, size_t node_id) const; 
         void build_road(Player* player, size_t edge_id);
         void build_building(Player *player, size_t node_id);
         void upgrade_building(Player *player, size_t node_id);
+
+        Building_Type get_building_type_at_node(size_t node_id) const;
+
         void update_by_roll(int roll);
         void print_grid() const;
         size_t move_goose(); 
