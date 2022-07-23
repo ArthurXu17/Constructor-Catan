@@ -11,8 +11,10 @@ class Game {
     // seed parameters
     bool set_seed;
     unsigned seed;
-    // grid is still owned by main depending on how main wants to initialize
     Grid *g; 
+    //dice
+    Dice *fair;
+    Dice *load;
 
     public:
         //constructor for random board

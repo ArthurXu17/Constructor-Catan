@@ -5,7 +5,8 @@
 #include <fstream>
 #include "resource_costs.h"
 
-Player::Player(Colour colour, bool set_seed_input, unsigned seed_input) : colour{colour}, set_seed{set_seed_input}, seed{seed_input} {}
+Player::Player(Colour colour, bool set_seed_input, unsigned seed_input, Dice *dice_input) : 
+    colour{colour}, set_seed{set_seed_input}, seed{seed_input}, dice{dice_input} {}
 
 int Player::get_points() const {
     return victory_points;
@@ -279,9 +280,23 @@ std::string Player::print_resource(size_t type) const {
     }
 }
 
+int Player::roll_dice() {
+    return dice->generateNumber();
+}
+
+void Player::setDice(Dice *new_dice) {
+    dice = new_dice;
+}
+
+Dice * Player::getDice() const {
+    return dice;
+}
+
 bool Player::win() const {
     if (victory_points >= 10) {
         return true;
     }
     return false;
 }
+
+Player::~Player() {}

@@ -7,6 +7,7 @@
 // for enum resources, building types
 #include "components.h"
 
+#include "dice.h"
 //for random
 #include <chrono>
 #include <random>
@@ -23,10 +24,12 @@ class Player {
     // seed parameters
     bool set_seed;
     unsigned seed;
+    // dice
+    Dice *dice;
 
     std::string print_resource(size_t type) const;
     public:
-        Player(Colour colour, bool set_seed_input, unsigned seed_input);
+        Player(Colour colour, bool set_seed_input, unsigned seed_input, Dice *dice_input);
         // functions for getting player status
         Colour get_Colour() const;
         int get_points() const;
@@ -65,8 +68,13 @@ class Player {
         // checks if player possesses the resource being asked for (can they accept the trade?)
         bool valid_trade_acceptance(Resource resource_to_gain) const;
 
+        //dice functions
+        int roll_dice();
+        void setDice(Dice *new_dice);
+        Dice * getDice() const;
+
         bool win() const;
-        ~Player() = default;
+        ~Player();
 };
 
 #endif

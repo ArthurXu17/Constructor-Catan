@@ -9,11 +9,13 @@
 #include "dice.h"
 
 Game::Game(bool set_seed_input, unsigned seed_input) : turn{0}, set_seed{set_seed_input}, seed{seed_input} {
+    fair = new RandomDice(set_seed_input, seed_input);
+    load = new LoadedDice();
     players.resize(4);
-    players[0] = new Player(Colour::Blue, set_seed, seed);
-    players[1] = new Player(Colour::Red, set_seed, seed);
-    players[2] = new Player(Colour::Orange, set_seed, seed);
-    players[3] = new Player(Colour::Yellow, set_seed, seed);
+    players[0] = new Player(Colour::Blue, set_seed, seed, load);
+    players[1] = new Player(Colour::Red, set_seed, seed, load);
+    players[2] = new Player(Colour::Orange, set_seed, seed, load);
+    players[3] = new Player(Colour::Yellow, set_seed, seed, load);
     blue = players[0];
     red = players[1];
     orange = players[2];
@@ -22,11 +24,14 @@ Game::Game(bool set_seed_input, unsigned seed_input) : turn{0}, set_seed{set_see
 }
 
 Game::Game(bool set_seed_input, unsigned seed_input, std::ifstream &f, bool new_game):  set_seed{set_seed_input}, seed{seed_input} {
+    fair = new RandomDice(set_seed_input, seed_input);
+    load = new LoadedDice();
     players.resize(4);
-    players[0] = new Player(Colour::Blue, set_seed, seed);
-    players[1] = new Player(Colour::Red, set_seed, seed);
-    players[2] = new Player(Colour::Orange, set_seed, seed);
-    players[3] = new Player(Colour::Yellow, set_seed, seed);
+    // all players start with loaded dice
+    players[0] = new Player(Colour::Blue, set_seed, seed, load);
+    players[1] = new Player(Colour::Red, set_seed, seed, load);
+    players[2] = new Player(Colour::Orange, set_seed, seed, load);
+    players[3] = new Player(Colour::Yellow, set_seed, seed, load);
     blue = players[0];
     red = players[1];
     orange = players[2];
@@ -119,10 +124,6 @@ void Game::play(bool play_beginning) {
     g->print_grid();  // updated grid
     }
     // Actual Game Loop
-    Dice *fair = new RandomDice(set_seed, seed);
-    Dice *load = new LoadedDice();
-    Dice *current_dice = load;
-    std::string begin_cmd = "load";
     bool somebody_has_won = false;
     // end when a player has at least 10 points
     while (true) {
@@ -135,21 +136,26 @@ void Game::play(bool play_beginning) {
         // Beginning of turn phase
         size_t roll;
         while (true) {
-            std::cout << "Current dice are " << begin_cmd;
+            std::cout << "Current dice are ";
+            if (p->getDice() == fair) {
+                std::cout<<"fair";
+            } else if (p->getDice() == load) {
+                std::cout<<"load";
+            }
             std::cout << ". Enter \"load\" to change current dice to loaded dice, \"fair\" to change current dice to fair dice, or \"roll\" to roll the current dice: ";
             std::string cmd;
             std::cin >> cmd;
             std::cout << std::endl;
             if (cmd == "fair") {  // fair dice
-                begin_cmd = "fair";
-                current_dice = fair;
+                p->setDice(fair);
+                //current_dice = fair;
             } else if (cmd == "load") {  // loaded dice
-                begin_cmd = "loaded";
-                current_dice = load;
+                p->setDice(load);
+                //current_dice = load;
             } else if (cmd == "roll")
                 break;
         }
-        roll = current_dice->generateNumber();  // roll dice
+        roll = p->roll_dice();  // roll dice
         std::cout << "You have rolled a " << roll << "." << std::endl;
 
         if (roll == 7) {  // roll 7 --> activate geese
@@ -372,12 +378,7 @@ void Game::play(bool play_beginning) {
             break;
         }
     }
-
-    std::cout << "Congrats! Builder " << p->get_Colour() << " has earned 10 points and won the game!";
-
-    current_dice = nullptr;  // do we need to delete fair and load???
-    delete fair;
-    delete load;
+    std::cout << "Congrats! Builder " << p->get_Colour()<< " has earned 10 points and won the game!"<<std::endl;
 }
 
 Game::~Game() {
@@ -386,4 +387,6 @@ Game::~Game() {
     delete orange;
     delete yellow;
     delete g;
+    delete fair;
+    delete load;
 }
