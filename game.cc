@@ -120,10 +120,11 @@ void Game::play(bool play_beginning) {
     }
     // Actual Game Loop
     //int turn = 0;
-    Dice *fair = new RandomDice();
+    Dice *fair = new RandomDice(set_seed, seed);
     Dice *load = new LoadedDice();
     Dice *current_dice = fair;
     std::string begin_cmd = "fair";
+    bool somebody_has_won = false;
     // end when a player has at least 10 points
     while (true) {
         p = players[turn % 4];
@@ -211,7 +212,10 @@ void Game::play(bool play_beginning) {
                     std::cout << "Congrats! You have built a basement on vertex " << node << ". ";
                     std::cout << "You have received 1 building point." << std::endl;
                 }
-                if (p->win()) break;  // achieved 10 or more points
+                if (p->win()) {
+                    somebody_has_won = true;
+                    break;
+                }  // achieved 10 or more points
             }
 
             else if (turn_cmd == "improve") {  // attempts to improve residence
@@ -224,7 +228,10 @@ void Game::play(bool play_beginning) {
                     std::cout << "Congrats! You have updated your residence on vertex " << node << ". ";
                     std::cout << "You have received 1 additional building point." << std::endl;
                 }
-                if (p->win()) break;  // achieved 10 or more points
+                if (p->win()) {
+                    somebody_has_won = true;
+                    break;
+                }  // achieved 10 or more points
             }
 
             else if (turn_cmd == "trade") {  // attempts to trade
@@ -321,11 +328,16 @@ void Game::play(bool play_beginning) {
 
         turn++;
         turn = turn % 4;
+        if (somebody_has_won) {
+            break;
+        }
     }
 
     std::cout << "Congrats! Builder " << p->get_Colour() << " has earned 10 points and won the game!";
 
     current_dice = nullptr;  // do we need to delete fair and load???
+    delete fair;
+    delete load;
     // delete fair;
     // delete load;
 

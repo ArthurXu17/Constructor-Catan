@@ -50,7 +50,6 @@ int main(int argc, char **argv) {
     }
     //g->print_grid();
     //Game *game = new Game(set_seed, seed, g);
-    game->play(true);
     delete game;
     //delete g;
 
