@@ -1,16 +1,19 @@
 #include "player.h"
 
+#include <fstream>
 #include <iostream>
 #include <sstream>
-#include <fstream>
+
 #include "resource_costs.h"
 
-Player::Player(Colour colour, bool set_seed_input, unsigned seed_input, Dice *dice_input) : 
-    colour{colour}, set_seed{set_seed_input}, seed{seed_input}, dice{dice_input} {}
+Player::Player(Colour colour, bool set_seed_input, unsigned seed_input,
+               Dice *dice_input)
+    : colour{colour},
+      set_seed{set_seed_input},
+      seed{seed_input},
+      dice{dice_input} {}
 
-int Player::get_points() const {
-    return victory_points;
-}
+int Player::get_points() const { return victory_points; }
 
 // get total number of resources
 int Player::get_total_resource() const {
@@ -21,25 +24,22 @@ int Player::get_total_resource() const {
     return count;
 }
 
-std::vector<std::size_t> Player::get_roads() const {
-    return roads;
-}
+std::vector<std::size_t> Player::get_roads() const { return roads; }
 std::unordered_map<std::size_t, Building_Type> Player::get_buildings() const {
     return buildings;
 }
 
-void Player::increment_points() {
-    victory_points++;
-}
-
+void Player::increment_points() { victory_points++; }
 
 void Player::increment_resource(int index, int amount) {
     resource_count[index] += amount;
 }
 
-void Player::trade_resources(Player *other, Resource resource_to_give, Resource resource_to_gain) {
+void Player::trade_resources(Player *other, Resource resource_to_give,
+                             Resource resource_to_gain) {
     if (this == other) {  // cannot trade with oneself
-        std::cout << "Invalid command. Cannot trade with oneself. " << std::endl;
+        std::cout << "Invalid command. Cannot trade with oneself. "
+                  << std::endl;
     } else {
         int give_index = static_cast<int>(resource_to_give);
         int gain_index = static_cast<int>(resource_to_gain);
@@ -53,15 +53,13 @@ void Player::trade_resources(Player *other, Resource resource_to_give, Resource 
 
 bool Player::valid_trade_offer(Resource resource_to_give) const {
     int give_index = static_cast<int>(resource_to_give);
-    if (resource_count.at(give_index) == 0)
-        return false;
+    if (resource_count.at(give_index) == 0) return false;
     return true;
 }
 
 bool Player::valid_trade_acceptance(Resource resource_to_gain) const {
     int gain_index = static_cast<int>(resource_to_gain);
-    if (resource_count.at(gain_index) == 0)
-        return false;
+    if (resource_count.at(gain_index) == 0) return false;
     return true;
 }
 
@@ -139,23 +137,24 @@ void Player::purchase_tower() {
 }
 
 void Player::print_status() const {
-    std::cout << this->get_Colour() << " has " << victory_points << " building points, ";
+    std::cout << this->get_Colour() << " has " << victory_points
+              << " building points, ";
     for (int i = 0; i < 5; i++) {
-        std::cout << resource_count.at(i) << " " << print_resource(i) << ((i == 4) ? "." : ", ");
+        std::cout << resource_count.at(i) << " " << print_resource(i)
+                  << ((i == 4) ? "." : ", ");
     }
     std::cout << std::endl;
 }
 
 void Player::update_player_by_file(std::istringstream &s) {
     for (int i = 0; i < 5; i++) {
-        s>>resource_count[i];
-        
+        s >> resource_count[i];
     }
-    char input; 
+    char input;
     int road_num;
-        
-    s>>input; //read r
-    while (s>>road_num) {
+
+    s >> input;  // read r
+    while (s >> road_num) {
         roads.emplace_back(static_cast<size_t>(road_num));
     }
     // if break out of loop we have read in h
@@ -165,8 +164,8 @@ void Player::update_player_by_file(std::istringstream &s) {
     int building_num;
     char building_type_input;
     Building_Type building_type;
-    while (s>>building_num) {
-        s>>building_type_input;
+    while (s >> building_num) {
+        s >> building_type_input;
         if (building_type_input == 'B') {
             building_type = Building_Type::Basement;
         } else if (building_type_input == 'H') {
@@ -177,25 +176,24 @@ void Player::update_player_by_file(std::istringstream &s) {
         buildings[building_num] = building_type;
     }
     // terminate loop when reach end of file for stringstream
-
 }
 
 void Player::output_status_to_file(std::ofstream &f) const {
-    //output resources
+    // output resources
     for (auto x : resource_count) {
-        f<<x<<" ";
+        f << x << " ";
     }
     // output roads
-    f<<"r ";
+    f << "r ";
     for (auto x : roads) {
-        f<<x<<" ";
+        f << x << " ";
     }
     // output buildings
-    f<<"h ";
+    f << "h ";
     for (auto kv : buildings) {
         f << kv.first << " " << kv.second << " ";
     }
-    f<<std::endl;
+    f << std::endl;
 }
 
 void Player::print_buildings() const {
@@ -205,9 +203,7 @@ void Player::print_buildings() const {
     }
 }
 
-Colour Player::get_Colour() const {
-    return colour;
-}
+Colour Player::get_Colour() const { return colour; }
 
 void Player::lose_resource_to_geese() {
     int total_resources_count = get_total_resource();
@@ -215,48 +211,57 @@ void Player::lose_resource_to_geese() {
     if (total_resources_count >= 10) {
         int half = total_resources_count / 2;
 
-        std::cout << "Builder " << this->get_Colour() << " loses " << half << " resources to the geese. They lose:" << std::endl;
+        std::cout << "Builder " << this->get_Colour() << " loses " << half
+                  << " resources to the geese. They lose:" << std::endl;
 
         // use a time-based seed for the default seed value
         if (!set_seed) {
             seed = std::chrono::system_clock::now().time_since_epoch().count();
         }
         std::mt19937 gen(seed);
-        std::uniform_int_distribution<std::mt19937::result_type> dist4(0, 4);
-        std::vector<int> resource_lost_count{0, 0, 0, 0, 0};  // purely used to keep track of cumulative amount of each resource lost
-
-        while (half > 0) {
-            int resource_to_be_lost = dist4(gen);
-            if (resource_count[resource_to_be_lost] > 0) {
-                resource_lost_count[resource_to_be_lost]++;
-                resource_count[resource_to_be_lost]--;
-                half--;
-            }
-        }
+        std::vector<int> resource_lost_count{
+            0, 0, 0, 0, 0};  // purely used to keep track of cumulative amount
+                             // of each resource lost
+        std::vector<int> resource_pool;
         for (int i = 0; i < 5; i++)
-            std::cout << resource_lost_count[i] << " " << print_resource(i) << ((i == 4) ? "." : ", ");
+            for (int j = 0; j < this->resource_count[i]; j++)
+                resource_pool.push_back(i);
+
+        std::shuffle(resource_pool.begin(), resource_pool.end(), gen);
+
+        for (int i = 0; i < half; i++) {
+            resource_lost_count[resource_pool[i]]++;
+            this->resource_count[resource_pool[i]]--;
+        }
+
+        for (int i = 0; i < 5; i++)
+            std::cout << resource_lost_count[i] << " " << print_resource(i)
+                      << ((i == 4) ? "." : ", ");
         std::cout << std::endl;
     }
 }
-
-// steals a resource from a player assuming they are valid (they have at least one resource)
-void Player::steal(Player *victim) {
-    victim->robbed(this);
-}
+// steals a resource from a player assuming they are valid (they have at least
+// one resource)
+void Player::steal(Player *victim) { victim->robbed(this); }
 
 void Player::robbed(Player *robber) {
     if (!set_seed) {
         seed = std::chrono::system_clock::now().time_since_epoch().count();
     }
     std::mt19937 gen(seed);
-    std::uniform_int_distribution<std::mt19937::result_type> dist4(0, 4);
-    while (true) {
-        int resource = dist4(gen);
-        if (resource_count[resource] > 0) {
-            resource_count[resource]--;
-            robber->increment_resource(resource, 1);
-            std::cout << "Builder " << robber->get_Colour() << " steals " << print_resource(resource) << " from builder " << this->get_Colour() << "." << std::endl;
-            break;
+    std::uniform_int_distribution<std::mt19937::result_type> dist4(
+        1, this->get_total_resource());
+    int resource = dist4(gen);
+
+    for (int i = 0; i < 5; i++) {
+        resource -= this->resource_count[i];
+        if (resource <= 0) {
+            resource_count[i]--;
+            robber->increment_resource(i, 1);
+            std::cout << "Builder " << robber->get_Colour() << " steals "
+                      << print_resource(i) << " from builder "
+                      << this->get_Colour() << "." << std::endl;
+            return;
         }
     }
 }
@@ -280,17 +285,11 @@ std::string Player::print_resource(size_t type) const {
     }
 }
 
-int Player::roll_dice() {
-    return dice->generateNumber();
-}
+int Player::roll_dice() { return dice->generateNumber(); }
 
-void Player::setDice(Dice *new_dice) {
-    dice = new_dice;
-}
+void Player::setDice(Dice *new_dice) { dice = new_dice; }
 
-Dice * Player::getDice() const {
-    return dice;
-}
+Dice *Player::getDice() const { return dice; }
 
 bool Player::win() const {
     if (victory_points >= 10) {
