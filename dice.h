@@ -20,6 +20,7 @@ class Dice {
 class RandomDice : public Dice {
     bool set_seed;
     unsigned seed;
+    std::mt19937 gen;
     
     public:
         RandomDice(bool set_seed_input, unsigned seed_input);
