@@ -274,10 +274,12 @@ void Game::play(bool play_beginning) {
                 std::string other, give, gain;
                 std::cin >> other;                                              // other player in trade
                 std::cin >> give >> gain;                                       // resources being traded
+                
                 transform(other.begin(), other.end(), other.begin(), toupper);  // converts to uppercase
                 transform(give.begin(), give.end(), give.begin(), toupper);
                 transform(gain.begin(), gain.end(), gain.begin(), toupper);
 
+                //converting resource input to resource enum
                 Resource resource_to_give, resource_to_gain;  // resources being traded
                 if (give == "BRICK")
                     resource_to_give = Resource::Brick;
@@ -290,7 +292,7 @@ void Game::play(bool play_beginning) {
                 else if (give == "WIFI")
                     resource_to_give = Resource::Wifi;
                 if (gain == "BRICK")
-                    resource_to_give = Resource::Brick;
+                    resource_to_gain = Resource::Brick;
                 else if (gain == "ENERGY")
                     resource_to_gain = Resource::Energy;
                 else if (gain == "GLASS")
@@ -299,44 +301,57 @@ void Game::play(bool play_beginning) {
                     resource_to_gain = Resource::Heat;
                 else if (gain == "WIFI")
                     resource_to_gain = Resource::Wifi;
-
-                if (!p->valid_trade_offer(resource_to_give)) {  // does not possess sufficient resources to give
-                    std::cout << "You do not have enough resources." << std::endl;
-                    break;
+                //converting colour input to colour enum
+                Colour other_colour;
+                if (other =="BLUE") {
+                    other_colour = Colour::Blue;
+                } else if (other =="RED") {
+                    other_colour = Colour::Red;
+                } else if (other =="ORANGE") {
+                    other_colour = Colour::Orange;
+                } else if (other =="YELLOW") {
+                    other_colour = Colour::Yellow;
                 }
-
-                std::cout << p->get_Colour() << " offers " << other << " one " << give << " for one " << gain << "." << std::endl;
-                std::cout << "Does " << other << " accept this offer? ";  // trade offer
-                std::string reply;
-                std::cin >> reply;
-                transform(reply.begin(), reply.end(), reply.begin(), toupper);
-                if (reply == "NO") {  // no
-                    std::cout << "Trade declined." << std::endl;
-                } else {                    // yes
-                    if (other == "BLUE") {  // trade with blue
-                        if (!blue->valid_trade_acceptance(resource_to_gain)) {
-                            std::cout << "You do not have enough resources." << std::endl;
-                            break;
+                
+                if (p->get_Colour() == other_colour) {
+                    std::cout << "Invalid command. Cannot trade with oneself. "
+                              << std::endl;
+                } else if (!p->valid_trade_offer(resource_to_give)) {  // does not possess sufficient resources to give
+                    std::cout << "You do not have enough resources." << std::endl;
+                } else {
+                    std::cout << p->get_Colour() << " offers " << other << " one " << give << " for one " << gain << "." << std::endl;
+                    std::cout << "Does " << other << " accept this offer? ";  // trade offer
+                    std::string reply;
+                    std::cin >> reply;
+                    transform(reply.begin(), reply.end(), reply.begin(), toupper);
+                    if (reply == "NO") {  // no
+                        std::cout << "Trade declined." << std::endl;
+                    } else {                    // yes
+                        if (other == "BLUE") {  // trade with blue
+                            if (!blue->valid_trade_acceptance(resource_to_gain)) {
+                                std::cout << "BLUE does not have enough resources to make the trade." << std::endl;
+                            } else {
+                                p->trade_resources(blue, resource_to_give, resource_to_gain);
+                            }
+                        } else if (other == "RED") {  // trade with red
+                            if (!red->valid_trade_acceptance(resource_to_gain)) {
+                                std::cout << "RED does not have enough resources to make the trade." << std::endl;
+                            } else {
+                                p->trade_resources(red, resource_to_give, resource_to_gain);
+                            }
+                        } else if (other == "ORANGE") {  // trade with orange
+                            if (!orange->valid_trade_acceptance(resource_to_gain)) {
+                                std::cout << "ORANGE does not have enough resources to make the trade." << std::endl;
+                            } else {
+                                p->trade_resources(orange, resource_to_give, resource_to_gain);
+                            }
+                        } else if (other == "YELLOW") {  // trade with yellow
+                            if (!yellow->valid_trade_acceptance(resource_to_gain)) {
+                                std::cout << "YELLOW does not have enough resources to make the trade." << std::endl;
+                            } else {
+                                p->trade_resources(yellow, resource_to_give, resource_to_gain);
+                            }
                         }
-                        p->trade_resources(blue, resource_to_give, resource_to_gain);
-                    } else if (other == "RED") {  // trade with red
-                        if (!red->valid_trade_acceptance(resource_to_gain)) {
-                            std::cout << "You do not have enough resources." << std::endl;
-                            break;
-                        }
-                        p->trade_resources(red, resource_to_give, resource_to_gain);
-                    } else if (other == "ORANGE") {  // trade with orange
-                        if (!orange->valid_trade_acceptance(resource_to_gain)) {
-                            std::cout << "You do not have enough resources." << std::endl;
-                            break;
-                        }
-                        p->trade_resources(orange, resource_to_give, resource_to_gain);
-                    } else if (other == "YELLOW") {  // trade with yellow
-                        if (!yellow->valid_trade_acceptance(resource_to_gain)) {
-                            std::cout << "You do not have enough resources." << std::endl;
-                            break;
-                        }
-                        p->trade_resources(yellow, resource_to_give, resource_to_gain);
                     }
                 }
             }

@@ -37,10 +37,7 @@ void Player::increment_resource(int index, int amount) {
 
 void Player::trade_resources(Player *other, Resource resource_to_give,
                              Resource resource_to_gain) {
-    if (this == other) {  // cannot trade with oneself
-        std::cout << "Invalid command. Cannot trade with oneself. "
-                  << std::endl;
-    } else {
+    
         int give_index = static_cast<int>(resource_to_give);
         int gain_index = static_cast<int>(resource_to_gain);
 
@@ -48,7 +45,7 @@ void Player::trade_resources(Player *other, Resource resource_to_give,
         other->resource_count[give_index] += 1;
         resource_count[gain_index] += 1;
         other->resource_count[gain_index] -= 1;
-    }
+    
 }
 
 bool Player::valid_trade_offer(Resource resource_to_give) const {
