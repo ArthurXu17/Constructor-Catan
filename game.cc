@@ -2,10 +2,13 @@
 
 #include <algorithm>
 #include <string>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
 #include "dice.h"
 
-Game::Game(bool set_seed_input, unsigned seed_input, Grid *g_input) : set_seed{set_seed_input}, seed{seed_input}, g{g_input} {
+Game::Game(bool set_seed_input, unsigned seed_input) : turn{0}, set_seed{set_seed_input}, seed{seed_input} {
     players.resize(4);
     players[0] = new Player(Colour::Blue, set_seed, seed);
     players[1] = new Player(Colour::Red, set_seed, seed);
@@ -15,13 +18,89 @@ Game::Game(bool set_seed_input, unsigned seed_input, Grid *g_input) : set_seed{s
     red = players[1];
     orange = players[2];
     yellow = players[3];
+    g = new Grid(set_seed_input, seed_input);
 }
 
-void Game::play() {
-    g->print_grid();  // starting board
-    int curr_player;
-    Player *p;
+Game::Game(bool set_seed_input, unsigned seed_input, std::ifstream &f, bool new_game):  set_seed{set_seed_input}, seed{seed_input} {
+    players.resize(4);
+    players[0] = new Player(Colour::Blue, set_seed, seed);
+    players[1] = new Player(Colour::Red, set_seed, seed);
+    players[2] = new Player(Colour::Orange, set_seed, seed);
+    players[3] = new Player(Colour::Yellow, set_seed, seed);
+    blue = players[0];
+    red = players[1];
+    orange = players[2];
+    yellow = players[3];    
+    if (new_game) {
+        turn = 0;
+        std::string line;
+        std::getline(f, line);
+        std::istringstream s{line};
+        g = new Grid(s, set_seed_input, seed_input);
+    } else {
+        std::string colour;
+        f>>colour;
+        if (colour == "BLUE") {
+            turn = 0;
+        } else if (colour == "RED") {
+            turn = 1;
+        } else if (colour == "ORANGE") {
+            turn = 2;
+        } else if (colour == "YELLOW") {
+            turn = 3;
+        } 
+        std::cout<<turn<<std::endl;
+        std::string line;
+        //to move to nextline after the turn
+        std::getline(f, line);
+        for (int i = 0; i < 4; i++) {
+            std::getline(f, line);
+            std::istringstream s{line};
+            //std::cout<<i<<" in loop"<<std::endl;
+            players[i]->update_player_by_file(s);
+        }
+        std::getline(f, line);
+        std::istringstream s{line};
+        g = new Grid(s, set_seed_input, seed_input);
+        // now that grid has been instantiated, manually update grid based on updated player information
+        // we can also update the building points of the players through here
+        for (int i = 0; i < 4; i++) {
+            for (auto edge_id : players[i]->get_roads()) {
+                g->build_road(players[i], edge_id);
+            }
+            for (auto kv : players[i]->get_buildings()) {
+                size_t node_id = kv.first;
+                Building_Type type = kv.second;
+                int num_upgrades = static_cast<int>(type);
+                g->build_building(players[i], node_id);
+                num_upgrades--;
+                while (num_upgrades >= 1) {
+                    g->upgrade_building(players[i], node_id);
+                    num_upgrades--;
+                }
+            }
+        }
+        size_t goose_tile;
+        f>>goose_tile;
+        g->set_goose(goose_tile);
+    }
+}
 
+void Game::save_game(std::ofstream& f) {
+    f<<static_cast<Colour>(turn + 1)<<std::endl;
+    for (auto p : players) {
+        p->output_status_to_file(f);
+    }
+    g->save_board(f);
+    f<<g->get_goose_tile();   
+}
+
+void Game::play(bool play_beginning) {
+    g->print_grid();  // starting board    
+    Player *p; // keep track of whose turn it is
+
+    if (play_beginning) {
+    int curr_player;
     // Beginning of Game
     for (int i = 0; i < 8; i++) {  // get initial basements from players
         curr_player = (i > 3) ? 7 - i : i;
@@ -38,9 +117,9 @@ void Game::play() {
         g->build_building(p, node);
     }
     g->print_grid();  // updated grid
-
+    }
     // Actual Game Loop
-    int turn = 0;
+    //int turn = 0;
     Dice *fair = new RandomDice();
     Dice *load = new LoadedDice();
     Dice *current_dice = fair;
@@ -224,7 +303,10 @@ void Game::play() {
             }
 
             else if (turn_cmd == "save") {  // saves current game state
-
+                std::string file_name;
+                std::cin>>file_name;
+                std::ofstream file_stream{file_name};
+                save_game(file_stream);
             }
 
             else if (turn_cmd == "help") {  // prints out list of commands
@@ -238,6 +320,7 @@ void Game::play() {
         }
 
         turn++;
+        turn = turn % 4;
     }
 
     std::cout << "Congrats! Builder " << p->get_Colour() << " has earned 10 points and won the game!";
@@ -342,4 +425,5 @@ Game::~Game() {
     delete red;
     delete orange;
     delete yellow;
+    delete g;
 }

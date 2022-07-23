@@ -47,6 +47,8 @@ class Grid {
     bool set_seed;
     unsigned seed;
 
+    size_t goose_tile;
+
     public: 
         // for making sure the maps have correct values, REMOVE WHEN SUBMITTING
         void test_map();
@@ -56,9 +58,9 @@ class Grid {
         // constructor for random board generation
         Grid(bool set_seed_input, unsigned seed_input);
         // constructor for file input board generation
-        Grid(std::ifstream &f);
+        Grid(std::istringstream &f, bool set_seed_input, unsigned seed_input);
         
-        void save_game(std::ifstream f);
+        void save_board(std::ofstream& f) const;
         void help() const;
 
         // can player PLACE a road here
@@ -73,6 +75,8 @@ class Grid {
         void update_by_roll(int roll);
         void print_grid() const;
         size_t move_goose(); 
+        void set_goose(size_t new_tile);
+        size_t get_goose_tile() const;
         int who_to_steal_from(size_t geese_loc, Player* curr_player);
         ~Grid();
 };

@@ -1,6 +1,8 @@
 #include "player.h"
 
 #include <iostream>
+#include <sstream>
+#include <fstream>
 
 Player::Player(Colour colour, bool set_seed_input, unsigned seed_input) : colour{colour}, set_seed{set_seed_input}, seed{seed_input} {}
 
@@ -17,9 +19,17 @@ int Player::get_total_resource() const {
     return count;
 }
 
+std::vector<std::size_t> Player::get_roads() const {
+    return roads;
+}
+std::unordered_map<std::size_t, Building_Type> Player::get_buildings() const {
+    return buildings;
+}
+
 void Player::increment_points() {
     victory_points++;
 }
+
 
 void Player::increment_resource(int index, int amount) {
     resource_count[index] += amount;
@@ -54,7 +64,17 @@ bool Player::valid_trade_acceptance(Resource resource_to_gain) const {
 }
 
 void Player::add_road(size_t edge_id) {
-    roads.emplace_back(edge_id);
+    // only add if edge_id doesn't already exist
+    // we need to check this for when we create a game from a loaded state
+    bool exist_already = false;
+    for (auto x : roads) {
+        if (x == edge_id) {
+            exist_already = true;
+        }
+    }
+    if (!exist_already) {
+        roads.emplace_back(edge_id);
+    }
 }
 
 void Player::add_building(size_t node_id, Building_Type building_type) {
@@ -91,11 +111,62 @@ void Player::print_status() const {
     std::cout<<std::endl;*/
 }
 
+void Player::update_player_by_file(std::istringstream &s) {
+    for (int i = 0; i < 5; i++) {
+        s>>resource_count[i];
+        
+    }
+    char input; 
+    int road_num;
+        
+    s>>input; //read r
+    while (s>>road_num) {
+        roads.emplace_back(static_cast<size_t>(road_num));
+    }
+    // if break out of loop we have read in h
+    s.clear();
+    s.ignore();
+
+    int building_num;
+    char building_type_input;
+    Building_Type building_type;
+    while (s>>building_num) {
+        s>>building_type_input;
+        if (building_type_input == 'B') {
+            building_type = Building_Type::Basement;
+        } else if (building_type_input == 'H') {
+            building_type = Building_Type::House;
+        } else if (building_type_input == 'T') {
+            building_type = Building_Type::Tower;
+        }
+        buildings[building_num] = building_type;
+    }
+    // terminate loop when reach end of file for stringstream
+
+}
+
+void Player::output_status_to_file(std::ofstream &f) const {
+    //output resources
+    for (auto x : resource_count) {
+        f<<x<<" ";
+    }
+    // output roads
+    f<<"r ";
+    for (auto x : roads) {
+        f<<x<<" ";
+    }
+    // output buildings
+    f<<"h ";
+    for (auto kv : buildings) {
+        f << kv.first << " " << kv.second << " ";
+    }
+    f<<std::endl;
+}
+
 void Player::print_buildings() const {
     std::cout << this->get_Colour() << " has built:" << std::endl;
     for (auto kv : buildings) {
         std::cout << kv.first << " " << kv.second << std::endl;
-        // print_building_type(kv.second);
     }
 }
 

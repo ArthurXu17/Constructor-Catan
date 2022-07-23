@@ -29,6 +29,8 @@ class Player {
         Player(Colour colour, bool set_seed_input, unsigned seed_input);
         int get_points() const;
         int get_total_resource() const;
+        std::vector<std::size_t> get_roads() const;
+        std::unordered_map<std::size_t, Building_Type> get_buildings() const;
         void increment_points();
         void increment_resource(int index, int amount);
         void lose_resource_to_geese();
@@ -40,6 +42,8 @@ class Player {
         // checks if player possesses the resource being asked for (can they accept the trade?)
         bool valid_trade_acceptance(Resource resource_to_gain) const;
         void print_status() const;
+        void update_player_by_file(std::istringstream &f);
+        void output_status_to_file(std::ofstream &f) const;
         void print_buildings() const;
         void add_road(size_t edge_id);
         void add_building(size_t node_id, Building_Type building_type);

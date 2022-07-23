@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <random>
 #include <string>
 #include <unordered_map>
@@ -99,11 +100,14 @@ Grid::Grid(bool set_seed_input, unsigned seed_input) : set_seed{set_seed_input},
     std::swap(dice_rolls.at(park_index), dice_rolls.at(seven_index));
     for (size_t i = 0; i <= max_tile; i++) {
         // std::cout<<"Resource: "<<static_cast<int>(tile_res.at(i))<<", Dice Roll: "<<dice_rolls.at(i)<<std::endl;
+        if (tile_res.at(i) == Resource::Park) {
+            goose_tile = i;
+        }
         tiles.emplace_back(new Tile(tile_res.at(i), dice_rolls.at(i), tile_res.at(i) == Resource::Park));
     }
 }
 
-Grid::Grid(std::ifstream &f) {
+Grid::Grid(std::istringstream &f, bool set_seed_input, unsigned seed_input) : set_seed{set_seed_input}, seed{seed_input} {
     edge_colour = std::unordered_map<size_t, Colour>();
     node_owner = std::unordered_map<size_t, Building *>();
     edge_ends = std::unordered_map<size_t, std::pair<size_t, size_t>>();
@@ -130,6 +134,9 @@ Grid::Grid(std::ifstream &f) {
         int dice_roll;
         f >> res_int >> dice_roll;
         res = static_cast<Resource>(res_int);
+        if (res == Resource::Park) {
+            goose_tile = i;
+        }
         tiles.emplace_back(new Tile(res, dice_roll, res == Resource::Park));
     }
 }
@@ -419,6 +426,13 @@ void Grid::print_grid() const {
     std::cout << std::endl;
 }
 
+void Grid::save_board(std::ofstream &f) const{
+    for (auto t : tiles) {
+        f << static_cast<int>(t->get_resource()) << " " << t->get_dice() << " ";
+    }
+    f<<std::endl;
+}
+
 bool Grid::valid_upgrade(Colour colour, size_t node_id) const {
     if (node_id > 53) return false;  // out of bounds
 
@@ -568,6 +582,18 @@ void Grid::update_by_roll(int roll) {
     }
 }
 
+
+
+size_t Grid::get_goose_tile() const {
+    return goose_tile;
+}
+
+void Grid::set_goose(size_t new_tile) {
+    tiles.at(goose_tile)->setGooseStatus(false);
+    goose_tile = new_tile;
+    tiles.at(goose_tile)->setGooseStatus(true);
+}
+
 size_t Grid::move_goose() {
     size_t new_geese_loc;
     size_t curr_geese_loc;
@@ -584,6 +610,7 @@ size_t Grid::move_goose() {
         std::cout << "Please select a valid location. ";
     }
     tiles[new_geese_loc]->setGooseStatus(true);  // change geese status
+    goose_tile = new_geese_loc;
     tiles[curr_geese_loc]->setGooseStatus(false);
 
     return new_geese_loc;

@@ -14,32 +14,45 @@
 #include "game.h"
 
 int main(int argc, char **argv) {
-    std::string file_name = "";
+    std::string board_file_name = "";
+    std::string game_file_name = "";
     bool set_seed = false;
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     for (int i = 1; i < argc; i++) {
-        if (std::string(argv[i]) == "-load") {
+        if (std::string(argv[i]) == "-board") {
             i++;
-            file_name = argv[i];
+            board_file_name = argv[i];
         }
         if (std::string(argv[i]) == "-seed") {
             set_seed = true;
             i++;
             seed = std::stoi(std::string{argv[i]});
         }
+        if (std::string(argv[i]) == "-load") {
+            i++;
+            game_file_name = argv[i];
+        }
     }
-    std::ifstream infile{file_name};
-    Grid *g;
-    if (file_name == "") {
-        g = new Grid(set_seed, seed);
+    //Grid *g;
+    Game *game;
+    if (game_file_name != "") {
+        //g = new Grid(set_seed, seed);
+        std::ifstream infile{game_file_name};
+        game = new Game(set_seed, seed, infile, false);
+        game->play(false);
+    } else if (board_file_name != "") {
+        std::ifstream infile{board_file_name};
+        game = new Game(set_seed, seed, infile, true);
+        game->play(true);
     } else {
-        g = new Grid(infile);
+        game = new Game(set_seed, seed);
+        game->play(true);
     }
     //g->print_grid();
-    Game *game = new Game(set_seed, seed, g);
-    game->play();
+    //Game *game = new Game(set_seed, seed, g);
+    game->play(true);
     delete game;
-    delete g;
+    //delete g;
 
     /*Player *blue = new Player(Colour::Blue, set_seed, seed);
     Player *red = new Player(Colour::Red, set_seed, seed);
