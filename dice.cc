@@ -25,7 +25,8 @@ int LoadedDice::generateNumber() {
     int min = 2, max = 12;
     int roll = 0;
     while (true) {
-        std::cout << "Input a roll between " << min << " and " << max << ": "; // prompt for roll
+        std::cout << "Input a roll between " << min << " and " << max << "." << std::endl; // prompt for roll
+        std::cout << "> ";
         std::cin >> roll;
         if (roll < min || roll > max) { // not within range
             std::cout << "Invalid roll." << std::endl;

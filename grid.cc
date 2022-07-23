@@ -560,7 +560,8 @@ size_t Grid::move_goose() {
         }
     }
 
-    std::cout << "Choose where to place the GEESE. ";  // prompt for new location
+    std::cout << "Choose where to place the GEESE." << std::endl;  // prompt for new location
+    std::cout << "> ";
     while (std::cin >> new_geese_loc) {
         if (new_geese_loc <= max_tile && new_geese_loc != curr_geese_loc)  // must be new tile within range
             break;
@@ -600,7 +601,8 @@ int Grid::who_to_steal_from(size_t geese_loc, Player *curr_player) {
         std::cout << " " << p;
     std::cout << "." << std::endl;
 
-    std::cout << "Choose a builder to steal from. ";
+    std::cout << "Choose a builder to steal from." << std::endl;
+    std::cout << "> ";
     std::string victim;
 
     while (true) {

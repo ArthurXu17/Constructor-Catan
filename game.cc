@@ -112,11 +112,13 @@ void Game::play(bool play_beginning) {
         p = players[curr_player];
 
         std::cout << "Builder " << p->get_Colour() << ", where do you want to build a basement?" << std::endl;
+        std::cout << "> ";
 
         size_t node;  // building vertex
         std::cin >> node;
         while (!g->valid_building(p->get_Colour(), node, true)) {  // invalid building placement
             std::cout << "Cannot build there. Please try again." << std::endl;
+            std::cout << "> ";
             std::cin >> node;
         }
         g->build_building(p, node);
@@ -142,7 +144,8 @@ void Game::play(bool play_beginning) {
             } else if (p->getDice() == load) {
                 std::cout<<"load";
             }
-            std::cout << ". Enter \"load\" to change current dice to loaded dice, \"fair\" to change current dice to fair dice, or \"roll\" to roll the current dice: ";
+            std::cout << ". Enter \"load\" to change current dice to loaded dice, \"fair\" to change current dice to fair dice, or \"roll\" to roll the current dice." << std::endl;
+            std::cout << "> ";
             std::string cmd;
             std::cin >> cmd;
             std::cout << std::endl;
@@ -178,7 +181,8 @@ void Game::play(bool play_beginning) {
         // During the turn phase
         std::string turn_cmd;
         while (turn_cmd != "next") {  // end turn given command "next"
-            std::cout << "Game phase. Please enter a command (enter \"help\" to show valid commands): ";
+            std::cout << "Game phase. Please enter a command (enter \"help\" to show valid commands)." << std::endl;
+            std::cout << "> ";
             std::cin >> turn_cmd;
 
             if (turn_cmd == "board") {  // prints current board
@@ -312,7 +316,7 @@ void Game::play(bool play_beginning) {
                 } else if (other =="YELLOW") {
                     other_colour = Colour::Yellow;
                 }
-                
+
                 if (p->get_Colour() == other_colour) {
                     std::cout << "Invalid command. Cannot trade with oneself. "
                               << std::endl;
@@ -320,7 +324,8 @@ void Game::play(bool play_beginning) {
                     std::cout << "You do not have enough resources." << std::endl;
                 } else {
                     std::cout << p->get_Colour() << " offers " << other << " one " << give << " for one " << gain << "." << std::endl;
-                    std::cout << "Does " << other << " accept this offer? ";  // trade offer
+                    std::cout << "Does " << other << " accept this offer?" << std::endl;  // trade offer
+                    std::cout << "> ";
                     std::string reply;
                     std::cin >> reply;
                     transform(reply.begin(), reply.end(), reply.begin(), toupper);
