@@ -119,7 +119,6 @@ void Game::play(bool play_beginning) {
     g->print_grid();  // updated grid
     }
     // Actual Game Loop
-    //int turn = 0;
     Dice *fair = new RandomDice(set_seed, seed);
     Dice *load = new LoadedDice();
     Dice *current_dice = fair;
@@ -259,13 +258,6 @@ void Game::play(bool play_beginning) {
                     // cur type is a NoBuilding or tower, so invalid upgrade
                     std::cout<<"You cannot build here."<<std::endl;
                 }
-                /*if (!g->valid_upgrade(p->get_Colour(), node)) {
-                    std::cout << "Invalid command." << std::endl;  // FIX ERROR MESSAGE IF INSUFFICIENT RESOURCES OR UPGRADE!!!!!!!!!!!!!!!
-                } else {
-                    g->upgrade_building(p, node);
-                    std::cout << "Congrats! You have updated your residence on vertex " << node << ". ";
-                    std::cout << "You have received 1 additional building point." << std::endl;
-                }*/
                 if (p->win()) {
                     somebody_has_won = true;
                     break;
@@ -355,7 +347,17 @@ void Game::play(bool play_beginning) {
             }
 
             else if (turn_cmd == "help") {  // prints out list of commands
-                g->help();
+                std::cout << "Valid commands: " << std::endl;
+                std::cout << "board" << std::endl;
+                std::cout << "status" << std::endl;
+                std::cout << "residences" << std::endl;
+                std::cout << "build-road <edge#>" << std::endl;
+                std::cout << "build-red <housing#>" << std::endl;
+                std::cout << "improve <housing#>" << std::endl;
+                std::cout << "trade <colour> <give> <take>" << std::endl;
+                std::cout << "next" << std::endl;
+                std::cout << "save <file>" << std::endl;
+                std::cout << "help" << std::endl;
             }
 
             else {  // invalid command
@@ -376,98 +378,6 @@ void Game::play(bool play_beginning) {
     current_dice = nullptr;  // do we need to delete fair and load???
     delete fair;
     delete load;
-    // delete fair;
-    // delete load;
-
-    /*g->build_road(red, 0);
-    g->build_road(red, 20);
-    g->print_grid();
-    red->print_status();
-    red->print_buildings();
-    blue->print_status();
-    blue->print_buildings();
-    g->build_building(red, 20);
-    g->print_grid();
-    g->build_building(red, 21);
-    g->build_building(blue, 26);
-    g->print_grid();
-    red->print_status();
-    red->print_buildings();
-    blue->print_status();
-    blue->print_buildings();
-    g->update_by_roll(11);
-    red->print_status();
-    blue->print_status();
-    g->update_by_roll(2);
-    red->print_status();
-    blue->print_status();
-    g->update_by_roll(3);
-    red->print_status();
-    blue->print_status();
-    g->upgrade_building(red, 20);
-    g->print_grid();
-    red->print_buildings();
-    blue->print_buildings();
-    g->update_by_roll(11);
-    red->print_status();
-    blue->print_status();
-    g->update_by_roll(2);
-    red->print_status();
-    blue->print_status();
-    g->build_building(red, 38);
-    g->upgrade_building(red, 38);
-    g->upgrade_building(red, 38);
-    g->print_grid();
-    red->print_status();
-    red->print_buildings();
-    g->update_by_roll(11);
-    red->print_status();
-    blue->print_status();
-    if (red->valid_trade_offer(Resource::Brick) && blue->valid_trade_acceptance(Resource::Glass)) {
-        red->trade_resources(blue, Resource::Brick, Resource::Glass);
-        red->print_status();
-        blue->print_status();
-    }
-    if (red->valid_trade_offer(Resource::Wifi) && blue->valid_trade_acceptance(Resource::Wifi)) {
-        red->trade_resources(blue, Resource::Wifi, Resource::Wifi);
-        red->print_status();
-        blue->print_status();
-    }
-    if (red->valid_trade_offer(Resource::Heat) && blue->valid_trade_acceptance(Resource::Wifi)) {
-        red->trade_resources(blue, Resource::Heat, Resource::Wifi);
-        red->print_status();
-        blue->print_status();
-    }
-    if (red->valid_trade_offer(Resource::Wifi) && blue->valid_trade_acceptance(Resource::Glass)) {
-        red->trade_resources(blue, Resource::Wifi, Resource::Glass);
-        red->print_status();
-        blue->print_status();
-    }*/
-
-    // to be called whenever a 7 is rolled
-    // int roll = 7;
-    // std::vector<Player *> players = {blue, red, orange, yellow};
-    // if (roll == 7) {
-    /*for (int i = 4; i < 10; i++) {
-        //blue->resource_count = {i, i, i, i, i};
-
-        for (auto p : players) {
-            p->lose_resource_to_geese();
-            p->print_status();
-        }
-
-    }*/
-    // for (auto p : players) {
-
-    //         p->lose_resource_to_geese();
-    //         p->print_status();
-    // }
-    /*for (int i = 0; i <= 18; i++) {
-        g->move_goose();
-        g->print_grid();
-    }*/
-    // std::cout << "Builder <colour1> can choose to steal from [builders]" << std::endl;
-    //}
 }
 
 Game::~Game() {

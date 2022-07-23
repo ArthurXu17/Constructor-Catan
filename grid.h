@@ -50,15 +50,12 @@ class Grid {
     size_t goose_tile;
 
     public: 
-        // for making sure the maps have correct values, REMOVE WHEN SUBMITTING
-        void test_map();
         // constructor for random board generation
         Grid(bool set_seed_input, unsigned seed_input);
         // constructor for file input board generation
         Grid(std::istringstream &f, bool set_seed_input, unsigned seed_input);
         
         void save_board(std::ofstream& f) const;
-        void help() const;
 
         // can player PLACE a road here
         bool valid_road(Colour player, size_t edge_id) const;

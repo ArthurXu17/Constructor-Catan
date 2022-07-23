@@ -16,38 +16,6 @@
 #include "grid_constants.h"
 #include "tile.h"
 
-void Grid::test_map() {
-    /*std::cout<<"Map edges to neighbouring nodes:"<<std::endl;
-    for (auto & kv : edge_ends) {
-        std::cout<<kv.first<<": "<<kv.second.first<<", "<<kv.second.second<<std::endl;
-    }
-    std::cout<<"Map node to adjacent edges:"<<std::endl;
-    for (auto & kv : adjacent_edges) {
-        std::cout<<kv.first<<": ";
-        for (auto x : kv.second) {
-            std::cout<<x<<", ";
-        }
-        std::cout<<std::endl;
-    }*/
-
-    std::cout << "Map node to adjacent tiles:" << std::endl;
-    for (auto &kv : adjacent_tiles) {
-        std::cout << kv.first << ": ";
-        for (auto x : kv.second) {
-            std::cout << x << ", ";
-        }
-        std::cout << std::endl;
-    }
-
-    for (size_t i = 0; i <= max_edge; i++) {
-        if (valid_road(Colour::Red, i))
-            std::cout << "R " << i << std::endl;
-        if (valid_road(Colour::Orange, i))
-            std::cout << "O " << i << std::endl;
-    }
-    this->print_grid();
-}
-
 Grid::Grid(bool set_seed_input, unsigned seed_input) : set_seed{set_seed_input}, seed{seed_input} {
     edge_colour = std::unordered_map<size_t, Colour>();
     node_owner = std::unordered_map<size_t, Building *>();
@@ -119,13 +87,6 @@ Grid::Grid(std::istringstream &f, bool set_seed_input, unsigned seed_input) : se
     adjacent_edges_init(adjacent_edges);
     adjacent_tiles_init(adjacent_tiles);
 
-    /*for (size_t i = 0; i <= max_edge; i++) {
-        edge_colour[i] = Colour::NoColour;
-    }
-    for (size_t i = 0; i <= max_node; i++) {
-        node_owner[i] = nullptr;
-    }*/
-
     tiles = std::vector<Tile *>();
     for (int i = 0; i < 19; i++) {
         // read in resource
@@ -139,20 +100,6 @@ Grid::Grid(std::istringstream &f, bool set_seed_input, unsigned seed_input) : se
         }
         tiles.emplace_back(new Tile(res, dice_roll, res == Resource::Park));
     }
-}
-
-void Grid::help() const {
-    std::cout << "Valid commands: " << std::endl;
-    std::cout << "board" << std::endl;
-    std::cout << "status" << std::endl;
-    std::cout << "residences" << std::endl;
-    std::cout << "build-road <edge#>" << std::endl;
-    std::cout << "build-red <housing#>" << std::endl;
-    std::cout << "improve <housing#>" << std::endl;
-    std::cout << "trade <colour> <give> <take>" << std::endl;
-    std::cout << "next" << std::endl;
-    std::cout << "save <file>" << std::endl;
-    std::cout << "help" << std::endl;
 }
 
 void Grid::print_edge(size_t &n) const {

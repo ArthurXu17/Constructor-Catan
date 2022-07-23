@@ -84,8 +84,6 @@ void Player::add_building(size_t node_id, Building_Type building_type) {
 }
 
 bool Player::can_buy_road() const {
-    // cost 1 heat (3) and 1 wifi (4)
-    //return (resource_count.at(3) >= 1 && resource_count.at(4) >= 1);
     for (size_t i = 0; i < resource_count.size(); i++) {
         if (resource_count.at(i) < road_cost.at(i)) {
             return false;
@@ -94,25 +92,20 @@ bool Player::can_buy_road() const {
     return true;
 }
 bool Player::can_buy_basement() const {
-    // cost 1 brick (0), 1 energy (1), 1 glass (2), 1 wifi (4)
     for (size_t i = 0; i < resource_count.size(); i++) {
         if (resource_count.at(i) < basement_cost.at(i)) {
             return false;
         }
     }
     return true;
-    /*return (resource_count.at(0) >= 1 && resource_count.at(1) >= 1 &&
-            resource_count.at(2) >= 1 && resource_count.at(4) >= 1);*/
 }
 bool Player::can_buy_house() const {
-    // cost 2 glass (2), 3 heat (3)
     for (size_t i = 0; i < resource_count.size(); i++) {
         if (resource_count.at(i) < house_cost.at(i)) {
             return false;
         }
     }
     return true;
-    //return (resource_count.at(3) >= 3 && resource_count.at(2) >= 2);
 }
 bool Player::can_buy_tower() const {
     for (size_t i = 0; i < resource_count.size(); i++) {
@@ -121,10 +114,6 @@ bool Player::can_buy_tower() const {
         }
     }
     return true;
-    // cost 3 brick (0), 2 energy (1), 2 glass (2), 2 heat (3), 1 wifi (4)
-    /*return (resource_count.at(0) >= 3 && resource_count.at(1) >= 2 &&
-            resource_count.at(2) >= 2 && resource_count.at(3) >= 2 &&
-            resource_count.at(4) >= 1);*/
 }
 
 void Player::purchase_road() {
