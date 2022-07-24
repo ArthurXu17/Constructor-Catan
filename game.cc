@@ -101,11 +101,6 @@ void Game::save_game(std::ofstream& f) {
 }
 
 void Game::play(bool play_beginning) {
-    //g->print_grid();  // starting board    
-    std::cout<<BLUE_OUTPUT<<"TESTING TEXT"<<RESET_OUTPUT<<std::endl;
-    std::cout<<RED_OUTPUT<<"TESTING TEXT"<<RESET_OUTPUT<<std::endl;
-    std::cout<<YELLOW_OUTPUT<<"TESTING TEXT"<<RESET_OUTPUT<<std::endl;
-    std::cout<<ORANGE_OUTPUT<<"TESTING TEXT"<<RESET_OUTPUT<<std::endl;
     
     Player *p; // keep track of whose turn it is
 
@@ -244,39 +239,43 @@ void Game::play(bool play_beginning) {
             else if (turn_cmd == "improve") {  // attempts to improve residence
                 int node;
                 std::cin >> node;
-                Building_Type cur_type = g->get_building_type_at_node(node);
-                if (cur_type == Building_Type::Basement) {
-                    if (!p->can_buy_house()) {
-                        std::cout<<"You do not have enough resources."<<std::endl;
-                    } else if (!g->valid_upgrade(p->get_Colour(), node)) {
-                        std::cout<<"You cannot build here."<<std::endl;
-                    } else {
-                        g->upgrade_building(p, node);
-                        //call purchase in game and not grid because g->build_road is called in loading game from saved state
-                        p->purchase_house();
-                        std::cout << "Congrats! You have improved your Basement to a House on vertex " << node << ". ";
-                        std::cout << "You have received 1 additional building point." << std::endl;
-                    }
-                } else if (cur_type == Building_Type::House) {
-                    if (!p->can_buy_tower()) {
-                        std::cout<<"You do not have enough resources."<<std::endl;
-                    } else if (!g->valid_upgrade(p->get_Colour(), node)) {
-                        std::cout<<"You cannot build here."<<std::endl;
-                    } else {
-                        g->upgrade_building(p, node);
-                        //call purchase in game and not grid because g->build_road is called in loading game from saved state
-                        p->purchase_tower();
-                        std::cout << "Congrats! You have improved your House to a Tower on vertex " << node << ". ";
-                        std::cout << "You have received 1 additional building point." << std::endl;
-                    }
-                } else {
-                    // cur type is a NoBuilding or tower, so invalid upgrade
+                if (node < 0 || node > 53) {
                     std::cout<<"You cannot build here."<<std::endl;
+                } else {
+                    Building_Type cur_type = g->get_building_type_at_node(node);
+                    if (cur_type == Building_Type::Basement) {
+                        if (!p->can_buy_house()) {
+                            std::cout<<"You do not have enough resources."<<std::endl;
+                        } else if (!g->valid_upgrade(p->get_Colour(), node)) {
+                            std::cout<<"You cannot build here."<<std::endl;
+                        } else {
+                            g->upgrade_building(p, node);
+                            //call purchase in game and not grid because g->build_road is called in loading game from saved state
+                            p->purchase_house();
+                            std::cout << "Congrats! You have improved your Basement to a House on vertex " << node << ". ";
+                            std::cout << "You have received 1 additional building point." << std::endl;
+                        }
+                    } else if (cur_type == Building_Type::House) {
+                        if (!p->can_buy_tower()) {
+                            std::cout<<"You do not have enough resources."<<std::endl;
+                        } else if (!g->valid_upgrade(p->get_Colour(), node)) {
+                            std::cout<<"You cannot build here."<<std::endl;
+                        } else {
+                            g->upgrade_building(p, node);
+                            //call purchase in game and not grid because g->build_road is called in loading game from saved state
+                            p->purchase_tower();
+                            std::cout << "Congrats! You have improved your House to a Tower on vertex " << node << ". ";
+                            std::cout << "You have received 1 additional building point." << std::endl;
+                        }
+                    } else {
+                        // cur type is a NoBuilding or tower, so invalid upgrade
+                        std::cout<<"You cannot build here."<<std::endl;
+                    }
+                    if (p->win()) {
+                        somebody_has_won = true;
+                        break;
+                    }  // achieved 10 or more points
                 }
-                if (p->win()) {
-                    somebody_has_won = true;
-                    break;
-                }  // achieved 10 or more points
             }
 
             else if (turn_cmd == "trade") {  // attempts to trade

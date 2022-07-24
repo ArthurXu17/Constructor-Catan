@@ -30,8 +30,6 @@ class Grid {
 
     std::vector<Tile *> tiles;
 
-    Resource int_to_res(int n) const;
-
     // print helper methods
     void print_edge(size_t &) const;
     void print_node(size_t &) const;

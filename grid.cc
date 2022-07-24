@@ -381,6 +381,7 @@ void Grid::save_board(std::ofstream &f) const{
 }
 
 bool Grid::valid_upgrade(Colour colour, size_t node_id) const {
+    std::cout<<node_id<<std::endl;
     if (node_id > 53) return false;  // out of bounds
 
     if (node_owner.at(node_id) == nullptr ||                           // no building there
@@ -451,6 +452,11 @@ bool Grid::valid_building(Colour player, size_t node_id, bool starting_buildings
 }
 
 bool Grid::valid_road(Colour player, size_t edge_id) const {
+    // out of bounds
+    if (edge_id > 71) {
+        return false;
+    }
+
     if (edge_colour.at(edge_id) != Colour::NoColour)
         return false;
 
