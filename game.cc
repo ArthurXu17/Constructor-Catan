@@ -85,7 +85,17 @@ Game::Game(bool set_seed_input, unsigned seed_input, std::ifstream &f, bool new_
 }
 
 void Game::save_game(std::ofstream &f) {
-    f << static_cast<Colour>(turn + 1) << std::endl;
+    //f << static_cast<Colour>(turn + 1) << std::endl;
+    //can't use operator<< because that has been set to output the colour codes
+    if (turn == 0) {
+        f<<"BLUE"<<std::endl;
+    } else if (turn == 1) {
+        f<<"RED"<<std::endl;
+    } else if (turn == 2) {
+        f<<"RED"<<std::endl;
+    } else if (turn == 3) {
+        f<<"RED"<<std::endl;
+    }
     for (auto p : players) {
         p->output_status_to_file(f);
     }
@@ -99,6 +109,7 @@ void Game::play(bool play_beginning) {
     if (play_beginning) {
         int curr_player;
         // Beginning of Game
+        g->print_grid();
         for (int i = 0; i < 8; i++) {  // get initial basements from players
             curr_player = (i > 3) ? 7 - i : i;
             p = players[curr_player];
@@ -113,7 +124,7 @@ void Game::play(bool play_beginning) {
             }
             g->build_building(p, node);
         }
-        g->print_grid();  // updated grid
+        // g->print_grid();  // updated grid
     }
 
     // Actual Game Loop
@@ -129,7 +140,7 @@ void Game::play(bool play_beginning) {
         // Beginning of turn phase
         size_t roll;
         while (true) {
-            std::cout << "Current dice are" << ((p->getDice() == fair) ? "fair" : "load") << ". "
+            std::cout << "Current dice are " << ((p->getDice() == fair) ? "fair" : "load") << ". "
                       << "Enter \"load\" to change current dice to loaded dice, \"fair\" to change current dice to fair dice, or \"roll\" to roll the current dice.\n> ";
             std::string cmd;
             std::cin >> cmd;
