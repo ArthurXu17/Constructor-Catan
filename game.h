@@ -6,7 +6,6 @@
 
 class Game {
     std::vector<Player*> players;//blue, red, orange, yellow
-    Player *blue, *red, *orange, *yellow;
     int turn;
     // seed parameters
     bool set_seed;

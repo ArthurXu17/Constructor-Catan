@@ -6,8 +6,7 @@
 
 #include "resource_costs.h"
 
-Player::Player(Colour colour, bool set_seed_input, unsigned seed_input,
-               Dice *dice_input)
+Player::Player(Colour colour, bool set_seed_input, unsigned seed_input, Dice *dice_input)
     : colour{colour},
       set_seed{set_seed_input},
       seed{seed_input},
@@ -29,23 +28,21 @@ std::unordered_map<std::size_t, Building_Type> Player::get_buildings() const {
     return buildings;
 }
 
-void Player::increment_points() { victory_points++; }
+void Player::increment_points() { this->victory_points++; }
 
 void Player::increment_resource(int index, int amount) {
-    resource_count[index] += amount;
+    this->resource_count[index] += amount;
 }
 
 void Player::trade_resources(Player *other, Resource resource_to_give,
                              Resource resource_to_gain) {
-    
-        int give_index = static_cast<int>(resource_to_give);
-        int gain_index = static_cast<int>(resource_to_gain);
+    int give_index = static_cast<int>(resource_to_give);
+    int gain_index = static_cast<int>(resource_to_gain);
 
-        resource_count[give_index] -= 1;  // trade resources
-        other->resource_count[give_index] += 1;
-        resource_count[gain_index] += 1;
-        other->resource_count[gain_index] -= 1;
-    
+    this->resource_count[give_index] -= 1;  // trade resources
+    other->resource_count[give_index] += 1;
+    this->resource_count[gain_index] += 1;
+    other->resource_count[gain_index] -= 1;
 }
 
 bool Player::valid_trade_offer(Resource resource_to_give) const {
@@ -134,11 +131,9 @@ void Player::purchase_tower() {
 }
 
 void Player::print_status() const {
-    std::cout << this->get_Colour() << " has " << victory_points
-              << " building points, ";
+    std::cout << this->get_Colour() << " has " << victory_points << " building points, ";
     for (int i = 0; i < 5; i++) {
-        std::cout << resource_count.at(i) << " " << print_resource(i)
-                  << ((i == 4) ? "." : ", ");
+        std::cout << resource_count.at(i) << " " << print_resource(i) << ((i == 4) ? "." : ", ");
     }
     std::cout << std::endl;
 }
@@ -208,8 +203,7 @@ void Player::lose_resource_to_geese() {
     if (total_resources_count >= 10) {
         int half = total_resources_count / 2;
 
-        std::cout << "Builder " << this->get_Colour() << " loses " << half
-                  << " resources to the geese. They lose:" << std::endl;
+        std::cout << "Builder " << this->get_Colour() << " loses " << half  << " resources to the geese. They lose:" << std::endl;
 
         // use a time-based seed for the default seed value
         if (!set_seed) {
@@ -255,9 +249,7 @@ void Player::robbed(Player *robber) {
         if (resource <= 0) {
             resource_count[i]--;
             robber->increment_resource(i, 1);
-            std::cout << "Builder " << robber->get_Colour() << " steals "
-                      << print_resource(i) << " from builder "
-                      << this->get_Colour() << "." << std::endl;
+            std::cout << "Builder " << robber->get_Colour() << " steals " << print_resource(i) << " from builder " << this->get_Colour() << "." << std::endl;
             return;
         }
     }
