@@ -54,7 +54,6 @@ Game::Game(bool set_seed_input, unsigned seed_input, std::ifstream &f, bool new_
         for (int i = 0; i < 4; i++) {
             std::getline(f, line);
             std::istringstream s{line};
-            // std::cout<<i<<" in loop"<<std::endl;
             players[i]->update_player_by_file(s);
         }
         std::getline(f, line);
@@ -85,7 +84,6 @@ Game::Game(bool set_seed_input, unsigned seed_input, std::ifstream &f, bool new_
 }
 
 void Game::save_game(std::ofstream &f) {
-    //f << static_cast<Colour>(turn + 1) << std::endl;
     //can't use operator<< because that has been set to output the colour codes
     if (turn == 0) {
         f<<"BLUE"<<std::endl;
@@ -124,7 +122,6 @@ void Game::play(bool play_beginning) {
             }
             g->build_building(p, node);
         }
-        // g->print_grid();  // updated grid
     }
 
     // Actual Game Loop

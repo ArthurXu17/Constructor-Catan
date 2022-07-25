@@ -10,12 +10,14 @@ class Building : public Observer {
 
     public:
         Building(Player *owner);
-        void notify(Subject &s);
-        ~Building();
+        // getters and setters
         Player *get_Owner() const override;
         Building_Type get_type() const;
         int get_resource_gain() const override;
+
+        void notify(Subject &s);
         void upgrade();
+        ~Building();
 };
 
 #endif

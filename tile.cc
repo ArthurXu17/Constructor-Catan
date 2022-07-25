@@ -1,13 +1,13 @@
 #include "tile.h"
 
-Tile::Tile(Resource r, int val, bool goose): resource{r}, dice_value{val}, hasGoose{goose} {}
+Tile::Tile(Resource r, int val, bool goose): RESOURCE{r}, DICE_VALUE{val}, hasGoose{goose} {}
 
 Resource Tile::get_resource() const{
-    return resource;
+    return RESOURCE;
 }
 
 int Tile::get_dice() const {
-    return dice_value;
+    return DICE_VALUE;
 }
 
 bool Tile::getGooseStatus() const {

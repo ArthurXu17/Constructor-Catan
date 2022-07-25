@@ -6,11 +6,32 @@
 
 #include "resource_costs.h"
 
+std::string Player::print_resource(size_t type) const {
+    switch (type) {
+        case 0:
+            return "Brick";
+            break;
+        case 1:
+            return "Energy";
+            break;
+        case 2:
+            return "Glass";
+            break;
+        case 3:
+            return "Heat";
+            break;
+        default:
+            return "Wifi";
+    }
+}
+
 Player::Player(Colour colour, bool set_seed_input, unsigned seed_input, Dice *dice_input)
     : colour{colour},
       set_seed{set_seed_input},
       seed{seed_input},
       dice{dice_input} {}
+
+Colour Player::get_Colour() const { return colour; }
 
 int Player::get_points() const { return victory_points; }
 
@@ -24,111 +45,8 @@ int Player::get_total_resource() const {
 }
 
 std::vector<std::size_t> Player::get_roads() const { return roads; }
-std::unordered_map<std::size_t, Building_Type> Player::get_buildings() const {
-    return buildings;
-}
 
-void Player::increment_points() { this->victory_points++; }
-
-void Player::increment_resource(int index, int amount) {
-    this->resource_count[index] += amount;
-}
-
-void Player::trade_resources(Player *other, Resource resource_to_give,
-                             Resource resource_to_gain) {
-    int give_index = static_cast<int>(resource_to_give);
-    int gain_index = static_cast<int>(resource_to_gain);
-
-    this->resource_count[give_index] -= 1;  // trade resources
-    other->resource_count[give_index] += 1;
-    this->resource_count[gain_index] += 1;
-    other->resource_count[gain_index] -= 1;
-}
-
-bool Player::valid_trade_offer(Resource resource_to_give) const {
-    int give_index = static_cast<int>(resource_to_give);
-    if (resource_count.at(give_index) == 0) return false;
-    return true;
-}
-
-bool Player::valid_trade_acceptance(Resource resource_to_gain) const {
-    int gain_index = static_cast<int>(resource_to_gain);
-    if (resource_count.at(gain_index) == 0) return false;
-    return true;
-}
-
-void Player::add_road(size_t edge_id) {
-    // only add if edge_id doesn't already exist
-    // we need to check this for when we create a game from a loaded state
-    bool exist_already = false;
-    for (auto x : roads) {
-        if (x == edge_id) {
-            exist_already = true;
-        }
-    }
-    if (!exist_already) {
-        roads.emplace_back(edge_id);
-    }
-}
-
-void Player::add_building(size_t node_id, Building_Type building_type) {
-    buildings[node_id] = building_type;
-    // buildings.emplace_back(std::make_pair(node_id, building_type));
-}
-
-bool Player::can_buy_road() const {
-    for (size_t i = 0; i < resource_count.size(); i++) {
-        if (resource_count.at(i) < road_cost.at(i)) {
-            return false;
-        }
-    }
-    return true;
-}
-bool Player::can_buy_basement() const {
-    for (size_t i = 0; i < resource_count.size(); i++) {
-        if (resource_count.at(i) < basement_cost.at(i)) {
-            return false;
-        }
-    }
-    return true;
-}
-bool Player::can_buy_house() const {
-    for (size_t i = 0; i < resource_count.size(); i++) {
-        if (resource_count.at(i) < house_cost.at(i)) {
-            return false;
-        }
-    }
-    return true;
-}
-bool Player::can_buy_tower() const {
-    for (size_t i = 0; i < resource_count.size(); i++) {
-        if (resource_count.at(i) < tower_cost.at(i)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-void Player::purchase_road() {
-    for (size_t i = 0; i < resource_count.size(); i++) {
-        resource_count.at(i) -= road_cost.at(i);
-    }
-}
-void Player::purchase_basement() {
-    for (size_t i = 0; i < resource_count.size(); i++) {
-        resource_count.at(i) -= basement_cost.at(i);
-    }
-}
-void Player::purchase_house() {
-    for (size_t i = 0; i < resource_count.size(); i++) {
-        resource_count.at(i) -= house_cost.at(i);
-    }
-}
-void Player::purchase_tower() {
-    for (size_t i = 0; i < resource_count.size(); i++) {
-        resource_count.at(i) -= tower_cost.at(i);
-    }
-}
+std::unordered_map<std::size_t, Building_Type> Player::get_buildings() const { return buildings; }
 
 void Player::print_status() const {
     std::cout << this->get_Colour() << " has " << victory_points << " building points, ";
@@ -195,7 +113,83 @@ void Player::print_buildings() const {
     }
 }
 
-Colour Player::get_Colour() const { return colour; }
+bool Player::can_buy_road() const {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        if (resource_count.at(i) < road_cost.at(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+bool Player::can_buy_basement() const {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        if (resource_count.at(i) < basement_cost.at(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+bool Player::can_buy_house() const {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        if (resource_count.at(i) < house_cost.at(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+bool Player::can_buy_tower() const {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        if (resource_count.at(i) < tower_cost.at(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Player::purchase_road() {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        resource_count.at(i) -= road_cost.at(i);
+    }
+}
+void Player::purchase_basement() {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        resource_count.at(i) -= basement_cost.at(i);
+    }
+}
+void Player::purchase_house() {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        resource_count.at(i) -= house_cost.at(i);
+    }
+}
+void Player::purchase_tower() {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        resource_count.at(i) -= tower_cost.at(i);
+    }
+}
+
+void Player::increment_points() { this->victory_points++; }
+
+void Player::increment_resource(int index, int amount) {
+    this->resource_count[index] += amount;
+}
+
+void Player::add_road(size_t edge_id) {
+    // only add if edge_id doesn't already exist
+    // we need to check this for when we create a game from a loaded state
+    bool exist_already = false;
+    for (auto x : roads) {
+        if (x == edge_id) {
+            exist_already = true;
+        }
+    }
+    if (!exist_already) {
+        roads.emplace_back(edge_id);
+    }
+}
+
+void Player::add_building(size_t node_id, Building_Type building_type) {
+    buildings[node_id] = building_type;
+}
 
 void Player::lose_resource_to_geese() {
     int total_resources_count = get_total_resource();
@@ -255,23 +249,27 @@ void Player::robbed(Player *robber) {
     }
 }
 
-std::string Player::print_resource(size_t type) const {
-    switch (type) {
-        case 0:
-            return "Brick";
-            break;
-        case 1:
-            return "Energy";
-            break;
-        case 2:
-            return "Glass";
-            break;
-        case 3:
-            return "Heat";
-            break;
-        default:
-            return "Wifi";
-    }
+void Player::trade_resources(Player *other, Resource resource_to_give,
+                             Resource resource_to_gain) {
+    int give_index = static_cast<int>(resource_to_give);
+    int gain_index = static_cast<int>(resource_to_gain);
+
+    this->resource_count[give_index] -= 1;  // trade resources
+    other->resource_count[give_index] += 1;
+    this->resource_count[gain_index] += 1;
+    other->resource_count[gain_index] -= 1;
+}
+
+bool Player::valid_trade_offer(Resource resource_to_give) const {
+    int give_index = static_cast<int>(resource_to_give);
+    if (resource_count.at(give_index) == 0) return false;
+    return true;
+}
+
+bool Player::valid_trade_acceptance(Resource resource_to_gain) const {
+    int gain_index = static_cast<int>(resource_to_gain);
+    if (resource_count.at(gain_index) == 0) return false;
+    return true;
 }
 
 int Player::roll_dice() { return dice->generateNumber(); }

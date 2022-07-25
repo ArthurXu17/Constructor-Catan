@@ -36,6 +36,7 @@ class Player {
         int get_total_resource() const;
         std::vector<std::size_t> get_roads() const;
         std::unordered_map<std::size_t, Building_Type> get_buildings() const;
+
         void print_status() const;
         void update_player_by_file(std::istringstream &f);
         void output_status_to_file(std::ofstream &f) const;
@@ -71,7 +72,7 @@ class Player {
         //dice functions
         int roll_dice();
         void setDice(Dice *new_dice);
-        Dice * getDice() const;
+        Dice *getDice() const;
 
         bool win() const;
         ~Player();

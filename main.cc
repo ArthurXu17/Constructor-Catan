@@ -34,7 +34,6 @@ int main(int argc, char **argv) {
             game_file_name = argv[i];
         }
     }
-    //Grid *g;
     Game *game;
     std::string play_again_cmd;
     bool play_again = true;

@@ -4,10 +4,6 @@
 
 Building::Building(Player *owner): owner{owner} {}
 
-Building::~Building() {
-    // don't delete the owner, this is handled in main
-}
-
 Player* Building::get_Owner() const {
     return owner;
 }
@@ -29,4 +25,8 @@ void Building::notify(Subject &s) {
 void Building::upgrade() {
     resource_gain++;
     owner->increment_points();
+}
+
+Building::~Building() {
+    // don't delete the owner, this is handled in main
 }

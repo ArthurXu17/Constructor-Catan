@@ -11,17 +11,17 @@ class Observer {
         virtual void notify(Subject &s) = 0;
         virtual ~Observer();
         virtual Player *get_Owner() const = 0;
-        virtual int get_resource_gain() const = 0; // added
+        virtual int get_resource_gain() const = 0;
 };
 
 class Subject {
     std::unordered_set<Observer*> observers;
     public:
-        void notify_observers();
         std::unordered_set<Observer*> get_observers() const;
+        virtual Resource get_resource() const = 0;
+        void notify_observers();
         void attach( Observer *o);
         void detach( Observer *o);
-        virtual Resource get_resource() const = 0;
         virtual ~Subject() = default;
 };
 

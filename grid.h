@@ -10,25 +10,28 @@
 
 class Grid {
     using size_t = std::size_t;
-    const size_t max_edge = 71;
-    const size_t max_node = 53;
-    const size_t max_tile = 18;
-    // for each node -> list of adjacent edges
-    std::unordered_map<size_t, std::vector<size_t> > adjacent_edges;
+    const size_t MAX_EDGE = 71;
+    const size_t MAX_NODE = 53;
+    const size_t MAX_TILE = 18;
 
+    // for each node -> list of adjacent edges
+    std::unordered_map<size_t, std::vector<size_t>> adjacent_edges;
     // for each edge -> gives the pair of nodes 
     std::unordered_map<size_t, std::pair<size_t, size_t>> edge_ends;
-    
     // which roads are owned by who
     std::unordered_map<size_t, Colour> edge_colour;
-    
     // which vertices are owned by "who" -> this information is in the Building
     std::unordered_map<size_t, Building *> node_owner;
-
     // for each node -> list of adjacent tiles (tiles it earns income from)
     std::unordered_map<size_t, std::vector<size_t>> adjacent_tiles;
 
     std::vector<Tile *> tiles;
+
+    // seed parameters
+    bool set_seed;
+    unsigned seed;
+
+    size_t goose_tile;
 
     // print helper methods
     void print_edge(size_t &) const;
@@ -41,18 +44,17 @@ class Grid {
     void print_tile_res(size_t & counter) const;    
     void print_possible_goose(size_t & counter) const;
 
-    // seed parameters
-    bool set_seed;
-    unsigned seed;
-
-    size_t goose_tile;
-
     public: 
         // constructor for random board generation
         Grid(bool set_seed_input, unsigned seed_input);
         // constructor for file input board generation
         Grid(std::istringstream &f, bool set_seed_input, unsigned seed_input);
         
+        // getters and setters
+        Building_Type get_building_type_at_node(size_t node_id) const;
+        size_t get_goose_tile() const;
+        void set_goose(size_t new_tile);
+
         void save_board(std::ofstream& f) const;
 
         // can player PLACE a road here
@@ -65,14 +67,13 @@ class Grid {
         void build_building(Player *player, size_t node_id);
         void upgrade_building(Player *player, size_t node_id);
 
-        Building_Type get_building_type_at_node(size_t node_id) const;
-
         void update_by_roll(int roll);
-        void print_grid() const;
+        
         size_t move_goose(); 
-        void set_goose(size_t new_tile);
-        size_t get_goose_tile() const;
         int who_to_steal_from(size_t geese_loc, Player* curr_player);
+
+        void print_grid() const;
+        
         ~Grid();
 };
 

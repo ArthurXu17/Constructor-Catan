@@ -1,18 +1,18 @@
 #include "grid_constants.h"
 
-const int max_edge = 71;
-const int max_node = 53;
+const int MAX_EDGE = 71;
+const int MAX_NODE = 53;
 
 using size_t = std::size_t;
 
 void edge_colour_init(std::unordered_map<size_t, Colour> &map) {
-    for (size_t i = 0; i <= max_edge; i++) {
+    for (size_t i = 0; i <= MAX_EDGE; i++) {
         map[i] = Colour::NoColour;
     }
 }
 
 void node_owner_init(std::unordered_map<size_t, Building *> &map) {
-    for (size_t i = 0; i <= max_node; i++) {
+    for (size_t i = 0; i <= MAX_NODE; i++) {
         map[i] = nullptr;
     }
 }
