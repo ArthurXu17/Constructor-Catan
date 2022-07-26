@@ -52,7 +52,6 @@ int main(int argc, char **argv) {
         if (game_file_name != "") {
             while (play_again) {
                 std::ifstream infile{game_file_name};
-                std::cout<<seed<<std::endl;
                 game = new Game(set_seed, seed, gen,infile, false);
                 game->play(false);
                 std::cout<<"Would you like to play again?"<<std::endl;
