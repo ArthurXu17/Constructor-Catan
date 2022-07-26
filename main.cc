@@ -79,6 +79,7 @@ int main(int argc, char **argv) {
                 game = new Game(gen, rng,infile, true);
                 game->play(true);
                 std::cout<<"Would you like to play again?"<<std::endl;
+                std::cout << "> ";
                 std::cin>>play_again_cmd;
                 if (play_again_cmd != "yes") {
                     // not playing another game, game is deleted at end of program
@@ -93,6 +94,7 @@ int main(int argc, char **argv) {
                 game = new Game(gen, rng);
                 game->play(true);
                 std::cout<<"Would you like to play again?"<<std::endl;
+                std::cout<<"> ";
                 std::cin>>play_again_cmd;
                 if (play_again_cmd != "yes") {
                     // not playing another game, game is deleted at end of program
@@ -108,6 +110,7 @@ int main(int argc, char **argv) {
                 game = new Game(gen, rng, infile, true);
                 game->play(true);
                 std::cout<<"Would you like to play again?"<<std::endl;
+                std::cout<<"> ";
                 std::cin>>play_again_cmd;
                 if (play_again_cmd != "yes") {
                     // not playing another game, game is deleted at end of program
