@@ -63,11 +63,11 @@ class Player {
         void lose_resource_to_geese();
         void steal(Player *victim);
         void robbed(Player *robber);
-        void trade_resources(Player *other, Resource resource_to_give, Resource resource_to_gain);
+        void trade_resources(Player *other, int num_give, Resource resource_to_give, int num_gain, Resource resource_to_gain);
         // checks if player possesses the resource they are offering (can they make the trade?)
-        bool valid_trade_offer(Resource resource_to_give) const;
+        bool valid_trade_offer(int num_give, Resource resource_to_give) const;
         // checks if player possesses the resource being asked for (can they accept the trade?)
-        bool valid_trade_acceptance(Resource resource_to_gain) const;
+        bool valid_trade_acceptance(int num_gain, Resource resource_to_gain) const;
 
         //dice functions
         int roll_dice();
