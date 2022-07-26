@@ -139,11 +139,6 @@ Grid::Grid(std::default_random_engine& rng) {
         Resource::Wifi, Resource::Wifi, Resource::Wifi,
         Resource::Park};
 
-    // use a time-based seed for the default seed value
-    /*if (!set_seed) {
-        seed = std::chrono::system_clock::now().time_since_epoch().count();
-    }
-    std::default_random_engine rng{seed};*/
     std::shuffle(dice_rolls.begin(), dice_rolls.end(), rng);
     std::shuffle(tile_res.begin(), tile_res.end(), rng);
 
