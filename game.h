@@ -14,6 +14,8 @@ class Game {
     //dice
     Dice *fair;
     Dice *load;
+    std::mt19937 game_gen;
+    std::default_random_engine game_rng;
 
     public:
         //constructor for random board
@@ -23,7 +25,6 @@ class Game {
         // case 2: new_game = false, the command line argument was -load
         Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng, std::ifstream &f, bool new_game);
         
-        std::default_random_engine game_rng;
         void save_game(std::ofstream &f);
         void play(bool play_beginning);
         ~Game();

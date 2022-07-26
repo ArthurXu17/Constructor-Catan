@@ -271,7 +271,7 @@ bool Player::valid_trade_acceptance(int num_gain, Resource resource_to_gain) con
     return true;
 }
 
-int Player::roll_dice() { return dice->generateNumber(); }
+int Player::roll_dice(std::mt19937 &game_gen) { return dice->generateNumber(game_gen); }
 
 void Player::setDice(Dice *new_dice) { dice = new_dice; }
 

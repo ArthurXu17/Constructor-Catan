@@ -13,24 +13,20 @@
 class Dice {
 
     public:
-        virtual int generateNumber() = 0;
+        virtual int generateNumber(std::mt19937 &game_gen) = 0;
         virtual ~Dice();
 };
 
 class RandomDice : public Dice {
-    bool set_seed;
-    unsigned seed;
-    std::mt19937 gen;
     
     public:
-        RandomDice(bool set_seed_input, unsigned seed_input, std::mt19937 gen_input);
-        int generateNumber() override;
+        int generateNumber(std::mt19937 &game_gen) override;
         ~RandomDice();
 };
 
 class LoadedDice : public Dice {
     public:
-        int generateNumber() override;
+        int generateNumber(std::mt19937 &game_gen) override;
         ~LoadedDice();
 };
 

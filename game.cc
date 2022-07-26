@@ -8,8 +8,8 @@
 
 #include "dice.h"
 
-Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng_input) : turn{0}, set_seed{set_seed_input}, seed{seed_input}, game_rng{rng_input} {
-    fair = new RandomDice(set_seed_input, seed_input, gen);
+Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng_input) : turn{0}, set_seed{set_seed_input}, seed{seed_input}, game_gen{gen},game_rng{rng_input} {
+    fair = new RandomDice();
     load = new LoadedDice();
     players.resize(4);
     players[0] = new Player(Colour::Blue, set_seed, seed, gen, rng_input, load);
@@ -19,8 +19,8 @@ Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::defa
     g = new Grid(set_seed_input, seed_input);
 }
 
-Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng_input, std::ifstream &f, bool new_game) : set_seed{set_seed_input}, seed{seed_input}, game_rng{rng_input} {
-    fair = new RandomDice(set_seed_input, seed_input, gen);
+Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng_input, std::ifstream &f, bool new_game) : set_seed{set_seed_input}, seed{seed_input}, game_gen{gen}, game_rng{rng_input} {
+    fair = new RandomDice();
     load = new LoadedDice();
     players.resize(4);
     // all players start with loaded dice
@@ -150,7 +150,7 @@ void Game::play(bool play_beginning) {
             } else if (cmd == "roll")
                 break;
         }
-        roll = p->roll_dice();  // roll dice
+        roll = p->roll_dice(game_gen);  // roll dice
         std::cout << "You have rolled a " << roll << ".\n"
                   << std::endl;
 

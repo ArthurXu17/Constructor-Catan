@@ -80,7 +80,7 @@ class Player {
     bool valid_trade_acceptance(int num_gain, Resource resource_to_gain) const;
 
     // dice functions
-    int roll_dice();
+    int roll_dice(std::mt19937 &game_gen);
     void setDice(Dice *new_dice);
     Dice *getDice() const;
 
