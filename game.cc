@@ -84,15 +84,15 @@ Game::Game(bool set_seed_input, unsigned seed_input, std::ifstream &f, bool new_
 }
 
 void Game::save_game(std::ofstream &f) {
-    //can't use operator<< because that has been set to output the colour codes
+    // can't use operator<< because that has been set to output the colour codes
     if (turn == 0) {
-        f<<"BLUE"<<std::endl;
+        f << "BLUE" << std::endl;
     } else if (turn == 1) {
-        f<<"RED"<<std::endl;
+        f << "RED" << std::endl;
     } else if (turn == 2) {
-        f<<"RED"<<std::endl;
+        f << "RED" << std::endl;
     } else if (turn == 3) {
-        f<<"RED"<<std::endl;
+        f << "RED" << std::endl;
     }
     for (auto p : players) {
         p->output_status_to_file(f);
@@ -173,6 +173,10 @@ void Game::play(bool play_beginning) {
 
         // During the turn phase
         std::string turn_cmd;
+        bool used_drc;
+
+        used_drc = false;
+
         while (turn_cmd != "next") {  // end turn given command "next"
             std::cout << "Game phase. Please enter a command (enter \"help\" to show valid commands).\n> ";
             std::cin >> turn_cmd;
@@ -255,8 +259,8 @@ void Game::play(bool play_beginning) {
                     }  // achieved 10 or more points
                 }
             } else if (turn_cmd == "trade") {  // attempts to trade
-                std::string other, give, gain; 
-                int num_give, num_gain; // how many resources
+                std::string other, give, gain;
+                int num_give, num_gain;                                     // how many resources
                 std::cin >> other >> num_give >> give >> num_gain >> gain;  // other player in trade, resources being traded
 
                 transform(other.begin(), other.end(), other.begin(), toupper);  // converts to uppercase
@@ -327,6 +331,149 @@ void Game::play(bool play_beginning) {
                         }
                     }
                 }
+            } else if (turn_cmd == "buy-drc") {  // passes control to next player
+                if (p->can_buy_drc()) {
+                    p->purchase_drc();
+                } else {
+                    std::cout << p->get_Colour() << " does not have enough resources to buy a drc." << std::endl;
+                }
+            } else if (turn_cmd == "print-drc") {  // passes control to next player
+                p->print_drc();
+            } else if (turn_cmd == "use-knight") {  // passes control to next player
+                if (!p->has_drc(0)) {
+                    std::cout << p->get_Colour() << " does not have a knight drc." << std::endl;
+                } else if (used_drc) {
+                    std::cout << "Only one drc per turn." << std::endl;
+                } else {
+                    used_drc = true;
+                    p->increment_drc(0, -1);
+
+                    int new_geese_loc = g->move_goose();  // move goose
+                    std::cout << "The GEESE have been moved to " << new_geese_loc << "." << std::endl;
+
+                    int victim = g->who_to_steal_from(new_geese_loc, p);
+                    if (victim >= 0) {
+                        p->steal(players[victim]);
+                    }
+                }
+            } else if (turn_cmd == "use-year-of-plenty") {  // passes control to next player
+                if (!p->has_drc(1)) {
+                    std::cout << p->get_Colour() << " does not have a year of plenty drc." << std::endl;
+                } else if (used_drc) {
+                    std::cout << "Only one drc per turn." << std::endl;
+                } else {
+                    used_drc = true;
+                    p->increment_drc(1, -1);
+
+                    std::cout << "Choose to recieve 2 of a resource." << std::endl;
+                    std::string rec;
+                    std::cin >> rec;  // other player in trade, resources being traded
+
+                    transform(rec.begin(), rec.end(), rec.begin(), toupper);
+                    std::cout << p->get_Colour() << " has gained " << 2 << " ";
+
+                    if (rec == "BRICK") {
+                        p->increment_resource(0, 2);
+                        std::cout << "bricks" << std::endl;
+                    } else if (rec == "ENERGY") {
+                        p->increment_resource(1, 2);
+                        std::cout << "energy" << std::endl;
+                    } else if (rec == "GLASS") {
+                        p->increment_resource(2, 2);
+                        std::cout << "glass" << std::endl;
+                    } else if (rec == "HEAT") {
+                        p->increment_resource(3, 2);
+                        std::cout << "heat" << std::endl;
+                    } else {
+                        p->increment_resource(4, 2);
+                        std::cout << "wifi" << std::endl;
+                    }
+                }
+
+            } else if (turn_cmd == "use-monopoly") {  // passes control to next player
+                if (!p->has_drc(2)) {
+                    std::cout << p->get_Colour() << " does not have a monopoly drc." << std::endl;
+                } else if (used_drc) {
+                    std::cout << "Only one drc per turn." << std::endl;
+                } else {
+                    used_drc = true;
+                    p->increment_drc(2, -1);
+
+                    std::cout << "What resource would you like to monopolize?" << std::endl;
+                    std::string rec;
+                    std::cin >> rec;  // other player in trade, resources being traded
+
+                    transform(rec.begin(), rec.end(), rec.begin(), toupper);
+                    int resource, total = 0;
+                    Resource recstr;
+
+                    if (rec == "BRICK") {
+                        resource = 0;
+                        recstr = Resource::Brick;
+                    } else if (rec == "ENERGY") {
+                        resource = 1;
+                        recstr = Resource::Energy;
+                    } else if (rec == "GLASS") {
+                        resource = 2;
+                        recstr = Resource::Glass;
+                    } else if (rec == "HEAT") {
+                        resource = 3;
+                        recstr = Resource::Heat;
+                    } else {
+                        resource = 4;
+                        recstr = Resource::Wifi;
+                    }
+
+                    for (auto other : players) {
+                        if (p != other) {
+                            total += other->get_resource_count(resource);
+                            other->increment_resource(resource, -1 * p->get_resource_count(resource));
+                        }
+                    }
+                    p->increment_resource(resource, total);
+                    std::cout << p->get_Colour() << " has gained " << total << " " << recstr;
+                }
+            } else if (turn_cmd == "use-victory-point") {  // passes control to next player
+                if (!p->has_drc(3)) {
+                    std::cout << p->get_Colour() << " does not have a victory point drc." << std::endl;
+                } else if (used_drc) {
+                    std::cout << "Only one drc per turn." << std::endl;
+                } else {
+                    used_drc = true;
+                    p->increment_drc(3, -1);
+
+                    p->increment_points();
+                    std::cout << "Congrats! You have received 1 building point." << std::endl;
+                }
+            } else if (turn_cmd == "use-road-building") {  // passes control to next player
+                if (!p->has_drc(4)) {
+                    std::cout << p->get_Colour() << " does not have a road building drc." << std::endl;
+                } else if (used_drc) {
+                    std::cout << "Only one drc per turn." << std::endl;
+                } else {
+                    used_drc = true;
+                    p->increment_drc(4, -1);
+
+                    size_t edge;
+                    std::cout << "Where do you want to place a road?" << std::endl;
+                    std::cin >> edge;
+
+                    while (!g->valid_road(p->get_Colour(), edge)) {
+                        std::cout << "You cannot build here. Choose again." << std::endl;
+                        std::cin >> edge;
+                    }
+                    g->build_road(p, edge);
+                    std::cout << "Congrats! You have built a road on edge " << edge << "." << std::endl;
+                    std::cout << "Where do you want to place a road?" << std::endl;
+                    std::cin >> edge;
+
+                    while (!g->valid_road(p->get_Colour(), edge)) {
+                        std::cout << "You cannot build here. Choose again." << std::endl;
+                        std::cin >> edge;
+                    }
+                    g->build_road(p, edge);
+                    std::cout << "Congrats! You have built a road on edge " << edge << "." << std::endl;
+                }
             } else if (turn_cmd == "next") {  // passes control to next player
                 continue;
             } else if (turn_cmd == "save") {  // saves current game state
@@ -343,6 +490,13 @@ void Game::play(bool play_beginning) {
                 std::cout << "build-res <housing#>" << std::endl;
                 std::cout << "improve <housing#>" << std::endl;
                 std::cout << "trade <colour> <give> <take>" << std::endl;
+                std::cout << "buy-drc" << std::endl;
+                std::cout << "print-drc" << std::endl;
+                std::cout << "use-knight" << std::endl;
+                std::cout << "use-year-of-plenty" << std::endl;
+                std::cout << "use-monopoly" << std::endl;
+                std::cout << "use-victory-point" << std::endl;
+                std::cout << "use-road-building" << std::endl;
                 std::cout << "next" << std::endl;
                 std::cout << "save <file>" << std::endl;
                 std::cout << "help" << std::endl;

@@ -197,7 +197,7 @@ void Player::lose_resource_to_geese() {
     if (total_resources_count >= 10) {
         int half = total_resources_count / 2;
 
-        std::cout << "Builder " << this->get_Colour() << " loses " << half  << " resources to the geese. They lose:" << std::endl;
+        std::cout << "Builder " << this->get_Colour() << " loses " << half << " resources to the geese. They lose:" << std::endl;
 
         // use a time-based seed for the default seed value
         if (!set_seed) {
@@ -287,8 +287,49 @@ bool Player::win() const {
 
 Player::~Player() {}
 
+bool Player::can_buy_drc() const {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        if (resource_count.at(i) < drc_cost.at(i)) {
+            return false;
+        }
+    }
+    return true;
+}
 
+void Player::purchase_drc() {
+    for (size_t i = 0; i < resource_count.size(); i++) {
+        resource_count.at(i) -= drc_cost.at(i);
+    }
+    if (!set_seed) {
+        seed = std::chrono::system_clock::now().time_since_epoch().count();
+    }
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<std::mt19937::result_type> dist4(0, 4);
+    int drc = dist4(gen);
+    this->drc_count[drc]++;
 
-void Player::purchase_drc(){
-    
+    const std::vector<std::string> stmt = {"knight", "Year of plenty", "monopoly", "victory point", "road building"};
+    std::cout << "Congrats! You have bought a " << stmt[drc] << ". ";
+}
+
+void Player::print_drc() const {
+    const std::vector<std::string> stmt = {"Knight", "Year of plenty", "Monopoly", "Victory point", "Road building"};
+
+    std::cout << this->get_Colour() << " has the following:" << std::endl;
+    for (int i = 0; i < 5; i++) {
+        std::cout << stmt.at(i) << ": " << drc_count.at(i) << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+bool Player::has_drc(int index) const{
+    return this->drc_count.at(index) > 0;
+}
+
+int Player::get_resource_count(int rec) const{
+    return this->resource_count.at(rec);
+}
+
+void Player::increment_drc(int index, int val){
+    this->drc_count[index] += val;
 }
