@@ -25,16 +25,13 @@ std::string Player::print_resource(size_t type) const {
     }
 }
 
-Player::Player(Colour colour, bool set_seed_input, unsigned seed_input,  std::mt19937 gen_input, Dice *dice_input)
+Player::Player(Colour colour, bool set_seed_input, unsigned seed_input,  std::mt19937 gen_input, std::default_random_engine rng_input, Dice *dice_input)
     : colour{colour},
       set_seed{set_seed_input},
       seed{seed_input},
       gen{gen_input},
-      dice{dice_input} {
-        if (set_seed) {
-            gen = std::mt19937(seed);
-        }
-      }
+      rng{rng_input},
+      dice{dice_input} {}
 
 Colour Player::get_Colour() const { return colour; }
 
@@ -196,7 +193,7 @@ void Player::add_building(size_t node_id, Building_Type building_type) {
     buildings[node_id] = building_type;
 }
 
-void Player::lose_resource_to_geese() {
+void Player::lose_resource_to_geese(std::default_random_engine &game_rng) {
     int total_resources_count = get_total_resource();
 
     if (total_resources_count >= 10) {
@@ -212,11 +209,13 @@ void Player::lose_resource_to_geese() {
             for (int j = 0; j < this->resource_count[i]; j++)
                 resource_pool.push_back(i);
         
-        if (!set_seed) {
+        /*if (!set_seed) {
             seed = std::chrono::system_clock::now().time_since_epoch().count();
-        } 
-        std::default_random_engine rng{seed};
-        std::shuffle(resource_pool.begin(), resource_pool.end(), rng);
+        } else {
+            std::cout<<"set seed"<<std::endl;
+        }*/
+        //std::default_random_engine rng{seed};
+        std::shuffle(resource_pool.begin(), resource_pool.end(), game_rng);
 
         for (int i = 0; i < half; i++) {
             resource_lost_count[resource_pool[i]]++;

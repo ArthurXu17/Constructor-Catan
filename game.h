@@ -17,12 +17,13 @@ class Game {
 
     public:
         //constructor for random board
-        Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen);
+        Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng);
         //constructor for when the board is set
         // case 1: new_game = true, the command line argument was strictly -board
         // case 2: new_game = false, the command line argument was -load
-        Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::ifstream &f, bool new_game);
+        Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng, std::ifstream &f, bool new_game);
         
+        std::default_random_engine game_rng;
         void save_game(std::ofstream &f);
         void play(bool play_beginning);
         ~Game();

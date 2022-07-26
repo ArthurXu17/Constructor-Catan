@@ -24,13 +24,14 @@ class Player {
     bool set_seed;
     unsigned seed;
     std::mt19937 gen;
+    std::default_random_engine rng;
     // dice
     Dice *dice;
 
     std::string print_resource(size_t type) const;
 
    public:
-    Player(Colour colour, bool set_seed_input, unsigned seed_input, std::mt19937 gen, Dice *dice_input);
+    Player(Colour colour, bool set_seed_input, unsigned seed_input, std::mt19937 gen_input, std::default_random_engine rng_input, Dice *dice_input);
     // functions for getting player status
     Colour get_Colour() const;
     int get_points() const;
@@ -69,7 +70,7 @@ class Player {
     void add_road(size_t edge_id);
     void add_building(size_t node_id, Building_Type building_type);
     // goose and trading functions
-    void lose_resource_to_geese();
+    void lose_resource_to_geese(std::default_random_engine &game_rng);
     void steal(Player *victim);
     void robbed(Player *robber);
     void trade_resources(Player *other, int num_give, Resource resource_to_give, int num_gain, Resource resource_to_gain);

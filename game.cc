@@ -8,26 +8,26 @@
 
 #include "dice.h"
 
-Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen) : turn{0}, set_seed{set_seed_input}, seed{seed_input} {
+Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng_input) : turn{0}, set_seed{set_seed_input}, seed{seed_input}, game_rng{rng_input} {
     fair = new RandomDice(set_seed_input, seed_input, gen);
     load = new LoadedDice();
     players.resize(4);
-    players[0] = new Player(Colour::Blue, set_seed, seed, gen, load);
-    players[1] = new Player(Colour::Red, set_seed, seed, gen, load);
-    players[2] = new Player(Colour::Orange, set_seed, seed, gen, load);
-    players[3] = new Player(Colour::Yellow, set_seed, seed, gen, load);
+    players[0] = new Player(Colour::Blue, set_seed, seed, gen, rng_input, load);
+    players[1] = new Player(Colour::Red, set_seed, seed, gen, rng_input, load);
+    players[2] = new Player(Colour::Orange, set_seed, seed, gen, rng_input, load);
+    players[3] = new Player(Colour::Yellow, set_seed, seed, gen, rng_input, load);
     g = new Grid(set_seed_input, seed_input);
 }
 
-Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::ifstream &f, bool new_game) : set_seed{set_seed_input}, seed{seed_input} {
+Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng_input, std::ifstream &f, bool new_game) : set_seed{set_seed_input}, seed{seed_input}, game_rng{rng_input} {
     fair = new RandomDice(set_seed_input, seed_input, gen);
     load = new LoadedDice();
     players.resize(4);
     // all players start with loaded dice
-    players[0] = new Player(Colour::Blue, set_seed, seed, gen, load);
-    players[1] = new Player(Colour::Red, set_seed, seed, gen, load);
-    players[2] = new Player(Colour::Orange, set_seed, seed, gen, load);
-    players[3] = new Player(Colour::Yellow, set_seed, seed, gen, load);
+    players[0] = new Player(Colour::Blue, set_seed, seed, gen, rng_input, load);
+    players[1] = new Player(Colour::Red, set_seed, seed, gen, rng_input, load);
+    players[2] = new Player(Colour::Orange, set_seed, seed, gen, rng_input, load);
+    players[3] = new Player(Colour::Yellow, set_seed, seed, gen, rng_input, load);
 
     if (new_game) {
         turn = 0;
@@ -47,7 +47,6 @@ Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::ifst
         } else if (colour == "YELLOW") {
             turn = 3;
         }
-        std::cout << turn << std::endl;
         std::string line;
         // to move to nextline after the turn
         std::getline(f, line);
@@ -157,7 +156,7 @@ void Game::play(bool play_beginning) {
 
         if (roll == 7) {  // roll 7 --> activate geese
             for (auto p : players)
-                p->lose_resource_to_geese();  // lose resources if more than 10
+                p->lose_resource_to_geese(game_rng);  // lose resources if more than 10
 
             int new_geese_loc = g->move_goose();  // move goose
             std::cout << "The GEESE have been moved to " << new_geese_loc << "." << std::endl;
