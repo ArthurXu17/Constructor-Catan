@@ -18,6 +18,7 @@ class Building;
 class Player {
     int victory_points = 0;
     std::vector<int> resource_count = {0, 0, 0, 0, 0};
+    std::vector<int> drc_count = {0,0,0,0,0};
     std::vector<std::size_t> roads = std::vector<std::size_t>();
     std::unordered_map<std::size_t, Building_Type> buildings = std::unordered_map<std::size_t, Building_Type>();
     Colour colour;
@@ -53,6 +54,8 @@ class Player {
         void purchase_basement();
         void purchase_house();
         void purchase_tower();
+        void purchase_drc();
+
 
         // functions for changing player status
         void increment_points();

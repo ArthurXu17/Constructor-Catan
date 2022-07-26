@@ -286,3 +286,9 @@ bool Player::win() const {
 }
 
 Player::~Player() {}
+
+
+
+void Player::purchase_drc(){
+    
+}
