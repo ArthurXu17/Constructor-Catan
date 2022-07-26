@@ -419,6 +419,7 @@ int Grid::who_to_steal_from(size_t geese_loc, Player *curr_player) {
             return 3;
         } else {
             std::cout << "Please choose a valid player" << std::endl;
+            std::cout << "> ";
         }
     }
 }

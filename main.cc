@@ -43,17 +43,34 @@ int main(int argc, char **argv) {
     std::cin.exceptions(std::ios::eofbit|std::ios::failbit);
     try {
         if (game_file_name != "") {
+            bool start_from_saved_state = true;
             while (play_again) {
-                std::ifstream infile{game_file_name};
-                game = new Game(gen, rng, infile, false);
-                game->play(false);
+                if (start_from_saved_state) {
+                    std::ifstream infile{game_file_name};
+                    game = new Game(gen, rng, infile, false);
+                    game->play(false);
+                } else {
+                    game = new Game(gen, rng);
+                    game->play(false);
+                }
                 std::cout<<"Would you like to play again?"<<std::endl;
+                std::cout<<"> ";
                 std::cin>>play_again_cmd;
                 if (play_again_cmd != "yes") {
                     // not playing another game, game is deleted at end of program
                     play_again = false;
                 } else {
                     delete game;
+                    std::cout<<"Would you like to restart from the saved state or from a new random board?"<<std::endl;
+                    std::cout<<"Enter 0 to restart from saved state, or 1 to start from a new random board."<<std::endl;
+                    std::cout<<"> ";
+                    std::string next_game_cmd;
+                    std::cin>>next_game_cmd;
+                    if (next_game_cmd == "0") {
+                        start_from_saved_state = true;
+                    } else if (next_game_cmd == "1") {
+                        start_from_saved_state = false;
+                    }
                 } 
             }
         } else if (board_file_name != "") {
