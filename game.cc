@@ -8,26 +8,26 @@
 
 #include "dice.h"
 
-Game::Game(bool set_seed_input, unsigned seed_input) : turn{0}, set_seed{set_seed_input}, seed{seed_input} {
-    fair = new RandomDice(set_seed_input, seed_input);
+Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen) : turn{0}, set_seed{set_seed_input}, seed{seed_input} {
+    fair = new RandomDice(set_seed_input, seed_input, gen);
     load = new LoadedDice();
     players.resize(4);
-    players[0] = new Player(Colour::Blue, set_seed, seed, load);
-    players[1] = new Player(Colour::Red, set_seed, seed, load);
-    players[2] = new Player(Colour::Orange, set_seed, seed, load);
-    players[3] = new Player(Colour::Yellow, set_seed, seed, load);
+    players[0] = new Player(Colour::Blue, set_seed, seed, gen, load);
+    players[1] = new Player(Colour::Red, set_seed, seed, gen, load);
+    players[2] = new Player(Colour::Orange, set_seed, seed, gen, load);
+    players[3] = new Player(Colour::Yellow, set_seed, seed, gen, load);
     g = new Grid(set_seed_input, seed_input);
 }
 
-Game::Game(bool set_seed_input, unsigned seed_input, std::ifstream &f, bool new_game) : set_seed{set_seed_input}, seed{seed_input} {
-    fair = new RandomDice(set_seed_input, seed_input);
+Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::ifstream &f, bool new_game) : set_seed{set_seed_input}, seed{seed_input} {
+    fair = new RandomDice(set_seed_input, seed_input, gen);
     load = new LoadedDice();
     players.resize(4);
     // all players start with loaded dice
-    players[0] = new Player(Colour::Blue, set_seed, seed, load);
-    players[1] = new Player(Colour::Red, set_seed, seed, load);
-    players[2] = new Player(Colour::Orange, set_seed, seed, load);
-    players[3] = new Player(Colour::Yellow, set_seed, seed, load);
+    players[0] = new Player(Colour::Blue, set_seed, seed, gen, load);
+    players[1] = new Player(Colour::Red, set_seed, seed, gen, load);
+    players[2] = new Player(Colour::Orange, set_seed, seed, gen, load);
+    players[3] = new Player(Colour::Yellow, set_seed, seed, gen, load);
 
     if (new_game) {
         turn = 0;

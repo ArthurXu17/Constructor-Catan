@@ -23,7 +23,7 @@ class RandomDice : public Dice {
     std::mt19937 gen;
     
     public:
-        RandomDice(bool set_seed_input, unsigned seed_input);
+        RandomDice(bool set_seed_input, unsigned seed_input, std::mt19937 gen_input);
         int generateNumber() override;
         ~RandomDice();
 };

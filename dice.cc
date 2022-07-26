@@ -2,14 +2,18 @@
 
 Dice::~Dice() {}
 
-RandomDice::RandomDice(bool set_seed_input, unsigned seed_input): 
-    set_seed{set_seed_input}, seed{seed_input} 
+RandomDice::RandomDice(bool set_seed_input, unsigned seed_input, std::mt19937 gen_input): 
+    set_seed{set_seed_input}, seed{seed_input}, gen{gen_input}
     {
-        // use a time-based seed for the default seed value
+        if (set_seed) {
+            gen = std::mt19937(seed);
+        }
+        /*// use a time-based seed for the default seed value
         if (!set_seed) {
             seed = std::chrono::system_clock::now().time_since_epoch().count();
-        }
-        std::mt19937 gen(seed);
+        } 
+            std::mt19937 gen(seed);*/
+        
     }
 
 int RandomDice::generateNumber() {

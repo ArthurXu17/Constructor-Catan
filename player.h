@@ -30,7 +30,7 @@ class Player {
     std::string print_resource(size_t type) const;
 
    public:
-    Player(Colour colour, bool set_seed_input, unsigned seed_input, Dice *dice_input);
+    Player(Colour colour, bool set_seed_input, unsigned seed_input, std::mt19937 gen, Dice *dice_input);
     // functions for getting player status
     Colour get_Colour() const;
     int get_points() const;

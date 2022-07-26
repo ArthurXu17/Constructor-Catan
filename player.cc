@@ -25,16 +25,15 @@ std::string Player::print_resource(size_t type) const {
     }
 }
 
-Player::Player(Colour colour, bool set_seed_input, unsigned seed_input, Dice *dice_input)
+Player::Player(Colour colour, bool set_seed_input, unsigned seed_input,  std::mt19937 gen_input, Dice *dice_input)
     : colour{colour},
       set_seed{set_seed_input},
       seed{seed_input},
+      gen{gen_input},
       dice{dice_input} {
-        // use a time-based seed for the default seed value
-        if (!set_seed) {
-            seed = std::chrono::system_clock::now().time_since_epoch().count();
+        if (set_seed) {
+            gen = std::mt19937(seed);
         }
-        std::mt19937 gen(seed);
       }
 
 Colour Player::get_Colour() const { return colour; }
@@ -212,8 +211,12 @@ void Player::lose_resource_to_geese() {
         for (int i = 0; i < 5; i++)
             for (int j = 0; j < this->resource_count[i]; j++)
                 resource_pool.push_back(i);
-
-        std::shuffle(resource_pool.begin(), resource_pool.end(), gen);
+        
+        if (!set_seed) {
+            seed = std::chrono::system_clock::now().time_since_epoch().count();
+        } 
+        std::default_random_engine rng{seed};
+        std::shuffle(resource_pool.begin(), resource_pool.end(), rng);
 
         for (int i = 0; i < half; i++) {
             resource_lost_count[resource_pool[i]]++;
