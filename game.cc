@@ -306,7 +306,7 @@ void Game::play(bool play_beginning) {
                 } else if (!p->valid_trade_offer(num_give, resource_to_give)) {  // does not possess sufficient resources to give
                     std::cout << "You do not have enough resources." << std::endl;
                 } else {
-                    std::cout << p->get_Colour() << " offers " << other_colour << " one " << give << " for one " << gain << "." << std::endl;
+                    std::cout << p->get_Colour() << " offers " << other_colour << " " <<num_give<<" " << give << " " <<num_gain<<" " << gain << "." << std::endl;
                     std::cout << "Does " << other_colour << " accept this offer?\n> ";  // trade offer
                     std::string reply;
                     std::cin >> reply;
@@ -427,7 +427,7 @@ void Game::play(bool play_beginning) {
                     for (auto other : players) {
                         if (p != other) {
                             total += other->get_resource_count(resource);
-                            other->increment_resource(resource, -1 * p->get_resource_count(resource));
+                            other->increment_resource(resource, -1 * other->get_resource_count(resource));
                         }
                     }
                     p->increment_resource(resource, total);
@@ -444,6 +444,11 @@ void Game::play(bool play_beginning) {
 
                     p->increment_points();
                     std::cout << "Congrats! You have received 1 building point." << std::endl;
+                }
+
+                if (p->win()) {
+                    somebody_has_won = true;
+                    break;
                 }
             } else if (turn_cmd == "use-road-building") {  // passes control to next player
                 if (!p->has_drc(4)) {

@@ -23,6 +23,7 @@ class Player {
     // seed parameters
     bool set_seed;
     unsigned seed;
+    std::mt19937 gen;
     // dice
     Dice *dice;
 

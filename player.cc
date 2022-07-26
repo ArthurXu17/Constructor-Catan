@@ -29,7 +29,13 @@ Player::Player(Colour colour, bool set_seed_input, unsigned seed_input, Dice *di
     : colour{colour},
       set_seed{set_seed_input},
       seed{seed_input},
-      dice{dice_input} {}
+      dice{dice_input} {
+        // use a time-based seed for the default seed value
+        if (!set_seed) {
+            seed = std::chrono::system_clock::now().time_since_epoch().count();
+        }
+        std::mt19937 gen(seed);
+      }
 
 Colour Player::get_Colour() const { return colour; }
 
@@ -199,11 +205,6 @@ void Player::lose_resource_to_geese() {
 
         std::cout << "Builder " << this->get_Colour() << " loses " << half << " resources to the geese. They lose:" << std::endl;
 
-        // use a time-based seed for the default seed value
-        if (!set_seed) {
-            seed = std::chrono::system_clock::now().time_since_epoch().count();
-        }
-        std::mt19937 gen(seed);
         std::vector<int> resource_lost_count{
             0, 0, 0, 0, 0};  // purely used to keep track of cumulative amount
                              // of each resource lost
@@ -230,10 +231,6 @@ void Player::lose_resource_to_geese() {
 void Player::steal(Player *victim) { victim->robbed(this); }
 
 void Player::robbed(Player *robber) {
-    if (!set_seed) {
-        seed = std::chrono::system_clock::now().time_since_epoch().count();
-    }
-    std::mt19937 gen(seed);
     std::uniform_int_distribution<std::mt19937::result_type> dist4(
         1, this->get_total_resource());
     int resource = dist4(gen);
@@ -300,10 +297,6 @@ void Player::purchase_drc() {
     for (size_t i = 0; i < resource_count.size(); i++) {
         resource_count.at(i) -= drc_cost.at(i);
     }
-    if (!set_seed) {
-        seed = std::chrono::system_clock::now().time_since_epoch().count();
-    }
-    std::mt19937 gen(seed);
     std::uniform_int_distribution<std::mt19937::result_type> dist4(0, 4);
     int drc = dist4(gen);
     this->drc_count[drc]++;

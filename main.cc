@@ -19,20 +19,22 @@ int main(int argc, char **argv) {
     std::string game_file_name = "";
     bool set_seed = false;
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    bool random_board = false;
     for (int i = 1; i < argc; i++) {
         if (std::string(argv[i]) == "-board") {
             i++;
             board_file_name = argv[i];
-        }
-        if (std::string(argv[i]) == "-seed") {
+        } else if (std::string(argv[i]) == "-seed") {
             set_seed = true;
             i++;
             seed = std::stoi(std::string{argv[i]});
-        }
-        if (std::string(argv[i]) == "-load") {
+        } else if (std::string(argv[i]) == "-load") {
             i++;
             game_file_name = argv[i];
+        } else if (std::string(argv[i]) == "-random-board") {
+            random_board = true;
         }
+        
     }
     Game *game;
     std::string play_again_cmd;
@@ -42,6 +44,7 @@ int main(int argc, char **argv) {
         if (game_file_name != "") {
             while (play_again) {
                 std::ifstream infile{game_file_name};
+                std::cout<<seed<<std::endl;
                 game = new Game(set_seed, seed, infile, false);
                 game->play(false);
                 std::cout<<"Would you like to play again?"<<std::endl;
@@ -68,9 +71,24 @@ int main(int argc, char **argv) {
                 }
             }
             
-        } else {
+        } else if (random_board) {
             while (play_again) {
                 game = new Game(set_seed, seed);
+                game->play(true);
+                std::cout<<"Would you like to play again?"<<std::endl;
+                std::cin>>play_again_cmd;
+                if (play_again_cmd != "yes") {
+                    // not playing another game, game is deleted at end of program
+                    play_again = false;
+                } else {
+                    delete game;
+                }
+                
+            }
+        } else {
+            while (play_again) {
+                std::ifstream infile{"layout.txt"};
+                game = new Game(set_seed, seed, infile, true);
                 game->play(true);
                 std::cout<<"Would you like to play again?"<<std::endl;
                 std::cin>>play_again_cmd;
