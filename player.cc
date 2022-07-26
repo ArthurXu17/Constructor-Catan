@@ -249,26 +249,26 @@ void Player::robbed(Player *robber) {
     }
 }
 
-void Player::trade_resources(Player *other, Resource resource_to_give,
-                             Resource resource_to_gain) {
+void Player::trade_resources(Player *other, int num_give, Resource resource_to_give,
+                             int num_gain, Resource resource_to_gain) {
     int give_index = static_cast<int>(resource_to_give);
     int gain_index = static_cast<int>(resource_to_gain);
 
-    this->resource_count[give_index] -= 1;  // trade resources
-    other->resource_count[give_index] += 1;
-    this->resource_count[gain_index] += 1;
-    other->resource_count[gain_index] -= 1;
+    this->resource_count[give_index] -= num_give;  // trade resources
+    other->resource_count[give_index] += num_give;
+    this->resource_count[gain_index] += num_gain;
+    other->resource_count[gain_index] -= num_gain;
 }
 
-bool Player::valid_trade_offer(Resource resource_to_give) const {
+bool Player::valid_trade_offer(int num_give, Resource resource_to_give) const {
     int give_index = static_cast<int>(resource_to_give);
-    if (resource_count.at(give_index) == 0) return false;
+    if (resource_count.at(give_index) < num_give) return false;
     return true;
 }
 
-bool Player::valid_trade_acceptance(Resource resource_to_gain) const {
+bool Player::valid_trade_acceptance(int num_gain, Resource resource_to_gain) const {
     int gain_index = static_cast<int>(resource_to_gain);
-    if (resource_count.at(gain_index) == 0) return false;
+    if (resource_count.at(gain_index) < num_gain) return false;
     return true;
 }
 

@@ -255,8 +255,9 @@ void Game::play(bool play_beginning) {
                     }  // achieved 10 or more points
                 }
             } else if (turn_cmd == "trade") {  // attempts to trade
-                std::string other, give, gain;
-                std::cin >> other >> give >> gain;  // other player in trade, resources being traded
+                std::string other, give, gain; 
+                int num_give, num_gain; // how many resources
+                std::cin >> other >> num_give >> give >> num_gain >> gain;  // other player in trade, resources being traded
 
                 transform(other.begin(), other.end(), other.begin(), toupper);  // converts to uppercase
                 transform(give.begin(), give.end(), give.begin(), toupper);
@@ -298,7 +299,7 @@ void Game::play(bool play_beginning) {
 
                 if (p->get_Colour() == other_colour) {
                     std::cout << "Invalid command. Cannot trade with oneself. " << std::endl;
-                } else if (!p->valid_trade_offer(resource_to_give)) {  // does not possess sufficient resources to give
+                } else if (!p->valid_trade_offer(num_give, resource_to_give)) {  // does not possess sufficient resources to give
                     std::cout << "You do not have enough resources." << std::endl;
                 } else {
                     std::cout << p->get_Colour() << " offers " << other_colour << " one " << give << " for one " << gain << "." << std::endl;
@@ -319,10 +320,10 @@ void Game::play(bool play_beginning) {
                         } else if (other == "YELLOW") {  // trade with yellow
                             trade_other = 3;
                         }
-                        if (!players[trade_other]->valid_trade_acceptance(resource_to_gain)) {
+                        if (!players[trade_other]->valid_trade_acceptance(num_gain, resource_to_gain)) {
                             std::cout << other_colour << " does not have enough resources to make the trade." << std::endl;
                         } else {
-                            p->trade_resources(players[trade_other], resource_to_give, resource_to_gain);
+                            p->trade_resources(players[trade_other], num_give, resource_to_give, num_gain, resource_to_gain);
                         }
                     }
                 }
