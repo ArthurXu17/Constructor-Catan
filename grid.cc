@@ -278,7 +278,6 @@ bool Grid::valid_building(Colour player, size_t node_id, bool starting_buildings
 }
 
 bool Grid::valid_upgrade(Colour colour, size_t node_id) const {
-    std::cout<<node_id<<std::endl;
     if (node_id > 53) return false;  // out of bounds
 
     if (node_owner.at(node_id) == nullptr ||                           // no building there
