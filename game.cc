@@ -8,33 +8,32 @@
 
 #include "dice.h"
 
-Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng_input) : turn{0}, set_seed{set_seed_input}, seed{seed_input}, game_gen{gen},game_rng{rng_input} {
+Game::Game(std::mt19937 gen, std::default_random_engine rng_input) : turn{0}, game_gen{gen}, game_rng{rng_input} {
     fair = new RandomDice();
     load = new LoadedDice();
     players.resize(4);
-    players[0] = new Player(Colour::Blue, set_seed, seed, gen, rng_input, load);
-    players[1] = new Player(Colour::Red, set_seed, seed, gen, rng_input, load);
-    players[2] = new Player(Colour::Orange, set_seed, seed, gen, rng_input, load);
-    players[3] = new Player(Colour::Yellow, set_seed, seed, gen, rng_input, load);
-    g = new Grid(set_seed_input, seed_input);
+    players[0] = new Player(Colour::Blue, load);
+    players[1] = new Player(Colour::Red, load);
+    players[2] = new Player(Colour::Orange, load);
+    players[3] = new Player(Colour::Yellow, load);
+    g = new Grid(rng_input);
 }
 
-Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::default_random_engine rng_input, std::ifstream &f, bool new_game) : set_seed{set_seed_input}, seed{seed_input}, game_gen{gen}, game_rng{rng_input} {
+Game::Game(std::mt19937 gen, std::default_random_engine rng_input, std::ifstream &f, bool new_game) :  game_gen{gen}, game_rng{rng_input} {
     fair = new RandomDice();
     load = new LoadedDice();
     players.resize(4);
     // all players start with loaded dice
-    players[0] = new Player(Colour::Blue, set_seed, seed, gen, rng_input, load);
-    players[1] = new Player(Colour::Red, set_seed, seed, gen, rng_input, load);
-    players[2] = new Player(Colour::Orange, set_seed, seed, gen, rng_input, load);
-    players[3] = new Player(Colour::Yellow, set_seed, seed, gen, rng_input, load);
-
+    players[0] = new Player(Colour::Blue, load);
+    players[1] = new Player(Colour::Red, load);
+    players[2] = new Player(Colour::Orange, load);
+    players[3] = new Player(Colour::Yellow, load);
     if (new_game) {
         turn = 0;
         std::string line;
         std::getline(f, line);
         std::istringstream s{line};
-        g = new Grid(s, set_seed_input, seed_input);
+        g = new Grid(s);
     } else {
         std::string colour;
         f >> colour;
@@ -57,7 +56,7 @@ Game::Game(bool set_seed_input, unsigned seed_input, std::mt19937 gen, std::defa
         }
         std::getline(f, line);
         std::istringstream s{line};
-        g = new Grid(s, set_seed_input, seed_input);
+        g = new Grid(s);
         // now that grid has been instantiated, manually update grid based on updated player information
         // we can also update the building points of the players through here
         for (int i = 0; i < 4; i++) {
@@ -163,7 +162,7 @@ void Game::play(bool play_beginning) {
 
             int victim = g->who_to_steal_from(new_geese_loc, p);
             if (victim >= 0) {
-                p->steal(players[victim]);
+                p->steal(players[victim], game_gen);
             }
 
         } else {
@@ -332,7 +331,7 @@ void Game::play(bool play_beginning) {
                 }
             } else if (turn_cmd == "buy-drc") {  // passes control to next player
                 if (p->can_buy_drc()) {
-                    p->purchase_drc();
+                    p->purchase_drc(game_gen);
                 } else {
                     std::cout << p->get_Colour() << " does not have enough resources to buy a drc." << std::endl;
                 }
@@ -352,7 +351,7 @@ void Game::play(bool play_beginning) {
 
                     int victim = g->who_to_steal_from(new_geese_loc, p);
                     if (victim >= 0) {
-                        p->steal(players[victim]);
+                        p->steal(players[victim], game_gen);
                     }
                 }
             } else if (turn_cmd == "use-year-of-plenty") {  // passes control to next player

@@ -46,9 +46,11 @@ class Grid {
 
     public: 
         // constructor for random board generation
-        Grid(bool set_seed_input, unsigned seed_input);
+        Grid(std::default_random_engine& rng);
+        //Grid(bool set_seed_input, unsigned seed_input);
         // constructor for file input board generation
-        Grid(std::istringstream &f, bool set_seed_input, unsigned seed_input);
+        Grid(std::istringstream &f);
+        //Grid(std::istringstream &f, bool set_seed_input, unsigned seed_input);
         
         // getters and setters
         Building_Type get_building_type_at_node(size_t node_id) const;

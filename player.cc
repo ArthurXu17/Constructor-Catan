@@ -25,13 +25,7 @@ std::string Player::print_resource(size_t type) const {
     }
 }
 
-Player::Player(Colour colour, bool set_seed_input, unsigned seed_input,  std::mt19937 gen_input, std::default_random_engine rng_input, Dice *dice_input)
-    : colour{colour},
-      set_seed{set_seed_input},
-      seed{seed_input},
-      gen{gen_input},
-      rng{rng_input},
-      dice{dice_input} {}
+Player::Player(Colour colour_input, Dice *dice_input): colour{colour_input}, dice{dice_input} {}
 
 Colour Player::get_Colour() const { return colour; }
 
@@ -208,13 +202,6 @@ void Player::lose_resource_to_geese(std::default_random_engine &game_rng) {
         for (int i = 0; i < 5; i++)
             for (int j = 0; j < this->resource_count[i]; j++)
                 resource_pool.push_back(i);
-        
-        /*if (!set_seed) {
-            seed = std::chrono::system_clock::now().time_since_epoch().count();
-        } else {
-            std::cout<<"set seed"<<std::endl;
-        }*/
-        //std::default_random_engine rng{seed};
         std::shuffle(resource_pool.begin(), resource_pool.end(), game_rng);
 
         for (int i = 0; i < half; i++) {
@@ -230,12 +217,12 @@ void Player::lose_resource_to_geese(std::default_random_engine &game_rng) {
 }
 // steals a resource from a player assuming they are valid (they have at least
 // one resource)
-void Player::steal(Player *victim) { victim->robbed(this); }
+void Player::steal(Player *victim, std::mt19937 &game_gen) { victim->robbed(this, game_gen); }
 
-void Player::robbed(Player *robber) {
+void Player::robbed(Player *robber, std::mt19937 &game_gen) {
     std::uniform_int_distribution<std::mt19937::result_type> dist4(
         1, this->get_total_resource());
-    int resource = dist4(gen);
+    int resource = dist4(game_gen);
 
     for (int i = 0; i < 5; i++) {
         resource -= this->resource_count[i];
@@ -295,12 +282,12 @@ bool Player::can_buy_drc() const {
     return true;
 }
 
-void Player::purchase_drc() {
+void Player::purchase_drc(std::mt19937 & game_gen) {
     for (size_t i = 0; i < resource_count.size(); i++) {
         resource_count.at(i) -= drc_cost.at(i);
     }
     std::uniform_int_distribution<std::mt19937::result_type> dist4(0, 4);
-    int drc = dist4(gen);
+    int drc = dist4(game_gen);
     this->drc_count[drc]++;
 
     const std::vector<std::string> stmt = {"knight", "Year of plenty", "monopoly", "victory point", "road building"};

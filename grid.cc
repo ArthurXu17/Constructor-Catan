@@ -115,7 +115,7 @@ void Grid::print_possible_goose(size_t &counter) const {
     counter++;
 }
 
-Grid::Grid(bool set_seed_input, unsigned seed_input) : set_seed{set_seed_input}, seed{seed_input} {
+Grid::Grid(std::default_random_engine& rng) {
     edge_colour = std::unordered_map<size_t, Colour>();
     node_owner = std::unordered_map<size_t, Building *>();
     edge_ends = std::unordered_map<size_t, std::pair<size_t, size_t>>();
@@ -140,10 +140,10 @@ Grid::Grid(bool set_seed_input, unsigned seed_input) : set_seed{set_seed_input},
         Resource::Park};
 
     // use a time-based seed for the default seed value
-    if (!set_seed) {
+    /*if (!set_seed) {
         seed = std::chrono::system_clock::now().time_since_epoch().count();
     }
-    std::default_random_engine rng{seed};
+    std::default_random_engine rng{seed};*/
     std::shuffle(dice_rolls.begin(), dice_rolls.end(), rng);
     std::shuffle(tile_res.begin(), tile_res.end(), rng);
 
@@ -167,7 +167,7 @@ Grid::Grid(bool set_seed_input, unsigned seed_input) : set_seed{set_seed_input},
     }
 }
 
-Grid::Grid(std::istringstream &f, bool set_seed_input, unsigned seed_input) : set_seed{set_seed_input}, seed{seed_input} {
+Grid::Grid(std::istringstream &f) {
     edge_colour = std::unordered_map<size_t, Colour>();
     node_owner = std::unordered_map<size_t, Building *>();
     edge_ends = std::unordered_map<size_t, std::pair<size_t, size_t>>();

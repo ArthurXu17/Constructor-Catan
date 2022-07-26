@@ -20,18 +20,13 @@ class Player {
     std::vector<std::size_t> roads = std::vector<std::size_t>();
     std::unordered_map<std::size_t, Building_Type> buildings = std::unordered_map<std::size_t, Building_Type>();
     Colour colour;
-    // seed parameters
-    bool set_seed;
-    unsigned seed;
-    std::mt19937 gen;
-    std::default_random_engine rng;
     // dice
     Dice *dice;
 
     std::string print_resource(size_t type) const;
 
    public:
-    Player(Colour colour, bool set_seed_input, unsigned seed_input, std::mt19937 gen_input, std::default_random_engine rng_input, Dice *dice_input);
+    Player(Colour colour_input, Dice *dice_input);
     // functions for getting player status
     Colour get_Colour() const;
     int get_points() const;
@@ -58,7 +53,7 @@ class Player {
     void purchase_basement();
     void purchase_house();
     void purchase_tower();
-    void purchase_drc();
+    void purchase_drc(std::mt19937 &game_gen);
 
     // has drcs
     bool has_drc(int index) const;
@@ -71,8 +66,8 @@ class Player {
     void add_building(size_t node_id, Building_Type building_type);
     // goose and trading functions
     void lose_resource_to_geese(std::default_random_engine &game_rng);
-    void steal(Player *victim);
-    void robbed(Player *robber);
+    void steal(Player *victim, std::mt19937 &game_gen);
+    void robbed(Player *robber, std::mt19937 &game_gen);
     void trade_resources(Player *other, int num_give, Resource resource_to_give, int num_gain, Resource resource_to_gain);
     // checks if player possesses the resource they are offering (can they make the trade?)
     bool valid_trade_offer(int num_give, Resource resource_to_give) const;

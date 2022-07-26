@@ -15,16 +15,8 @@
 #include "game.h"
 
 int main(int argc, char **argv) {
-    /*unsigned seed_test = std::chrono::system_clock::now().time_since_epoch().count();
-    std::uniform_int_distribution<std::mt19937::result_type> dist100(1, 100);
-    std::mt19937 gen_test(seed_test);
-    int int1 = dist100(gen_test);
-    int int2 = dist100(gen_test);
-    int int3 = dist100(gen_test);
-    std::cout<<int1<<" "<<int2<<" "<<int3<<std::endl;*/
     std::string board_file_name = "";
     std::string game_file_name = "";
-    bool set_seed = false;
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     
     bool random_board = false;
@@ -33,7 +25,6 @@ int main(int argc, char **argv) {
             i++;
             board_file_name = argv[i];
         } else if (std::string(argv[i]) == "-seed") {
-            set_seed = true;
             i++;
             seed = std::stoi(std::string{argv[i]});
         } else if (std::string(argv[i]) == "-load") {
@@ -54,7 +45,7 @@ int main(int argc, char **argv) {
         if (game_file_name != "") {
             while (play_again) {
                 std::ifstream infile{game_file_name};
-                game = new Game(set_seed, seed, gen, rng, infile, false);
+                game = new Game(gen, rng, infile, false);
                 game->play(false);
                 std::cout<<"Would you like to play again?"<<std::endl;
                 std::cin>>play_again_cmd;
@@ -68,7 +59,7 @@ int main(int argc, char **argv) {
         } else if (board_file_name != "") {
             while (play_again) {
                 std::ifstream infile{board_file_name};
-                game = new Game(set_seed, seed, gen, rng,infile, true);
+                game = new Game(gen, rng,infile, true);
                 game->play(true);
                 std::cout<<"Would you like to play again?"<<std::endl;
                 std::cin>>play_again_cmd;
@@ -82,7 +73,7 @@ int main(int argc, char **argv) {
             
         } else if (random_board) {
             while (play_again) {
-                game = new Game(set_seed, seed, gen, rng);
+                game = new Game(gen, rng);
                 game->play(true);
                 std::cout<<"Would you like to play again?"<<std::endl;
                 std::cin>>play_again_cmd;
@@ -97,7 +88,7 @@ int main(int argc, char **argv) {
         } else {
             while (play_again) {
                 std::ifstream infile{"layout.txt"};
-                game = new Game(set_seed, seed, gen, rng, infile, true);
+                game = new Game(gen, rng, infile, true);
                 game->play(true);
                 std::cout<<"Would you like to play again?"<<std::endl;
                 std::cin>>play_again_cmd;
